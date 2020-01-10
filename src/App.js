@@ -124,7 +124,10 @@ function App() {
     <div className="App">
       <header className="App-header">
         {isAuthorized ? (
-          <h1>Google Calender is Authorizded!</h1>
+          <>
+            <h1>Google Calender is Authorizded!</h1>
+            <h3>See the console</h3>
+          </>
         ) : (
           <button onClick={handleAuthClick}>Authorize Google Calendar</button>
         )}
