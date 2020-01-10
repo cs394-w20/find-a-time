@@ -1,16 +1,9 @@
 import React, { useEffect, useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
-//ID 972462016047-ibp3c77reskfvj6fkc4fqs16ncs00iia.apps.googleusercontent.com
-// secret uNnJ2XFFgmuw1vgI2_U7dnzg
-
-//
-
-// KEY AIzaSyDxk_cxL2QN89xWCZquLTiF4RyWsgaBlO4
 function App() {
-  var CLIENT_ID =
-    "361706564526-d45fhmlunape2obgniut1tc3nbg7spk4.apps.googleusercontent.com";
-  var API_KEY = "AIzaSyCH3KUTJ4R8YRDS6htIJrYORxiknxfd5dQ";
+  var CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+  var API_KEY = process.env.GOOGLE_API_KEY;
 
   // Array of API discovery doc URLs for APIs used by the quickstart
   var DISCOVERY_DOCS = [
