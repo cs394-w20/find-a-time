@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import logo from "./logo.svg";
 import "./App.css";
 function App() {
-  var CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-  var API_KEY = process.env.GOOGLE_API_KEY;
+  var CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+  var API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
 
   // Array of API discovery doc URLs for APIs used by the quickstart
   var DISCOVERY_DOCS = [
