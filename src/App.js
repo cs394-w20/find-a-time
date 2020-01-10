@@ -10,7 +10,7 @@ import "./App.css";
 function App() {
   var CLIENT_ID =
     "361706564526-d45fhmlunape2obgniut1tc3nbg7spk4.apps.googleusercontent.com";
-  var API_KEY = "AIzaSyDxk_cxL2QN89xWCZquLTiF4RyWsgaBlO4";
+  var API_KEY = "AIzaSyCH3KUTJ4R8YRDS6htIJrYORxiknxfd5dQ";
 
   // Array of API discovery doc URLs for APIs used by the quickstart
   var DISCOVERY_DOCS = [
@@ -20,9 +20,6 @@ function App() {
   // Authorization scopes required by the API; multiple scopes can be
   // included, separated by spaces.
   var SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
-
-  var authorizeButton = document.getElementById("authorize_button");
-  var signoutButton = document.getElementById("signout_button");
 
   useEffect(() => {
     handleClientLoad();
@@ -48,8 +45,6 @@ function App() {
         scope: SCOPES
       })
       .then(
-        // listUpcomingEvents()
-
         function() {
           console.log("hello");
           // Listen for sign-in state changes.
@@ -103,7 +98,7 @@ function App() {
   const listUpcomingEvents = () => {
     window.gapi.client.calendar.events
       .list({
-        calendarId: "szaslan@gmail.com",
+        calendarId: "primary",
         timeMin: new Date().toISOString(),
         showDeleted: false,
         singleEvents: true,
