@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import logo from "./logo.svg";
 import "./App.css";
 function App() {
-  var CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-  var API_KEY = process.env.GOOGLE_API_KEY;
+  var CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+  var API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
 
   // Array of API discovery doc URLs for APIs used by the quickstart
   var DISCOVERY_DOCS = [
@@ -17,6 +16,8 @@ function App() {
   useEffect(() => {
     handleClientLoad();
   }, []);
+
+  const [isAuthorized, setisAuthorized] = useState(false);
 
   /**
    *  On load, called to load the auth2 library and API client library.
@@ -67,6 +68,8 @@ function App() {
     if (isSignedIn) {
       // authorizeButton.style.display = "none";
       // signoutButton.style.display = "block";
+
+      setisAuthorized(true);
       listUpcomingEvents();
     } else {
       // authorizeButton.style.display = "block";
@@ -120,7 +123,14 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <button onClick={handleAuthClick}>Authorize Google Calendar</button>
+        {isAuthorized ? (
+          <>
+            <h1>Google Calender is Authorizded!</h1>
+            <h3>See the console</h3>
+          </>
+        ) : (
+          <button onClick={handleAuthClick}>Authorize Google Calendar</button>
+        )}
       </header>
     </div>
   );
