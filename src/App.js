@@ -17,6 +17,8 @@ function App() {
     handleClientLoad();
   }, []);
 
+  const [isAuthorized, setisAuthorized] = useState(false);
+
   /**
    *  On load, called to load the auth2 library and API client library.
    */
@@ -66,6 +68,8 @@ function App() {
     if (isSignedIn) {
       // authorizeButton.style.display = "none";
       // signoutButton.style.display = "block";
+
+      setisAuthorized(true);
       listUpcomingEvents();
     } else {
       // authorizeButton.style.display = "block";
@@ -119,7 +123,11 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <button onClick={handleAuthClick}>Authorize Google Calendar</button>
+        {isAuthorized ? (
+          <h1>Google Calender is Authorizded!</h1>
+        ) : (
+          <button onClick={handleAuthClick}>Authorize Google Calendar</button>
+        )}
       </header>
     </div>
   );
