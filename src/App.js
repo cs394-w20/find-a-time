@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
+import firebase from 'firebase/app';
+import 'firebase/database';
+
 function App() {
   var CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
   var API_KEY = process.env.GOOGLE_API_KEY;
@@ -116,6 +119,19 @@ function App() {
         }
       });
   };
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBIRG1QRX8DBRTNYOH7k7mFPzw1AJJjBFg",
+    authDomain: "find-a-time-101.firebaseapp.com",
+    databaseURL: "https://find-a-time-101.firebaseio.com",
+    projectId: "find-a-time-101",
+    storageBucket: "find-a-time-101.appspot.com",
+    messagingSenderId: "206354772971",
+    appId: "1:206354772971:web:304d4c3379971157b05fae",
+    measurementId: "G-ZRQKBXQ2K5"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database().ref();
 
   return (
     <div className="App">
