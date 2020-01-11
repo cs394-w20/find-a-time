@@ -10,7 +10,18 @@ class Calendar extends Component {
       durationBarVisible: true,
       onTimeRangeSelected: args => {
         let selection = this.calendar;
+
+        DayPilot.Modal.prompt("Add a new event: ", "Event name").then(function(modal) {
+          selection.events.add(new DayPilot.Event({
+            start: args.start,
+            end: args.end,
+            id: DayPilot.guid(),
+            text: modal.result
+          }));
+        });
+
         selection.clearSelection();
+
       },
     };
   }
