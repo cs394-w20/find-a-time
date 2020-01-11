@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
+import Calendar from "./calendar/Calendar";
+
+
 function App() {
   var CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
   var API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
@@ -122,16 +125,16 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
-        {isAuthorized ? (
-          <>
-            <h1>Google Calender is Authorizded!</h1>
-            <h3>See the console</h3>
-          </>
-        ) : (
-          <button onClick={handleAuthClick}>Authorize Google Calendar</button>
-        )}
-      </header>
+    {isAuthorized ? (
+      <>
+        <h1>Google Calender is Authorizded!</h1>
+        <h3>See the console</h3>
+      </>
+    ) : (
+      <button onClick={handleAuthClick}>Authorize Google Calendar</button>
+    )}
+      <Calendar />
+
     </div>
   );
 }
