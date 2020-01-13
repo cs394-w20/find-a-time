@@ -52,10 +52,12 @@ class Calendar extends Component {
           if (currStart.length > 0) {
             const currEvent = {
               id: currId,
-              text: "Event",
+              text: "Possible meeting time",
               start: currDay.concat("T", currStart),
               end: currDay.concat("T", currTime)
             }
+
+            freeTimes.push(currEvent);
 
             console.log("FREE TIME INTERVAL: ", currEvent);
 
@@ -68,17 +70,20 @@ class Calendar extends Component {
       })
     });
 
+    console.log("All the free events: ", freeTimes);
+
     this.setState({
       startDate: "2020-01-05",
-      events: [
-        {
-          id: 1,
-          text: "Event 1",
-          start: "2020-01-05T10:30:00",
-          end: "2020-01-05T12:00:00",
-          backColor: "#5FBB97"
-        }
-      ]
+      events: freeTimes
+      // events: [
+      //   {
+      //     id: 1,
+      //     text: "Event 1",
+      //     start: "2020-01-05T10:30:00",
+      //     end: "2020-01-05T12:00:00",
+      //     backColor: "#5FBB97"
+      //   }
+      // ]
     });
   }
 
