@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {DayPilot, DayPilotCalendar, DayPilotNavigator} from "daypilot-pro-react";
 import "./CalendarStyles.css";
+import localJSON from "./dummy_data.json";
 
 class Calendar extends Component {
   constructor(props) {
@@ -27,6 +28,46 @@ class Calendar extends Component {
   }
 
   componentDidMount() {
+    console.log("The local json file even info: ", localJSON.events);
+
+    // Array of all the intervals where everybody is free
+    const freeTimes = [];
+    const events = localJSON.events;
+
+    Object.keys(events).forEach(function(key, index) {
+      // key: the name of the object key
+      // index: the ordinal position of the key within the object
+      const currDay = key;
+      let currStart = "";
+      let currId = 0;
+
+      Object.keys(events[currDay]).forEach(function(key, index) {
+        const currTime = key;
+        if (events[currDay][key].length === 0) {
+          if (currStart.length === 0) {
+            currStart = currTime;
+          }
+        }
+        else {
+          if (currStart.length > 0) {
+            const currEvent = {
+              id: currId,
+              text: "Event",
+              start: currDay.concat("T", currStart),
+              end: currDay.concat("T", currTime)
+            }
+
+            console.log("FREE TIME INTERVAL: ", currEvent);
+
+            currStart = "";
+            currId = currId + 1;
+          }
+        }
+
+
+      })
+    });
+
     this.setState({
       startDate: "2020-01-05",
       events: [
@@ -42,11 +83,11 @@ class Calendar extends Component {
   }
 
   render() {
-    var {...config} = this.state;
+    // var {...config} = this.state;
     return (
       <div>
         <DayPilotCalendar
-          {...config}
+          {...this.state}
           ref={component => {
             this.calendar = component && component.control;
           }}
