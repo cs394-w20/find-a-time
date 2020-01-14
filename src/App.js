@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
+import moment from "moment";
 import "./App.css";
+import { FIXED_START_DATE, FIXED_END_DATE } from "./constants";
 import Calendar from "./calendar/Calendar";
-
 
 function App() {
   var CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -94,11 +95,16 @@ function App() {
     window.gapi.auth2.getAuthInstance().signOut();
   };
 
+  /*
+  timeMin = datetime: the lower bound for the request
+  timeMax = datetime: the upper bound for the request
+  */
   const listUpcomingEvents = () => {
     window.gapi.client.calendar.events
       .list({
         calendarId: "primary",
-        timeMin: new Date().toISOString(),
+        timeMin: FIXED_START_DATE.toISOString(),
+        timeMax: FIXED_END_DATE.toISOString(),
         showDeleted: false,
         singleEvents: true,
         maxResults: 10,
@@ -125,16 +131,15 @@ function App() {
 
   return (
     <div className="App">
-    {isAuthorized ? (
-      <>
-        <h1>Google Calender is Authorizded!</h1>
-        <h3>See the console</h3>
-      </>
-    ) : (
-      <button onClick={handleAuthClick}>Authorize Google Calendar</button>
-    )}
+      {isAuthorized ? (
+        <>
+          <h1>Google Calender is Authorized!</h1>
+          <h3>See the console</h3>
+        </>
+      ) : (
+        <button onClick={handleAuthClick}>Authorize Google Calendar</button>
+      )}
       <Calendar />
-
     </div>
   );
 }
