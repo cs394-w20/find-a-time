@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import moment from "moment";
 import "./App.css";
 import { FIXED_START_DATE, FIXED_END_DATE } from "./constants";
 import Calendar from "./calendar/Calendar";
@@ -18,17 +17,16 @@ function App() {
   var SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
 
   useEffect(() => {
+    /**
+     *  On load, called to load the auth2 library and API client library.
+     */
+    const handleClientLoad = () => {
+      window.gapi.load("client:auth2", initClient);
+    };
     handleClientLoad();
   }, []);
 
   const [isAuthorized, setisAuthorized] = useState(false);
-
-  /**
-   *  On load, called to load the auth2 library and API client library.
-   */
-  const handleClientLoad = () => {
-    window.gapi.load("client:auth2", initClient);
-  };
 
   /**
    *  Initializes the API client library and sets up sign-in state
@@ -42,25 +40,18 @@ function App() {
         discoveryDocs: DISCOVERY_DOCS,
         scope: SCOPES
       })
-      .then(
-        function() {
-          console.log("hello");
-          // Listen for sign-in state changes.
-          window.gapi.auth2
-            .getAuthInstance()
-            .isSignedIn.listen(updateSigninStatus);
+      .then(function() {
+        console.log("hello");
+        // Listen for sign-in state changes.
+        window.gapi.auth2
+          .getAuthInstance()
+          .isSignedIn.listen(updateSigninStatus);
 
-          // Handle the initial sign-in state.
-          updateSigninStatus(
-            window.gapi.auth2.getAuthInstance().isSignedIn.get()
-          );
-          // authorizeButton.onclick = handleAuthClick;
-          // signoutButton.onclick = handleSignoutClick;
-        }
-        // function(error) {
-        //   appendPre(JSON.stringify(error, null, 2));
-        // }
-      );
+        // Handle the initial sign-in state.
+        updateSigninStatus(
+          window.gapi.auth2.getAuthInstance().isSignedIn.get()
+        );
+      });
   };
 
   /**
@@ -75,9 +66,6 @@ function App() {
 
       setisAuthorized(true);
       listUpcomingEvents();
-    } else {
-      // authorizeButton.style.display = "block";
-      // signoutButton.style.display = "none";
     }
   };
 
@@ -96,8 +84,8 @@ function App() {
   };
 
   /*
-  timeMin = datetime: the lower bound for the request
-  timeMax = datetime: the upper bound for the request
+  timeMin :datetime = the lower bound for the request
+  timeMax :datetime = the upper bound for the request
   */
   const listUpcomingEvents = () => {
     window.gapi.client.calendar.events
@@ -110,7 +98,7 @@ function App() {
         maxResults: 10,
         orderBy: "startTime"
       })
-      .then(function(response) {
+      .then(response => {
         var events = response.result.items;
         // appendPre("Upcoming events:");
         console.log(events);
@@ -121,10 +109,7 @@ function App() {
             if (!when) {
               when = event.start.date;
             }
-            // appendPre(event.summary + " (" + when + ")");
           }
-        } else {
-          // appendPre("No upcoming events found.");
         }
       });
   };
@@ -134,7 +119,6 @@ function App() {
       {isAuthorized ? (
         <>
           <h1>Google Calender is Authorized!</h1>
-          <h3>See the console</h3>
         </>
       ) : (
         <button onClick={handleAuthClick}>Authorize Google Calendar</button>
