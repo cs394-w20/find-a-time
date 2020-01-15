@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
+import firebase from "firebase/app";
+import 'firebase/database';
 // need to import database as db
 
 const hours = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
 const minutes = ['00', '30']
 const dates = ['M', 'Tu', 'W', 'Th', 'F']; // replace this with the dates, try to get from gcal
+
+// Firebase Configuration
 
 //1. create an empty schedule entry for each data/time option
 //2. find the schedule based off id from database, compare times
@@ -13,8 +17,9 @@ const ScheduleEntry = id => {
     var events = {};
     dates.map(function(item){
         events[item]= times;})
-    return {id: id, events};
+    let schedule = {id: id, events};
     //saveToFirebase(schedule);
+    return schedule;
 
 }
 
@@ -22,7 +27,7 @@ const createTimeEntries = () => {
     const times = createTimes();
     var obj = {};
     times.map(function(item){
-        obj[item] = [];})     
+        obj[item] = [];})
     return obj;
 }
 
@@ -36,7 +41,7 @@ const createTimes = () => {
 }
 
 const saveToFirebase = ({ schedule }) => {
-
+  //firebase.database().ref().set(schedule);
 }
 
 export default ScheduleEntry;

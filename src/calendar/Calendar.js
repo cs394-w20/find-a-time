@@ -2,6 +2,34 @@ import React, {Component} from 'react';
 import {DayPilot, DayPilotCalendar, DayPilotNavigator} from "daypilot-pro-react";
 import "./CalendarStyles.css";
 import localJSON from "./dummy_data.json";
+import 'firebase/database';
+import firebase from 'firebase/app';
+
+var firebaseConfig = {
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: "find-a-time-19756.firebaseapp.com",
+  databaseURL: "https://find-a-time-19756.firebaseio.com",
+  projectId: "find-a-time-19756",
+  storageBucket: "find-a-time-19756.appspot.com",
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
+  measurementId: process.env.FIREBASE_MEASUREMENT_ID
+};
+
+firebase.initializeApp(firebaseConfig);
+const dbRef = firebase.database().ref();
+
+const hours = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
+const minutes = ['00', '30']
+
+//this creates every possible hour/minute combindation
+const createTimes = () => {
+    return hours.map(function (item) {
+        return minutes.map(function (item2) {
+            return `${item}:${item2}:00`;
+        })
+    }).flat()
+}
 
 class Calendar extends Component {
   constructor(props) {
@@ -27,26 +55,25 @@ class Calendar extends Component {
     };
   }
 
-  componentDidMount() {
-    console.log("The local json file even info: ", localJSON.events);
+  async componentDidMount() {
 
     // Array of all the intervals where everybody is free
+    const times = createTimes();
     const freeTimes = [];
-    const events = localJSON.events;
+    var events;
 
-    Object.keys(events).forEach(function(key, index) {
-      // key: the name of the object key
-      // index: the ordinal position of the key within the object
-      const currDay = key;
-      let currStart = "";
+    // Fetch data from firebase
+    await dbRef.once('value', snap => {
+      events = snap.val().events;
+    });
+
+    Object.keys(events).forEach(function(currDay, dayIndex) {
       let currId = 0;
+      let currStart = "";
 
-      Object.keys(events[currDay]).forEach(function(key, index) {
-        const currTime = key;
-        if (events[currDay][key].length === 0) {
-          if (currStart.length === 0) {
-            currStart = currTime;
-          }
+      times.forEach(function(currTime, timeIndex) {
+        if (!(Object.keys(events[currDay]).includes(currTime))) {
+          if(currStart.length === 0) currStart = currTime;
         }
         else {
           if (currStart.length > 0) {
@@ -59,31 +86,16 @@ class Calendar extends Component {
 
             freeTimes.push(currEvent);
 
-            console.log("FREE TIME INTERVAL: ", currEvent);
-
             currStart = "";
             currId = currId + 1;
           }
         }
-
-
       })
     });
-
-    console.log("All the free events: ", freeTimes);
 
     this.setState({
       startDate: "2020-01-05",
       events: freeTimes
-      // events: [
-      //   {
-      //     id: 1,
-      //     text: "Event 1",
-      //     start: "2020-01-05T10:30:00",
-      //     end: "2020-01-05T12:00:00",
-      //     backColor: "#5FBB97"
-      //   }
-      // ]
     });
   }
 
