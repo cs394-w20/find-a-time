@@ -35,6 +35,32 @@ const createTimes = () => {
     }).flat()
 }
 
+const addEvents = () => {
+    //for each event
+    //find which intervals it falls under
+    //for each busy interval call addUnavailableUser(name, interval)
+}
+
+const addUnavailableUser= ({id, name, date, interval}) => {
+    //change the firebase entry to add the new unavailable user
+}
+
+/*
+const saveCourse = (course, meets) => {
+  db.child('courses').child(course.id).update({meets})
+    .catch(error => alert(error));
+};
+
+const moveCourse = course => {
+  const meets = prompt('Enter new meeting data, in this format:', course.meets);
+  if (!meets) return;
+  const {days} = timeParts(meets);
+  if (days) saveCourse(course, meets); 
+  else moveCourse(course);
+};
+*/
+
+
 const saveToFirebase = ({ schedule }) => {
 
 }
