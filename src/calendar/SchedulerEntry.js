@@ -43,6 +43,7 @@ const addEvents = () => {
 
 const addUnavailableUser= ({id, name, date, interval}) => {
     //change the firebase entry to add the new unavailable user
+    //similar to saveCourse
 }
 
 /*
