@@ -120,7 +120,7 @@ function App() {
     <div className="App">
       {isAuthorized ? (
         <>
-          <h1>Google Calender is Authorized!</h1>
+          <h1>Google Calendar is Authorized!</h1>
         </>
       ) : (
         <button onClick={handleAuthClick}>Authorize Google Calendar</button>
