@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import { FIXED_START_DATE, FIXED_END_DATE } from "./constants";
 import Calendar from "./calendar/Calendar";
+import AddEvents from "./calendar/ScheduleEvents"
 
 function App() {
   var CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -102,6 +103,7 @@ function App() {
         var events = response.result.items;
         // appendPre("Upcoming events:");
         console.log(events);
+        AddEvents(events);
         if (events.length > 0) {
           for (let i = 0; i < events.length; i++) {
             var event = events[i];
