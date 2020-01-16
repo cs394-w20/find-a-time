@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import { FIXED_START_DATE, FIXED_END_DATE } from "./constants";
 import Calendar from "./calendar/Calendar";
-import AddEvents from "./calendar/ScheduleEvents"
+import AddEvents from "./calendar/ScheduleEvents";
+import UserProfile from "./components/UserProfile";
 
 function App() {
   var CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -15,7 +16,10 @@ function App() {
 
   // Authorization scopes required by the API; multiple scopes can be
   // included, separated by spaces.
-  var SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
+  var SCOPES =
+    "https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/userinfo.profile";
+  // ""
+  // ];
 
   useEffect(() => {
     /**
@@ -34,6 +38,7 @@ function App() {
    *  listeners.
    */
   const initClient = () => {
+    console.log("init");
     window.gapi.client
       .init({
         apiKey: API_KEY,
@@ -52,7 +57,8 @@ function App() {
         updateSigninStatus(
           window.gapi.auth2.getAuthInstance().isSignedIn.get()
         );
-      });
+      })
+      .catch(err => console.warn(err));
   };
 
   /**
@@ -103,7 +109,7 @@ function App() {
         var events = response.result.items;
         // appendPre("Upcoming events:");
         console.log(events);
-        AddEvents('1', 'Julia', events);
+        AddEvents("1", "Julia", events);
         if (events.length > 0) {
           for (let i = 0; i < events.length; i++) {
             var event = events[i];
@@ -121,6 +127,8 @@ function App() {
       {isAuthorized ? (
         <>
           <h1>Google Calendar is Authorized!</h1>
+          <UserProfile />
+          <button onClick={handleSignoutClick}>Sign Out</button>
         </>
       ) : (
         <button onClick={handleAuthClick}>Authorize Google Calendar</button>
