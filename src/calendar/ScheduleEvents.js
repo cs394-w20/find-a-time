@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+var moment = require('moment');
 
 const hours = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
 const minutes = ['00', '30']
@@ -6,56 +7,66 @@ const dates = ['M', 'Tu', 'W', 'Th', 'F']; // replace this with the dates, try t
 
 
 
-//this creates every possible hour/minute combindation
-const createTimes = () => {
-    return hours.map(function (item) {
-        return minutes.map(function (item2) {
-            return `${item}:${item2}:00`;
-        })
-    }).flat()
-}
-
-const times = createTimes();
-
 const AddEvents = (events) => {
-    //for each event
-    console.log('hi');
-    console.log(events);
     events.map(event =>
         findIntervals(event))
-    //find which intervals it falls under
-    //for each busy interval call addUnavailableUser(name, interval)
 }
 
 const findIntervals = (event) => {
     console.log(event);
-    const start = event.start.dateTime;//.split('T', 1);
-    var d = new Date(start);
-    var newstart = d.toUTCString();
-    const end = toString(event.end.dateTime).split('T', 1);
-    console.log(start);
-    console.log(newstart);
-    console.log(end);
+    
+    const start = getStartTime(event);
+    var startDate = getDay(start);
+    const end = getEndTime(event);
+    console.log('buckets');
+    console.log(getBuckets(start, end));
+    var endDate = getDay(end);
+    console.log(startDate);
+    console.log(endDate);
 }
 
-const addUnavailableUser= ({id, name, date, interval}) => {
-    //change the firebase entry to add the new unavailable user
-    //similar to saveCourse
+const getStartTime = (event) => {
+    var start = event.start.dateTime;
+    if (!start){
+        start = event.start.date;
+    }
+    return moment(start);
 }
 
-/*
-const saveCourse = (course, meets) => {
-  db.child('courses').child(course.id).update({meets})
-    .catch(error => alert(error));
-};
+const getEndTime = (event) => {
+    var end = event.end.dateTime;
+    if (!end){
+        end = event.end.date;
+    }    
+    return moment(end);
+}
 
-const moveCourse = course => {
-  const meets = prompt('Enter new meeting data, in this format:', course.meets);
-  if (!meets) return;
-  const {days} = timeParts(meets);
-  if (days) saveCourse(course, meets); 
-  else moveCourse(course);
-};
-*/
+const getDay = (time) => {
+    time = time.toISOString().split('T', 1);
+    return time
+}
+
+const getBuckets = (curr, end) => {
+    var bucketLst = [];
+    const endMin = end.get('minute');
+    const endHour = end.get('hour');
+    var i = 0;
+    while (i < minutes.length){
+        if (minutes[i] <= curr.get('minute') < minutes[i + 1]){
+            break
+        }
+        i += 1;
+    }
+
+    while (!(curr.get('day') == end.get('day') && curr.get('hour') == endHour && minutes[i] > endMin)){
+        bucketLst.push(`${curr.get('hour')}:${minutes[i]}`)
+        i += 1;
+        if (i == minutes.length){
+            curr.add(1, 'h');
+            i = 0;
+        }        
+    }
+    return bucketLst;
+}
 
 export default AddEvents;
