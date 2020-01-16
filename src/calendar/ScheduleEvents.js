@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import UpdateDb from "../updateDb/UpdateDb";
+import UpdateDb from "../Db/UpdateDb";
 var moment = require('moment');
 
 
@@ -53,15 +53,24 @@ const findBuckets = (eventId, userName, curr, end) => {
         i += 1;
     }
 
+    //console.log("Finding intervals");
+    let returnList = [];
+    let payload;
     while (!(curr.get('day') == end.get('day') && curr.get('hour') == endHour && minutes[i] > endMin)){
-        //eventId, date, interval, userName, isBusy
-        UpdateDb(eventId, getDay(curr), userName, `${curr.get('hour')}:${minutes[i]}`, true);
+       payload = {"eventId":eventId,"date":getDay(curr), "userName":userName, "interval":`${curr.get('hour')}:${minutes[i]}`, "isBusy": true };
+        returnList.push(payload);
+        console.log("hey");
+       // UpdateDb(payload);
         i += 1;
         if (i == minutes.length){
             curr.add(1, 'h');
             i = 0;
         }        
     }
+    console.log("length of list: "+ returnList.length);
+    returnList.forEach((item)=>{ UpdateDb(item)});
+
+
 }
 
 export default AddEvents;
