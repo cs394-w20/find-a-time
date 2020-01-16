@@ -103,7 +103,7 @@ function App() {
         var events = response.result.items;
         // appendPre("Upcoming events:");
         console.log(events);
-        AddEvents(events);
+        AddEvents('1', 'Julia', events);
         if (events.length > 0) {
           for (let i = 0; i < events.length; i++) {
             var event = events[i];
