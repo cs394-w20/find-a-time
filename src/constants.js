@@ -8,3 +8,5 @@ export const FIXED_END_DATE = moment()
   .year("2020")
   .month("00")
   .date("11");
+
+export const ROOM_ID = "1";

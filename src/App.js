@@ -42,7 +42,6 @@ function App() {
         scope: SCOPES
       })
       .then(function() {
-        console.log("hello");
         // Listen for sign-in state changes.
         window.gapi.auth2
           .getAuthInstance()
