@@ -1,27 +1,45 @@
-import React, {Component} from 'react';
-import {DayPilot, DayPilotCalendar, DayPilotNavigator} from "daypilot-pro-react";
+import React, { Component } from "react";
+import {
+  DayPilot,
+  DayPilotCalendar,
+  DayPilotNavigator
+} from "daypilot-pro-react";
 import "./CalendarStyles.css";
 import 'firebase/database';
 import firebase from 'firebase/app';
 import {stringToDate, dateToString} from '../utilities';
 import {ROOM_ID} from '../constants';
+import db from '../Db/firebaseConnect';
 
-var firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY,
-  authDomain: "find-a-time-19756.firebaseapp.com",
-  databaseURL: "https://find-a-time-19756.firebaseio.com",
-  projectId: "find-a-time-19756",
-  storageBucket: "find-a-time-19756.appspot.com",
-  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.FIREBASE_APP_ID,
-  measurementId: process.env.FIREBASE_MEASUREMENT_ID
-};
+const dbRef = db.ref();
 
-firebase.initializeApp(firebaseConfig);
-const dbRef = firebase.database().ref();
-
-const hours = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
-const minutes = ['00', '30']
+const hours = [
+  "00",
+  "01",
+  "02",
+  "03",
+  "04",
+  "05",
+  "06",
+  "07",
+  "08",
+  "09",
+  "10",
+  "11",
+  "12",
+  "13",
+  "14",
+  "15",
+  "16",
+  "17",
+  "18",
+  "19",
+  "20",
+  "21",
+  "22",
+  "23"
+];
+const minutes = ["00", "30"];
 
 //this creates every possible hour/minute combindation
 const createTimes = () => {
@@ -58,23 +76,25 @@ class Calendar extends Component {
       onTimeRangeSelected: args => {
         let selection = this.calendar;
 
-        DayPilot.Modal.prompt("Add a new event: ", "Event name").then(function(modal) {
-          selection.events.add(new DayPilot.Event({
-            start: args.start,
-            end: args.end,
-            id: DayPilot.guid(),
-            text: modal.result
-          }));
+        DayPilot.Modal.prompt("Add a new event: ", "Event name").then(function(
+          modal
+        ) {
+          selection.events.add(
+            new DayPilot.Event({
+              start: args.start,
+              end: args.end,
+              id: DayPilot.guid(),
+              text: modal.result
+            })
+          );
         });
 
         selection.clearSelection();
-
-      },
+      }
     };
   }
 
   async componentDidMount() {
-
     // Array of all the intervals where everybody is free
     const times = createTimes();
     let dates = [];
@@ -138,7 +158,7 @@ class Calendar extends Component {
       startDate: startDate,
       events: freeTimes
     });
-  }
+  };
 
   render() {
     // var {...config} = this.state;

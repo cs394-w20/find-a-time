@@ -1,28 +1,24 @@
 import React, { useEffect, useState } from "react";
+import UpdateDb from "../Db/UpdateDb";
 var moment = require('moment');
+
+
 
 const hours = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
 const minutes = ['00', '30']
 const dates = ['M', 'Tu', 'W', 'Th', 'F']; // replace this with the dates, try to get from gcal
 
 
-
-const AddEvents = (events) => {
+//eventId, date, interval, userName, isBusy
+const AddEvents = (eventId, userName, events) => {
     events.map(event =>
-        findIntervals(event))
+        findIntervals(eventId, userName, event))
 }
 
-const findIntervals = (event) => {
-    console.log(event);
-    
+const findIntervals = (eventId, userName, event) => {
     const start = getStartTime(event);
-    var startDate = getDay(start);
     const end = getEndTime(event);
-    console.log('buckets');
-    console.log(getBuckets(start, end));
-    var endDate = getDay(end);
-    console.log(startDate);
-    console.log(endDate);
+    findBuckets(eventId, userName, start, end);
 }
 
 const getStartTime = (event) => {
@@ -46,8 +42,7 @@ const getDay = (time) => {
     return time
 }
 
-const getBuckets = (curr, end) => {
-    var bucketLst = [];
+const findBuckets = (eventId, userName, curr, end) => {
     const endMin = end.get('minute');
     const endHour = end.get('hour');
     var i = 0;
@@ -58,15 +53,24 @@ const getBuckets = (curr, end) => {
         i += 1;
     }
 
+    //console.log("Finding intervals");
+    let returnList = [];
+    let payload;
     while (!(curr.get('day') == end.get('day') && curr.get('hour') == endHour && minutes[i] > endMin)){
-        bucketLst.push(`${curr.get('hour')}:${minutes[i]}`)
+       payload = {"eventId":eventId,"date":getDay(curr), "userName":userName, "interval":`${curr.get('hour')}:${minutes[i]}`, "isBusy": true };
+        returnList.push(payload);
+        console.log("hey");
+       // UpdateDb(payload);
         i += 1;
         if (i == minutes.length){
             curr.add(1, 'h');
             i = 0;
         }        
     }
-    return bucketLst;
+    console.log("length of list: "+ returnList.length);
+    returnList.forEach((item)=>{ UpdateDb(item)});
+
+
 }
 
 export default AddEvents;
