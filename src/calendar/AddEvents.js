@@ -1,4 +1,3 @@
-import React, {useEffect, useState} from "react";
 import UpdateDb from "../Db/UpdateDb";
 import moment from 'moment'
 
@@ -40,41 +39,35 @@ const findIntervals = (roomId, userName, event) => {
 };
 
 
-const findBuckets = (roomId, userName, startTime, endTime) => {
-
+const findBuckets = (roomId, userName, currTime, endTime) => {
 
     // Finding the first time interval -- figuring out what minute to start at
     // if min is in [0,30) then set i=0, otherwise set i=1.
-    let i;
-    if (Number(minutes[0]) <= startTime.minute() && startTime.minute() < Number(minutes[1])){
-        i = 0;
-        // offset the startTime to the 0th min
-        startTime.subtract(startTime.minute(),'minutes');
-
-    }else{
-        i = 1;
-        // offset the startTime to the 30th min
-        startTime.subtract(60-startTime.minute(),'minutes');
-
+    let i = 0;
+    while (i < minutes.length - 1){
+        if (Number(minutes[i]) <= currTime.minute() && currTime.minute() < Number(minutes[i + 1])){
+            currTime.minutes(Number(minutes[i]));
+            break;
+        }
+        i += 1;
     }
 
 
-    // keep incrementing startTime by 30min until startTime>= endTime then stop,
+    // keep incrementing currTime by 30min until currTime>= endTime then stop,
     // for each day record the 30min intervals seen in `dayPayload`,
     // once the day changes add `dayPayload` to `payload`
-    let currentDay=  getDay(startTime);
+    let currentDay=  getDay(currTime);
     let dayPayload = {};
     let payload = {};
 
-
-    while ((startTime < endTime)) {
-        dayPayload[`${startTime.hour()}:${minutes[i]}`] = 1;
+    while (currTime.isBefore(endTime)) {
+        dayPayload[`${currTime.hour()}:${minutes[i]}`] = 1;
         i = (i+1)%(minutes.length);
-        startTime.add(30,'minutes');
+        currTime.add(Number(minutes[1]),'minutes');
 
-        if (getDay(startTime) !== currentDay){
+        if (getDay(currTime) !== currentDay){
             payload[currentDay] = dayPayload;
-            currentDay = getDay(startTime);
+            currentDay = getDay(currTime);
             dayPayload = {};
         }
     }
@@ -82,10 +75,8 @@ const findBuckets = (roomId, userName, startTime, endTime) => {
     payload[currentDay]=dayPayload;
 
     // the actual payload w/ identifying information
-    let actualPayload = {};
-    actualPayload["userName"]= userName;
-    actualPayload["roomId"]= roomId;
-    actualPayload["data"] = payload;
+    const actualPayload = {userName:userName, roomId:roomId, data: payload};
+    console.log(actualPayload); 
     // push data to firebase
     UpdateDb(actualPayload);
 

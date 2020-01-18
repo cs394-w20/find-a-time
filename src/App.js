@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import { FIXED_START_DATE, FIXED_END_DATE } from "./constants";
 import Calendar from "./calendar/Calendar";
-import AddEvents from "./calendar/ScheduleEvents"
+import AddEvents from "./calendar/AddEvents"
 
 function App() {
   var CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
