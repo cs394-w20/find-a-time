@@ -10,8 +10,6 @@ const minutes = ['00', '30'];
 //roomId, date, interval, userName, isBusy
 const AddEvents = (roomId, userName, events) => {
     events.map(event => findIntervals(roomId, userName, event));
-
-
 };
 
 
@@ -44,14 +42,22 @@ const findIntervals = (roomId, userName, event) => {
 
 const findBuckets = (roomId, userName, startTime, endTime) => {
 
+
     // Finding the first time interval -- figuring out what minute to start at
     // if min is in [0,30) then set i=0, otherwise set i=1.
     let i;
     if (Number(minutes[0]) <= startTime.minute() && startTime.minute() < Number(minutes[1])){
         i = 0;
+        // offset the startTime to the 0th min
+        startTime.subtract(startTime.minute(),'minutes');
+
     }else{
         i = 1;
+        // offset the startTime to the 30th min
+        startTime.subtract(60-startTime.minute(),'minutes');
+
     }
+
 
     // keep incrementing startTime by 30min until startTime>= endTime then stop,
     // for each day record the 30min intervals seen in `dayPayload`,
@@ -60,13 +66,11 @@ const findBuckets = (roomId, userName, startTime, endTime) => {
     let dayPayload = {};
     let payload = {};
 
-    endTime.add(30,'minutes');
-    // stop the loop once the starttime is greater than  endTime + 30min. 
-    while (startTime < endTime) {
+
+    while ((startTime < endTime)) {
         dayPayload[`${startTime.hour()}:${minutes[i]}`] = 1;
         i = (i+1)%(minutes.length);
         startTime.add(30,'minutes');
-
 
         if (getDay(startTime) !== currentDay){
             payload[currentDay] = dayPayload;
@@ -74,6 +78,7 @@ const findBuckets = (roomId, userName, startTime, endTime) => {
             dayPayload = {};
         }
     }
+
     payload[currentDay]=dayPayload;
 
     // the actual payload w/ identifying information
