@@ -12,7 +12,6 @@ const AddEvents = (roomId, userName, events) => {
     events.map(event => findIntervals(roomId, userName, event));
 
 
-
 };
 
 
@@ -60,10 +59,15 @@ const findBuckets = (roomId, userName, startTime, endTime) => {
     let currentDay=  getDay(startTime);
     let dayPayload = {};
     let payload = {};
+
+    endTime.add(30,'minutes');
+    // stop the loop once the starttime is greater than  endTime + 30min. 
     while (startTime < endTime) {
         dayPayload[`${startTime.hour()}:${minutes[i]}`] = 1;
-        i += (i+1)%(minutes.length);
+        i = (i+1)%(minutes.length);
         startTime.add(30,'minutes');
+
+
         if (getDay(startTime) !== currentDay){
             payload[currentDay] = dayPayload;
             currentDay = getDay(startTime);
