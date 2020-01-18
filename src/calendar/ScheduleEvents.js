@@ -10,7 +10,9 @@ const minutes = ['00', '30'];
 //eventId, date, interval, userName, isBusy
 const AddEvents = (eventId, userName, events) => {
     events.map(event => findIntervals(eventId, userName, event));
-    
+
+
+
 };
 
 
@@ -31,7 +33,7 @@ const getEndTime = (event) => {
 };
 
 const getDay = (time) => {
-    return time.format('MM-DD-YYYY')
+    return time.format('YYYY-MM-DD')
 };
 
 const findIntervals = (eventId, userName, event) => {
