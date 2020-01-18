@@ -7,9 +7,9 @@ import moment from 'moment'
 const minutes = ['00', '30'];
 //const dates = ['M', 'Tu', 'W', 'Th', 'F']; // replace this with the dates, try to get from gcal
 
-//eventId, date, interval, userName, isBusy
-const AddEvents = (eventId, userName, events) => {
-    events.map(event => findIntervals(eventId, userName, event));
+//roomId, date, interval, userName, isBusy
+const AddEvents = (roomId, userName, events) => {
+    events.map(event => findIntervals(roomId, userName, event));
 
 
 
@@ -36,14 +36,14 @@ const getDay = (time) => {
     return time.format('YYYY-MM-DD')
 };
 
-const findIntervals = (eventId, userName, event) => {
+const findIntervals = (roomId, userName, event) => {
     const start = getStartTime(event);
     const end = getEndTime(event);
-    findBuckets(eventId, userName, start, end);
+    findBuckets(roomId, userName, start, end);
 };
 
 
-const findBuckets = (eventId, userName, startTime, endTime) => {
+const findBuckets = (roomId, userName, startTime, endTime) => {
 
     // Finding the first time interval -- figuring out what minute to start at
     // if min is in [0,30) then set i=0, otherwise set i=1.
@@ -71,7 +71,13 @@ const findBuckets = (eventId, userName, startTime, endTime) => {
         }
     }
     payload[currentDay]=dayPayload;
-    console.log(payload);
+
+    // the actual payload w/ identifying information
+    let actualPayload = {};
+    actualPayload["userName"]= userName;
+    actualPayload["roomId"]= roomId;
+    actualPayload["data"] = payload;
+    console.log(actualPayload);
 };
 
 export default AddEvents;
