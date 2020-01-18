@@ -7,8 +7,8 @@ import db from "./firebaseConnect";
 
 
 
-const addFreeInterval = ({eventId, date, interval, userName}) => {
-    db.ref('rooms/' + eventId + "/data/" + date + "/" + interval + "/" + userName)
+const addFreeInterval = ({roomId, date, interval, userName}) => {
+    db.ref('rooms/' + roomId + "/data/" + date + "/" + interval + "/" + userName)
         .remove().then(() => {
         console.log("Remove succeeded.")
     })
@@ -17,30 +17,48 @@ const addFreeInterval = ({eventId, date, interval, userName}) => {
         });
 };
 
-const addBusyInterval = ({eventId, date, interval, userName}) => {
-    db.ref('rooms/' + eventId + "/data/" + date + "/" + interval)
+const addBusyInterval = ({roomId, date, interval, userName}) => {
+    db.ref('rooms/' + roomId + "/data/" + date + "/" + interval)
         .child(userName)
         .set(1)
         .catch(error => alert(error));
 };
 
 /**
- * Updates firebaseDb with event data
- * @param eventId (string): the id of the event
- * @param date (string): the date
- * @param interval (string): the time interval
- * @param userName (string: the username
- * @param isBusy (boolean): indicates the type of update
- * @example {"eventId": 1, "date": "2020-01-10", "interval": "09:30:00", "userName": "Dan", "isBusy": 1};
+ * Checks if a json object is empty
+ * @type {Function}
  */
-const UpdateDb = ({eventId, date, interval, userName, isBusy}) => {
-    console.log(eventId);
-    if (isBusy) {
-        addBusyInterval({eventId, date, interval, userName});
-    } else {
-        addFreeInterval({eventId, date, interval, userName});
+const isEmpty = (obj) => {
+    for(var key in obj) {
+        if(obj.hasOwnProperty(key))
+            return false;
     }
+    return true;
 };
+
+/**
+ * Updates firebaseDb with event data
+ * @param roomId (string): the id of the room
+ * @param data (string): the data
+ * @param userName (string): the username
+ */
+const UpdateDb = ({userName, roomId, data}) => {
+    let dateList = Object.keys(data);
+    let i,j,intervalList,date;
+
+    for (i=0; i<dateList.length;i++){
+        date = dateList[i];
+        if (!(isEmpty(data[date]))){
+            intervalList =  Object.keys(data[date]);
+            for (j=0; j<dateList.length;j++){
+                addBusyInterval({"roomId":roomId, "userName": userName, "date":date, "interval":intervalList[j]});
+            }
+        }
+    }
+
+
+};
+
 
 export default UpdateDb;
 

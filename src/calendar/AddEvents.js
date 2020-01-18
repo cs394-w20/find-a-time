@@ -86,7 +86,9 @@ const findBuckets = (roomId, userName, startTime, endTime) => {
     actualPayload["userName"]= userName;
     actualPayload["roomId"]= roomId;
     actualPayload["data"] = payload;
-    console.log(actualPayload);
+    // push data to firebase
+    UpdateDb(actualPayload);
+
 };
 
 export default AddEvents;
