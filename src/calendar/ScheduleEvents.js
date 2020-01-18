@@ -1,26 +1,21 @@
 import React, {useEffect, useState} from "react";
 import UpdateDb from "../Db/UpdateDb";
+import moment from 'moment'
 
-var moment = require('moment');
 
-
-const hours = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
+//const hours = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
 const minutes = ['00', '30'];
-const dates = ['M', 'Tu', 'W', 'Th', 'F']; // replace this with the dates, try to get from gcal
-
+//const dates = ['M', 'Tu', 'W', 'Th', 'F']; // replace this with the dates, try to get from gcal
 
 //eventId, date, interval, userName, isBusy
 const AddEvents = (eventId, userName, events) => {
-    console.log(events);
-    events.map(event =>
-        findIntervals(eventId, userName, event));
-    //findIntervals(eventId, userName, events[0]);
-
+    events.map(event => findIntervals(eventId, userName, event));
+    
 };
 
 
 const getStartTime = (event) => {
-    var start = event.start.dateTime;
+    let start = event.start.dateTime;
     if (!start) {
         start = event.start.date;
     }
@@ -28,7 +23,7 @@ const getStartTime = (event) => {
 };
 
 const getEndTime = (event) => {
-    var end = event.end.dateTime;
+    let end = event.end.dateTime;
     if (!end) {
         end = event.end.date;
     }
@@ -36,8 +31,7 @@ const getEndTime = (event) => {
 };
 
 const getDay = (time) => {
-    time = time.toISOString().split('T', 1);
-    return time
+    return time.format('MM-DD-YYYY')
 };
 
 const findIntervals = (eventId, userName, event) => {
@@ -47,76 +41,35 @@ const findIntervals = (eventId, userName, event) => {
 };
 
 
-const findBuckets = (eventId, userName, curr, end) => {
-    const endMin = end.get('minute');
-    const endHour = end.get('hour');
-    let i = 0;
+const findBuckets = (eventId, userName, startTime, endTime) => {
 
-    console.log(Number(minutes[0]));
-    // 0,1
-
-    // Getting the first bucket -- figuring out what minute to start at
-    while (i < minutes.length - 1) {
-        if (Number(minutes[i]) <= curr.get('minute') && curr.get('minute') < Number(minutes[i + 1])) {
-            break
-        }
-        i += 1;
+    // Finding the first time interval -- figuring out what minute to start at
+    // if min is in [0,30) then set i=0, otherwise set i=1.
+    let i;
+    if (Number(minutes[0]) <= startTime.minute() && startTime.minute() < Number(minutes[1])){
+        i = 0;
+    }else{
+        i = 1;
     }
 
-    //console.log("Finding intervals");
-    let returnList = [];
-    let payload;
-
-    // eslint-disable-next-line eqeqeq
-
-    //start: 6pm    end: 8pm , today
-    // i = 0
-    // i =1
-
-    // Keep  changing curr, and while curr != end{day, hr, min}
-    console.log("Herrrrrrrr");
-    console.log(curr.toString());
-    console.log(end.toString());
-    console.log(curr.get('date')); //wrong
-    console.log(getDay(curr)); //wrong
-
-
-
-    console.log(end.get('day')); //wrong
-    console.log(curr.get('hour'));
-    console.log(endHour);
-    console.log(Number(minutes[i]));
-    console.log(endMin);
-
-
-
-
-
-    while (!(getDay(curr) === getDay(end) && curr.get('hour') === endHour/* && Number(minutes[i]) > endMin*/)) {
-        payload = {
-            "eventId": eventId,
-            "date": getDay(curr),
-            "userName": userName,
-            "interval": `${curr.get('hour')}:${minutes[i]}`,
-            "isBusy": true
-        };
-
-        returnList.push(payload);
-        console.log("hey");
-        // UpdateDb(payload);
-        i += 1;
-        if (i === minutes.length) {
-            curr.add(1, 'h');
-            i = 0;
+    // keep incrementing startTime by 30min until startTime>= endTime then stop,
+    // for each day record the 30min intervals seen in `dayPayload`,
+    // once the day changes add `dayPayload` to `payload`
+    let currentDay=  getDay(startTime);
+    let dayPayload = {};
+    let payload = {};
+    while (startTime < endTime) {
+        dayPayload[`${startTime.hour()}:${minutes[i]}`] = 1;
+        i += (i+1)%(minutes.length);
+        startTime.add(30,'minutes');
+        if (getDay(startTime) !== currentDay){
+            payload[currentDay] = dayPayload;
+            currentDay = getDay(startTime);
+            dayPayload = {};
         }
     }
-
-    console.log("length of list: " + returnList.length);
-    returnList.forEach((item) => {
-        UpdateDb(item)
-    });
-
-
+    payload[currentDay]=dayPayload;
+    console.log(payload);
 };
 
 export default AddEvents;
