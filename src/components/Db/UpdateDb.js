@@ -3,9 +3,23 @@ import firebase from 'firebase/app';
 import 'firebase/database';
 import 'firebase/auth';
 import db from "./firebaseConnect";
+import {HOURS, MINUTES} from "../../constants";
 
 
 
+const getHoursAndMinutes = () => {
+    let hrAndMin = [];
+    let hr;
+    let i;
+    for (hr in HOURS) {
+        for (i = 0; i < MINUTES.length; i++) {
+            hrAndMin.push(`${hr}:${MINUTES[i]}`)
+        }
+    }
+    return hrAndMin;
+};
+
+const HOURS_AND_MINUTES = getHoursAndMinutes();
 
 const addFreeInterval = ({roomId, date, interval, userName}) => {
     db.ref('rooms/' + roomId + "/data/" + date + "/" + interval + "/" + userName)
@@ -44,15 +58,24 @@ const isEmpty = (obj) => {
  */
 const UpdateDb = ({userName, roomId, data}) => {
     let dateList = Object.keys(data);
-    let i,j,intervalList,date;
+    let i, j, busyIntervalSet, date, interval;
 
-    for (i=0; i<dateList.length;i++){
+    for (i = 0; i < dateList.length; i++) {
         date = dateList[i];
-        if (!(isEmpty(data[date]))){
-            intervalList =  Object.keys(data[date]);
-            for (j=0; j<dateList.length;j++){
-                addBusyInterval({"roomId":roomId, "userName": userName, "date":date, "interval":intervalList[j]});
+
+        if (!(isEmpty(data[date]))) {
+            busyIntervalSet = new Set(Object.keys(data[date]));
+
+            for (j = 0; j < HOURS_AND_MINUTES.length; j++) {
+                interval = HOURS_AND_MINUTES[j];
+                if (busyIntervalSet.has(interval)) {
+                    addBusyInterval({"roomId": roomId, "userName": userName, "date": date, "interval": interval})
+                } else {
+                    addFreeInterval({"roomId": roomId, "userName": userName, "date": date, "interval": interval})
+                }
+
             }
+
         }
     }
 
