@@ -1,25 +1,11 @@
 // setting up configuration for the app.
-import firebase from 'firebase/app';
 import 'firebase/database';
 import 'firebase/auth';
 import db from "./firebaseConnect";
-import {HOURS, MINUTES} from "../../constants";
+import {createTimes} from "../../calendar/Calendar";
 
 
-
-const getHoursAndMinutes = () => {
-    let hrAndMin = [];
-    let hr;
-    let i;
-    for (hr in HOURS) {
-        for (i = 0; i < MINUTES.length; i++) {
-            hrAndMin.push(`${hr}:${MINUTES[i]}`)
-        }
-    }
-    return hrAndMin;
-};
-
-const HOURS_AND_MINUTES = getHoursAndMinutes();
+const HOURS_AND_MINUTES = createTimes();
 
 const addFreeInterval = ({roomId, date, interval, userName}) => {
     db.ref('rooms/' + roomId + "/data/" + date + "/" + interval + "/" + userName)
@@ -55,6 +41,7 @@ const isEmpty = (obj) => {
  * @param roomId (string): the id of the room
  * @param data (string): the data
  * @param userName (string): the username
+ * Fixme: Logic error need to do this for each timeslice between the roomId intervals.
  */
 const UpdateDb = ({userName, roomId, data}) => {
     let dateList = Object.keys(data);

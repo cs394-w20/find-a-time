@@ -6,49 +6,22 @@ import {
 } from "daypilot-pro-react";
 import "./CalendarStyles.css";
 import 'firebase/database';
-import firebase from 'firebase/app';
 import {stringToDate, dateToString} from '../utilities';
 import {ROOM_ID} from '../constants';
 import db from '../components/Db/firebaseConnect';
+import {HOURS, MINUTES} from "../constants";
 
 const dbRef = db.ref();
 
-const hours = [
-  "00",
-  "01",
-  "02",
-  "03",
-  "04",
-  "05",
-  "06",
-  "07",
-  "08",
-  "09",
-  "10",
-  "11",
-  "12",
-  "13",
-  "14",
-  "15",
-  "16",
-  "17",
-  "18",
-  "19",
-  "20",
-  "21",
-  "22",
-  "23"
-];
-const minutes = ["00", "30"];
 
-//this creates every possible hour/minute combindation
-const createTimes = () => {
-    return hours.map(function (item) {
-        return minutes.map(function (item2) {
+//this creates every possible hour/minute combination
+export const createTimes = () => {
+    return HOURS.map(function (item) {
+        return MINUTES.map(function (item2) {
             return `${item}:${item2}`;
         })
     }).flat()
-}
+};
 
 const createDayArr = (start, end) => {
   let startDate = stringToDate(start);
@@ -56,7 +29,7 @@ const createDayArr = (start, end) => {
 
   let newDate = startDate;
   let dateArr = [];
-  while(newDate.getDate() != endDate.getDate()) {
+  while(newDate.getDate() !== endDate.getDate()) {
     dateArr.push(newDate);
     let tempDate = new Date(newDate);
     tempDate.setDate(newDate.getDate() + 1);
@@ -65,7 +38,7 @@ const createDayArr = (start, end) => {
 
   dateArr.push(endDate);
   return dateArr;
-}
+};
 
 class Calendar extends Component {
   constructor(props) {
@@ -99,7 +72,7 @@ class Calendar extends Component {
     const times = createTimes();
     let dates = [];
     const freeTimes = [];
-    var events;
+    let events;
     let startDate = "";
 
     // Fetch data from firebase
@@ -124,7 +97,7 @@ class Calendar extends Component {
             text: "Possible meeting time",
             start: currDay.concat("T", "00:00:00"),
             end: currDay.concat("T", currTime.concat(":00"))
-          }
+          };
 
           freeTimes.push(currEvent);
         })
@@ -143,7 +116,7 @@ class Calendar extends Component {
                 text: "Possible meeting time",
                 start: currDay.concat("T", currStart.concat(":00")),
                 end: currDay.concat("T", currTime.concat(":00"))
-              }
+              };
 
               freeTimes.push(currEvent);
 
