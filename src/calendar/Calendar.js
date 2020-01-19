@@ -115,14 +115,15 @@ class Calendar extends Component {
       let currStart = "";
       let currDay = dateToString(key);
 
+      console.log(currDay);
       if(!(Object.keys(events).includes(currDay))) {
         console.log("Date not included in firebase");
         times.forEach(function(currTime, timeIndex) {
           const currEvent = {
             id: currId,
             text: "Possible meeting time",
-            start: currDay.concat("T", currStart),
-            end: currDay.concat("T", currTime)
+            start: currDay.concat("T", "00:00:00"),
+            end: currDay.concat("T", currTime.concat(":00"))
           }
 
           freeTimes.push(currEvent);
