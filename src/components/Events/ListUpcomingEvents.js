@@ -2,7 +2,10 @@ import {DATE_FORMAT} from "../../constants";
 import AddEvents from "./AddEvents";
 import moment from 'moment';
 
-
+/*
+timeMin :datetime = the lower bound for the request
+timeMax :datetime = the upper bound for the request
+*/
 export const ListUpcomingEvents = ({startDate, endDate, roomId, userName}) => {
     window.gapi.client.calendar.events
         .list({

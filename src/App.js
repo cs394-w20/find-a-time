@@ -5,37 +5,7 @@ import Calendar from "./calendar/Calendar";
 import AddEvents from "./components/Events/AddEvents"
 import UserProfile from "./components/UserProfile";
 
-/*
-timeMin :datetime = the lower bound for the request
-timeMax :datetime = the upper bound for the request
-*/
-export const listUpcomingEvents = () => {
-  window.gapi.client.calendar.events
-      .list({
-        calendarId: "primary",
-        timeMin: FIXED_START_DATE.toISOString(),
-        timeMax: FIXED_END_DATE.toISOString(),
-        showDeleted: false,
-        singleEvents: true,
-        maxResults: 10,
-        orderBy: "startTime"
-      })
-      .then(response => {
-        var events = response.result.items;
-        // appendPre("Upcoming events:");
-        console.log(events);
-        AddEvents("1", "Julia", events);
-        if (events.length > 0) {
-          for (let i = 0; i < events.length; i++) {
-            var event = events[i];
-            var when = event.start.dateTime;
-            if (!when) {
-              when = event.start.date;
-            }
-          }
-        }
-      });
-};
+
 
 function App() {
   var CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
