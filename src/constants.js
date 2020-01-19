@@ -9,4 +9,8 @@ export const FIXED_END_DATE = moment()
   .month("00")
   .date("11");
 
+
 export const ROOM_ID = "1";
+
+export const DATE_FORMAT = 'YYYY-MM-DD';
+

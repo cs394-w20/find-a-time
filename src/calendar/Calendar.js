@@ -9,7 +9,7 @@ import 'firebase/database';
 import firebase from 'firebase/app';
 import {stringToDate, dateToString} from '../utilities';
 import {ROOM_ID} from '../constants';
-import db from '../Db/firebaseConnect';
+import db from '../components/Db/firebaseConnect';
 
 const dbRef = db.ref();
 
