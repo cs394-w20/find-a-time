@@ -1,5 +1,6 @@
 import UpdateDb from "../Db/UpdateDb";
 import moment from 'moment'
+import {DATE_FORMAT} from "../../constants";
 
 
 //const hours = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
@@ -28,8 +29,8 @@ const getEndTime = (event) => {
     return moment(end);
 };
 
-const getDay = (time) => {
-    return time.format('YYYY-MM-DD')
+export const getDay = (time) => {
+    return time.format(DATE_FORMAT)
 };
 
 const findIntervals = (roomId, userName, event) => {

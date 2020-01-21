@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import { FIXED_START_DATE, FIXED_END_DATE } from "./constants";
 import Calendar from "./calendar/Calendar";
-import AddEvents from "./calendar/AddEvents"
+import AddEvents from "./components/Events/AddEvents"
 import UserProfile from "./components/UserProfile";
+
+
 
 function App() {
   var CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -71,7 +73,7 @@ function App() {
       // signoutButton.style.display = "block";
 
       setisAuthorized(true);
-      listUpcomingEvents();
+      //listUpcomingEvents();
     }
   };
 
@@ -89,37 +91,6 @@ function App() {
     window.gapi.auth2.getAuthInstance().signOut();
   };
 
-  /*
-  timeMin :datetime = the lower bound for the request
-  timeMax :datetime = the upper bound for the request
-  */
-  const listUpcomingEvents = () => {
-    window.gapi.client.calendar.events
-      .list({
-        calendarId: "primary",
-        timeMin: FIXED_START_DATE.toISOString(),
-        timeMax: FIXED_END_DATE.toISOString(),
-        showDeleted: false,
-        singleEvents: true,
-        maxResults: 10,
-        orderBy: "startTime"
-      })
-      .then(response => {
-        var events = response.result.items;
-        // appendPre("Upcoming events:");
-        console.log(events);
-        AddEvents("1", "Julia", events);
-        if (events.length > 0) {
-          for (let i = 0; i < events.length; i++) {
-            var event = events[i];
-            var when = event.start.dateTime;
-            if (!when) {
-              when = event.start.date;
-            }
-          }
-        }
-      });
-  };
 
   return (
     <div className="App">
