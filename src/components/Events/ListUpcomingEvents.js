@@ -7,11 +7,14 @@ timeMin :datetime = the lower bound for the request
 timeMax :datetime = the upper bound for the request
 */
 export const ListUpcomingEvents = ({startDate, endDate, roomId, userName}) => {
+    startDate =  moment(startDate,DATE_FORMAT);
+    endDate = moment(endDate,DATE_FORMAT);
+
     window.gapi.client.calendar.events
         .list({
             calendarId: "primary",
-            timeMin: moment(startDate,DATE_FORMAT).toISOString(),
-            timeMax: moment(endDate,DATE_FORMAT).toISOString(),
+            timeMin: startDate.toISOString(),
+            timeMax: endDate.toISOString(),
             showDeleted: false,
             singleEvents: true,
             maxResults: 10,
@@ -20,17 +23,10 @@ export const ListUpcomingEvents = ({startDate, endDate, roomId, userName}) => {
         .then(response => {
             const events = response.result.items;
             // appendPre("Upcoming events:");
+
             console.log(events);
-            AddEvents(roomId, userName, events);
-            if (events.length > 0) {
-                for (let i = 0; i < events.length; i++) {
-                    let event = events[i];
-                    let when = event.start.dateTime;
-                    if (!when) {
-                        when = event.start.date;
-                    }
-                }
-            }
+            AddEvents({roomId, userName, events,startDate, endDate});
+
         });
 };
 
