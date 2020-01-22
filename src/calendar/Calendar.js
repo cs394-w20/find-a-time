@@ -10,6 +10,7 @@ import {stringToDate, dateToString} from '../utilities';
 import {ROOM_ID} from '../constants';
 import db from '../components/Db/firebaseConnect';
 import {HOURS, MINUTES} from "../constants";
+import localJSON from "./dummy_data.json";
 
 const dbRef = db.ref();
 
@@ -22,6 +23,15 @@ export const createTimes = () => {
         })
     }).flat()
 };
+
+const convertTime = (time) => {
+  if (time < 10) {
+    return "0" + time.toString();
+  }
+  else {
+    return time.toString();
+  }
+}
 
 const createDayArr = (start, end) => {
   let startDate = stringToDate(start);
@@ -83,50 +93,71 @@ class Calendar extends Component {
                            snap.val().rooms[ROOM_ID].time_interval.end);
     });
 
+    console.log("These are the dates we got from the database: ", dates);
+    console.log("These are the EVENTS we got from the database: ", events);
+
+    let currTime = 0;
+
     dates.forEach(function(key, dayIndex) {
       let currId = 0;
       let currStart = "";
       let currDay = dateToString(key);
+      console.log("CURRENT DAY: ", currDay);
 
-      console.log(currDay);
       if(!(Object.keys(events).includes(currDay))) {
         console.log("Date not included in firebase");
-        times.forEach(function(currTime, timeIndex) {
-          const currEvent = {
-            id: currId,
-            text: "Possible meeting time",
-            start: currDay.concat("T", "00:00:00"),
-            end: currDay.concat("T", currTime.concat(":00"))
-          };
-
-          freeTimes.push(currEvent);
-        })
       }
 
-      else {
-        times.forEach(function(currTime, timeIndex) {
+      while (currTime <= 24) {
+        let strTime = currDay.concat("T", convertTime(currTime).concat(":00"));
+        console.log("String rep of time: ", strTime);
+        currTime = currTime + 1;
+      }
 
-          if (!(Object.keys(events[currDay]).includes(currTime))) {
-            if(currStart.length === 0) currStart = currTime;
-          }
-          else {
-            if (currStart.length > 0) {
-              const currEvent = {
-                id: currId,
-                text: "Possible meeting time",
-                start: currDay.concat("T", currStart.concat(":00")),
-                end: currDay.concat("T", currTime.concat(":00"))
-              };
+      currTime = 0; // Reset currTime for next date
 
-              freeTimes.push(currEvent);
 
-              currStart = "";
-              currId = currId + 1;
-            }
-          }
-      })
-    }
-    });
+    //   if(!(Object.keys(events).includes(currDay))) {
+    //     console.log("Date not included in firebase");
+    //     times.forEach(function(currTime, timeIndex) {
+    //       const currEvent = {
+    //         id: currId,
+    //         text: "Possible meeting time",
+    //         start: currDay.concat("T", "00:00:00"),
+    //         end: currDay.concat("T", currTime.concat(":00"))
+    //       };
+    //
+    //       freeTimes.push(currEvent);
+    //     })
+    //   }
+    //
+    //   else {
+    //     times.forEach(function(currTime, timeIndex) {
+    //       console.log("currStart: ", currStart);
+    //       if (!(Object.keys(events[currDay]).includes(currTime))) {
+    //         if(currStart.length === 0) currStart = currTime;
+    //       }
+    //       else {
+    //         if (currStart.length > 0) {
+    //           const currEvent = {
+    //             id: currId,
+    //             text: "Possible meeting time",
+    //             start: currDay.concat("T", currStart.concat(":00")),
+    //             end: currDay.concat("T", currTime.concat(":00"))
+    //           };
+    //
+    //           freeTimes.push(currEvent);
+    //           console.log("A freetime on ", currDay, " is: ", currEvent);
+    //
+    //           currStart = "";
+    //           currId = currId + 1;
+    //         }
+    //       }
+    //   })
+    // }
+
+  });
+
 
     this.setState({
       startDate: startDate,
