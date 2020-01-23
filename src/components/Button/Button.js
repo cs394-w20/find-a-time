@@ -10,6 +10,7 @@ const Button = ({ onClick, title, type, className, ...rest }) => {
         [`a-button-${type}`]: type,
         [className]: className
       })}
+      {...rest}
     >
       {title}
     </button>

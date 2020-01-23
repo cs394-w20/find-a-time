@@ -18,3 +18,12 @@
 .a-button-primary:hover {
   background: #d6d1ff;
 }
+
+.a-button-secondary {
+  color: #79858d;
+  background-color: #f1f5f8;
+}
+
+.a-button-secondary:hover {
+  background-color: #e5e7eb;
+}

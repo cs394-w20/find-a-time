@@ -8,8 +8,15 @@ const AuthButton = ({ isAuthorized, handleAuthClick, handleSignoutClick }) => {
   const title = isAuthorized
     ? "Sign out of Google"
     : "Sign in with Google Calendar"
+
+  const type = isAuthorized ? "secondary" : "primary"
   return (
-    <Button title={title} onClick={handleClick} className="auth-button" />
+    <Button
+      title={title}
+      onClick={handleClick}
+      className="auth-button"
+      type={type}
+    />
     // <button
     //   onClick={handleClick}
     //   className={classnames("auth-button", {
