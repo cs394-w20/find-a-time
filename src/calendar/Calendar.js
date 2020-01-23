@@ -36,10 +36,12 @@ const convertTime = (time) => {
 
 const addThirtyMin = (currDay, currTime, seconds) => {
   if (seconds == ":00") {
-    return currDay.concat("T", convertTime(currTime).concat(":30"));
+    const endTime = currDay.concat("T", convertTime(currTime).concat(":30"));
+    return endTime
   }
   else {
-    return currDay.concat("T", convertTime(currTime+1).concat(":00"));
+    const endTime = currDay.concat("T", convertTime(currTime+1).concat(":00"));
+    return endTime
   }
 }
 
@@ -123,82 +125,53 @@ class Calendar extends Component {
 
       while (convertTime(currTime).concat(seconds) !== "24:00") {
 
-        let strTime = currDay.concat("T", convertTime(currTime).concat(seconds));
-        // let endTime = currDay.concat("T", convertTime(currTime).concat(seconds));
+        let i = 0;
 
-        console.log("Start at: ", strTime);
+        while (i < 2) {
 
-        // CASE 1: Time slot where everybody is available
-        const currEvent = {
-          id: currId,
-          text: "Possible meeting time",
-          start: strTime,
-          end: addThirtyMin(currDay, currTime, seconds),
-          unavailable: []
-        };
+          strTime = currDay.concat("T", convertTime(currTime).concat(seconds));
+          console.log("THE CURRENT TIME: ", strTime);
+          let timeStamp = convertTime(currTime).concat(seconds);
 
-        console.log("Ends at: ", currEvent.end);
+          // CASE 1: Time slot where everybody is available
+          if (!(Object.keys(events[currDay]).includes(timeStamp))) {
+            const currEvent = {
+              id: currId,
+              text: "Possible meeting time",
+              start: strTime.concat(":00"),
+              end: addThirtyMin(currDay, currTime, seconds).concat(":00"),
+            };
+            freeTimes.push(currEvent);
 
+          }
+
+          if (seconds == ":00") {
+            seconds = ":30";
+          }
+          else if (seconds == ":30") {
+            seconds = ":00";
+          }
+
+          currId = currId + 1;
+          i += 1;
+        }
         currTime = currTime + 1;
-        if (seconds == ":00") {
-          seconds = ":30";
-        }
-        else {
-          seconds = ":00";
-        }
-
-
       }
 
       currTime = 0; // Reset currTime for next date
 
-
-    //   if(!(Object.keys(events).includes(currDay))) {
-    //     console.log("Date not included in firebase");
-    //     times.forEach(function(currTime, timeIndex) {
-    //       const currEvent = {
-    //         id: currId,
-    //         text: "Possible meeting time",
-    //         start: currDay.concat("T", "00:00:00"),
-    //         end: currDay.concat("T", currTime.concat(":00"))
-    //       };
-    //
-    //       freeTimes.push(currEvent);
-    //     })
-    //   }
-    //
-    //   else {
-    //     times.forEach(function(currTime, timeIndex) {
-    //       console.log("currStart: ", currStart);
-    //       if (!(Object.keys(events[currDay]).includes(currTime))) {
-    //         if(currStart.length === 0) currStart = currTime;
-    //       }
-    //       else {
-    //         if (currStart.length > 0) {
-    //           const currEvent = {
-    //             id: currId,
-    //             text: "Possible meeting time",
-    //             start: currDay.concat("T", currStart.concat(":00")),
-    //             end: currDay.concat("T", currTime.concat(":00"))
-    //           };
-    //
-    //           freeTimes.push(currEvent);
-    //           console.log("A freetime on ", currDay, " is: ", currEvent);
-    //
-    //           currStart = "";
-    //           currId = currId + 1;
-    //         }
-    //       }
-    //   })
-    // }
-
   });
 
+  console.log("The free times: ", freeTimes);
 
-    this.setState({
-      startDate: startDate,
-      events: freeTimes
-    });
+  console.log("The start date: ", startDate)
+
+
+  this.setState({
+    startDate: startDate,
+    events: freeTimes
+  });
+
   };
 
   render() {
