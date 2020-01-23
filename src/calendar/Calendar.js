@@ -11,6 +11,7 @@ import {ROOM_ID} from '../constants';
 import db from '../components/Db/firebaseConnect';
 import {HOURS, MINUTES} from "../constants";
 import localJSON from "./dummy_data.json";
+var Rainbow = require('rainbowvis.js');
 
 const dbRef = db.ref();
 
@@ -92,6 +93,7 @@ class Calendar extends Component {
   async componentDidMount() {
     const times = createTimes();
     let dates = [];
+    let users = [];
     const freeTimes = [];
     let events;
     let startDate = "";
@@ -99,6 +101,7 @@ class Calendar extends Component {
     // Fetch data from firebase
     await dbRef.once('value', snap => {
       events = snap.val().rooms[ROOM_ID].data;
+      users = snap.val().rooms[ROOM_ID].users;
       startDate = snap.val().rooms[ROOM_ID].time_interval.start;
       dates = createDayArr(snap.val().rooms[ROOM_ID].time_interval.start,
                            snap.val().rooms[ROOM_ID].time_interval.end);
@@ -106,6 +109,14 @@ class Calendar extends Component {
 
     console.log("These are the dates we got from the database: ", dates);
     console.log("These are the EVENTS we got from the database: ", events);
+
+    console.log("THE USERS: ", users);
+    const numUsers = Object.keys(users).length;
+    var colorSpectrum = new Rainbow();
+    colorSpectrum.setNumberRange(0, numUsers);
+    colorSpectrum.setSpectrum('green', 'red');
+    console.log("THE COLORS!! ", colorSpectrum.colourAt(2))
+
 
     let currTime = 0;
 
@@ -135,27 +146,26 @@ class Calendar extends Component {
           if (!(Object.keys(events[currDay]).includes(timeStamp))) {
             const currEvent = {
               id: currId,
-              text: "EVERYBODY is available!",
+              text: "ALL available",
               start: strTime.concat(":00"),
               end: addThirtyMin(currDay, currTime, seconds).concat(":00"),
+              backColor: "#" + colorSpectrum.colourAt(0)
             };
             freeTimes.push(currEvent);
 
           }
           // CASE 2: Time slot is not available for everyone
           else {
-            console.log("This time slot is available for SOME people.");
-
             const unavailable = events[currDay][timeStamp];
-            console.log("Unavailable: ", unavailable);
-            const eventText = Object.keys(unavailable).length.toString() + " are unavailable!"
-
+            const numUnavailable = Object.keys(unavailable).length
+            const eventText = numUnavailable.toString() + " unavailable"
 
             const currEvent = {
               id: currId,
               text: eventText,
               start: strTime.concat(":00"),
               end: addThirtyMin(currDay, currTime, seconds).concat(":00"),
+              backColor: "#" + colorSpectrum.colourAt(numUnavailable)
             };
 
             freeTimes.push(currEvent);
