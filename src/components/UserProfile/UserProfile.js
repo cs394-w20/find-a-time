@@ -15,13 +15,14 @@ const UserProfile = () => {
       )
       const userJson = await userResponse.json()
 
+      console.error(userJson)
       // Get the upcoming events and add  to existing roomId
       ListUpcomingEvents({
         roomId: ROOM_ID,
         userName: userJson.name
       })
 
-      console.log(userJson)
+      console.log("User Info",userJson)
       setUser(userJson)
     }
     getUserProfileAndEvents()

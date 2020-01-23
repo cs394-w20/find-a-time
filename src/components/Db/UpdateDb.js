@@ -2,8 +2,15 @@
 import 'firebase/database';
 import 'firebase/auth';
 import db from "./firebaseConnect";
-import {createTimes} from "../../calendar/Calendar";
+import {HOURS, MINUTES} from "../../constants";
 
+const createTimes = () => {
+    return HOURS.map(function (item) {
+        return MINUTES.map(function (item2) {
+            return `${item}:${item2}`;
+        })
+    }).flat()
+};
 
 const HOURS_AND_MINUTES = createTimes();
 
@@ -44,7 +51,6 @@ const isEmpty = (obj) => {
  * @param userName (string): the username
  */
 const UpdateDb = ({userName, roomId, intervalData}) => {
-    console.log(intervalData);
 
     let dateList = Object.keys(intervalData);
     let i, j, busyIntervalSet, date, interval;
@@ -61,7 +67,6 @@ const UpdateDb = ({userName, roomId, intervalData}) => {
             for (j = 0; j < HOURS_AND_MINUTES.length; j++) {
                 interval = HOURS_AND_MINUTES[j];
                 if (busyIntervalSet.has(interval)) {
-                    console.log({"roomId": roomId, "userName": userName, "date": date, "interval": interval});
                     addBusyInterval({"roomId": roomId, "userName": userName, "date": date, "interval": interval})
                 } else {
                     addFreeInterval({"roomId": roomId, "userName": userName, "date": date, "interval": interval})

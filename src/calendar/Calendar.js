@@ -3,17 +3,21 @@ import {
   DayPilot,
   DayPilotCalendar,
   DayPilotNavigator
-} from "daypilot-pro-react"
-import "./CalendarStyles.css"
-import "firebase/database"
-import { stringToDate, dateToString } from "../utilities"
-import { ROOM_ID } from "../constants"
-import db from "../components/Db/firebaseConnect"
-import { HOURS, MINUTES } from "../constants"
-import localJSON from "./dummy_data.json"
-var Rainbow = require("rainbowvis.js")
+} from "daypilot-pro-react";
+import "./CalendarStyles.css";
+import 'firebase/database';
+import {stringToDate, dateToString} from '../utilities';
+import {ROOM_ID} from '../constants';
+import db from '../components/Db/firebaseConnect';
+import {HOURS, MINUTES} from "../constants";
+import localJSON from "./dummy_data.json";
+import {AddUserToRoom} from "../components/Db";
+var Rainbow = require('rainbowvis.js');
 
-const dbRef = db.ref()
+const dbRef = db.ref();
+
+
+
 
 //this creates every possible hour/minute combination
 export const createTimes = () => {
@@ -86,73 +90,87 @@ class Calendar extends Component {
     }
   }
 
-  async componentDidMount() {
-    const times = createTimes()
-    let dates = []
-    let users = []
-    const freeTimes = []
-    let events
-    let startDate = ""
 
-    // Fetch data from firebase
-    await dbRef.once("value", snap => {
-      events = snap.val().rooms[ROOM_ID].data
-      users = snap.val().rooms[ROOM_ID].users
-      startDate = snap.val().rooms[ROOM_ID].time_interval.start
-      dates = createDayArr(
-        snap.val().rooms[ROOM_ID].time_interval.start,
-        snap.val().rooms[ROOM_ID].time_interval.end
-      )
-    })
+  /**
+   * Call back function for firebase
+   */
+  handleDataCallback = (snap) =>{
+    let dates = [];
+    let events;
+    let startDate = "";
+    let users = [];
 
-    console.log("These are the dates we got from the database: ", dates)
-    console.log("These are the EVENTS we got from the database: ", events)
+    if (snap.val()){
+      events = snap.val().rooms[ROOM_ID].data;
+      startDate = snap.val().rooms[ROOM_ID].time_interval.start;
+      users = snap.val().rooms[ROOM_ID].users;
+      dates = createDayArr(snap.val().rooms[ROOM_ID].time_interval.start,
+          snap.val().rooms[ROOM_ID].time_interval.end);
 
-    console.log("THE USERS: ", users)
-    const numUsers = Object.keys(users).length
-    var colorSpectrum = new Rainbow()
-    colorSpectrum.setNumberRange(0, numUsers)
-    colorSpectrum.setSpectrum("green", "red")
-    console.log("THE COLORS!! ", colorSpectrum.colourAt(2))
+      this.renderCalender({events,startDate,dates,users});
+    }
+  };
 
-    let currTime = 0
+
+  /**
+   * Code to render the calendar
+   */
+  renderCalender = ({dates,events,startDate,users})=>{
+    const times = createTimes();
+    const freeTimes = [];
+
+    console.log("These are the dates we got from the database: ", dates);
+    console.log("These are the EVENTS we got from the database: ", events);
+
+    console.log("THE USERS: ", users);
+    const numUsers = Object.keys(users).length;
+    let colorSpectrum = new Rainbow();
+    colorSpectrum.setNumberRange(0, numUsers);
+    colorSpectrum.setSpectrum('green', 'red');
+    console.log("THE COLORS!! ", colorSpectrum.colourAt(2));
+
+
+    let currTime = 0;
 
     dates.forEach(function(key, dayIndex) {
-      let currId = 0
-      let currStart = ""
-      let currDay = dateToString(key)
-      let seconds = ":00"
-      console.log("CURRENT DAY: ", currDay)
+      let currId = 0;
+      let currStart = "";
+      let currDay = dateToString(key);
+      let seconds = ":00";
+      console.log("CURRENT DAY: ", currDay);
 
-      if (!Object.keys(events).includes(currDay)) {
-        console.log("Date not included in firebase")
+      if(!(Object.keys(events).includes(currDay))) {
+        console.log("Date not included in firebase");
       }
 
-      let strTime = currDay.concat("T", convertTime(currTime).concat(seconds))
+      let strTime = currDay.concat("T", convertTime(currTime).concat(seconds));
 
       while (convertTime(currTime).concat(seconds) !== "24:00") {
-        let i = 0
+
+        let i = 0;
 
         while (i < 2) {
-          strTime = currDay.concat("T", convertTime(currTime).concat(seconds))
-          let timeStamp = convertTime(currTime).concat(seconds)
+
+          strTime = currDay.concat("T", convertTime(currTime).concat(seconds));
+          let timeStamp = convertTime(currTime).concat(seconds);
 
           // CASE 1: Time slot where everybody is available
-          if (!Object.keys(events[currDay]).includes(timeStamp)) {
+          if (!(Object.keys(events[currDay]).includes(timeStamp))) {
             const currEvent = {
               id: currId,
               text: "ALL available",
               start: strTime.concat(":00"),
               end: addThirtyMin(currDay, currTime, seconds).concat(":00"),
               backColor: "#" + colorSpectrum.colourAt(0)
-            }
-            freeTimes.push(currEvent)
+            };
+            freeTimes.push(currEvent);
+
           }
           // CASE 2: Time slot is not available for everyone
           else {
-            const unavailable = events[currDay][timeStamp]
-            const numUnavailable = Object.keys(unavailable).length
-            const eventText = numUnavailable.toString() + " unavailable"
+            const unavailable = events[currDay][timeStamp];
+            const numUnavailable = Object.keys(unavailable).length;
+            const eventText = numUnavailable.toString() + " unavailable";
 
             const currEvent = {
               id: currId,
@@ -160,31 +178,46 @@ class Calendar extends Component {
               start: strTime.concat(":00"),
               end: addThirtyMin(currDay, currTime, seconds).concat(":00"),
               backColor: "#" + colorSpectrum.colourAt(numUnavailable)
-            }
+            };
 
-            freeTimes.push(currEvent)
+            freeTimes.push(currEvent);
           }
 
           if (seconds == ":00") {
-            seconds = ":30"
-          } else if (seconds == ":30") {
-            seconds = ":00"
+            seconds = ":30";
+          }
+          else if (seconds == ":30") {
+            seconds = ":00";
           }
 
-          currId = currId + 1
-          i += 1
+          currId = currId + 1;
+          i += 1;
         }
-        currTime = currTime + 1
+        currTime = currTime + 1;
       }
 
-      currTime = 0 // Reset currTime for next date
-    })
+      currTime = 0; // Reset currTime for next date
+
+    });
+
 
     this.setState({
       startDate: startDate,
       events: freeTimes
-    })
+    });
+  };
+
+
+  componentDidMount() {
+    dbRef.on('value', this.handleDataCallback,error => alert(error));
+  };
+
+
+  // disconnect the handleDataCallback on unmount
+  componentWillUnmount() {
+    db.off('value', this.handleDataCallback)
   }
+
 
   render() {
     return (

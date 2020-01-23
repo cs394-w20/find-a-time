@@ -30,6 +30,7 @@ const _mergeRecursive = function(obj1, obj2) {
 
 const AddEvents = ({roomId, userName, events, startDate, endDate}) => {
 
+    console.log("The events",events);
     // iterate through the events and calculate the slices they contain
     // then merge all the slices into one big json
     let i;
