@@ -11,8 +11,15 @@
 }
 
 .nav-bar__home {
+  text-align: left;
   font-size: 2rem;
   font-weight: 600;
+}
+
+.nav-bar__links-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .nav-bar__item {

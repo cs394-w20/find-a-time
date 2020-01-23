@@ -7,6 +7,7 @@ import { Event } from "./components/Event"
 import { NavBar } from "./components/NavBar"
 import AddEvents from "./components/Events/AddEvents"
 import UserProfile from "./components/UserProfile"
+import { UserContextProvider } from "./context/UserContext"
 
 function App() {
   var CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID
@@ -91,19 +92,21 @@ function App() {
 
   return (
     <div className="App">
-      <NavBar isAuthorized={isAuthorized} />
-      <div className="content">
-        {isAuthorized && <UserProfile />}
-        <div className="event-auth__container">
-          <Event />
-          <AuthButton
-            isAuthorized={isAuthorized}
-            handleAuthClick={handleAuthClick}
-            handleSignoutClick={handleSignoutClick}
-          />
+      <UserContextProvider>
+        <NavBar isAuthorized={isAuthorized} />
+        <div className="content">
+          {isAuthorized && <UserProfile />}
+          <div className="event-auth__container">
+            <Event />
+            <AuthButton
+              isAuthorized={isAuthorized}
+              handleAuthClick={handleAuthClick}
+              handleSignoutClick={handleSignoutClick}
+            />
+          </div>
+          <Calendar />
         </div>
-        <Calendar />
-      </div>
+      </UserContextProvider>
     </div>
   )
 }

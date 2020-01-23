@@ -13,3 +13,12 @@
   cursor: pointer;
   background: #d6d1ff;
 }
+
+.auth-button-secondary {
+  color: #79858d;
+  background-color: #f1f5f8;
+}
+
+.auth-button-secondary:hover {
+  background-color: #e5e7eb;
+}
