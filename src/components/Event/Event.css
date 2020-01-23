@@ -1,0 +1,31 @@
+.event__creator-profile-pic {
+  vertical-align: middle;
+  margin-right: 8px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
+.event__creator-container {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+}
+.event__container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.event__title {
+  font-size: 3rem;
+  font-weight: 600;
+}
+
+.event__description {
+  max-width: 700px;
+  text-align: left;
+  margin-top: 40px;
+}

@@ -1,5 +1,5 @@
 * {
-  font-family: "Work Sans", sans-serif;
+  font-family: "DM Sans", sans-serif;
 }
 
 body {
@@ -14,4 +14,14 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+root {
+  font-size: 16px;
+}
+
+@media only screen and (max-width: 600px) {
+  root {
+    font-size: 12px;
+  }
 }
