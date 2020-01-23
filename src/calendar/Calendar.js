@@ -11,9 +11,11 @@ import {ROOM_ID} from '../constants';
 import db from '../components/Db/firebaseConnect';
 import {HOURS, MINUTES} from "../constants";
 import localJSON from "./dummy_data.json";
+import {AddUserToRoom} from "../components/Db";
 var Rainbow = require('rainbowvis.js');
 
 const dbRef = db.ref();
+
 
 
 //this creates every possible hour/minute combination
@@ -91,32 +93,44 @@ class Calendar extends Component {
     };
   }
 
-  async componentDidMount() {
-    const times = createTimes();
+
+  /**
+   * Call back function for firebase
+   */
+  handleDataCallback = (snap) =>{
     let dates = [];
-    let users = [];
-    const freeTimes = [];
     let events;
     let startDate = "";
+    let users = [];
 
-    // Fetch data from firebase
-    await dbRef.once('value', snap => {
+    if (snap.val()){
       events = snap.val().rooms[ROOM_ID].data;
-      users = snap.val().rooms[ROOM_ID].users;
       startDate = snap.val().rooms[ROOM_ID].time_interval.start;
+      users = snap.val().rooms[ROOM_ID].users;
       dates = createDayArr(snap.val().rooms[ROOM_ID].time_interval.start,
-                           snap.val().rooms[ROOM_ID].time_interval.end);
-    });
+          snap.val().rooms[ROOM_ID].time_interval.end);
+
+      this.renderCalender({events,startDate,dates,users});
+    }
+  };
+
+
+  /**
+   * Code to render the calendar
+   */
+  renderCalender = ({dates,events,startDate,users})=>{
+    const times = createTimes();
+    const freeTimes = [];
 
     console.log("These are the dates we got from the database: ", dates);
     console.log("These are the EVENTS we got from the database: ", events);
 
     console.log("THE USERS: ", users);
     const numUsers = Object.keys(users).length;
-    var colorSpectrum = new Rainbow();
+    let colorSpectrum = new Rainbow();
     colorSpectrum.setNumberRange(0, numUsers);
     colorSpectrum.setSpectrum('green', 'red');
-    console.log("THE COLORS!! ", colorSpectrum.colourAt(2))
+    console.log("THE COLORS!! ", colorSpectrum.colourAt(2));
 
 
     let currTime = 0;
@@ -158,8 +172,8 @@ class Calendar extends Component {
           // CASE 2: Time slot is not available for everyone
           else {
             const unavailable = events[currDay][timeStamp];
-            const numUnavailable = Object.keys(unavailable).length
-            const eventText = numUnavailable.toString() + " unavailable"
+            const numUnavailable = Object.keys(unavailable).length;
+            const eventText = numUnavailable.toString() + " unavailable";
 
             const currEvent = {
               id: currId,
@@ -187,15 +201,25 @@ class Calendar extends Component {
 
       currTime = 0; // Reset currTime for next date
 
-  });
+    });
 
 
-  this.setState({
-    startDate: startDate,
-    events: freeTimes
-  });
+    this.setState({
+      startDate: startDate,
+      events: freeTimes
+    });
+};
 
+
+  componentDidMount() {
+    dbRef.on('value', this.handleDataCallback,error => alert(error));
   };
+
+  // disconnect the handleDataCallback on unmount
+  componentWillUnmount() {
+    db.off('value', this.handleDataCallback)
+  }
+
 
   render() {
     return (
