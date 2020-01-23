@@ -40,6 +40,7 @@ const createDayArr = (start, end) => {
   return dateArr;
 };
 
+
 class Calendar extends Component {
   constructor(props) {
     super(props);
@@ -67,21 +68,11 @@ class Calendar extends Component {
     };
   }
 
-  async componentDidMount() {
-    // Array of all the intervals where everybody is free
-    const times = createTimes();
-    let dates = [];
-    const freeTimes = [];
-    let events;
-    let startDate = "";
+  // method that formats data for calendar 
+  formatData({dates,events,startDate}){
 
-    // Fetch data from firebase
-    await dbRef.once('value', snap => {
-      events = snap.val().rooms[ROOM_ID].data;
-      startDate = snap.val().rooms[ROOM_ID].time_interval.start;
-      dates = createDayArr(snap.val().rooms[ROOM_ID].time_interval.start,
-                           snap.val().rooms[ROOM_ID].time_interval.end);
-    });
+    const times = createTimes();
+    const freeTimes = [];
 
     dates.forEach(function(key, dayIndex) {
       let currId = 0;
@@ -124,14 +115,40 @@ class Calendar extends Component {
               currId = currId + 1;
             }
           }
-      })
-    }
+        })
+      }
     });
 
     this.setState({
       startDate: startDate,
       events: freeTimes
     });
+  }
+
+
+
+  // disconnect the handleData on unmount
+  componentWillUnmount() {
+    db.off('value', this.handleData)
+  }
+
+  // Callback function for firebase.
+   handleData = (snap) =>{
+    let dates = [];
+    let events;
+    let startDate = "";
+    if (snap.val()){
+      events = snap.val().rooms[ROOM_ID].data;
+      startDate = snap.val().rooms[ROOM_ID].time_interval.start;
+      dates = createDayArr(snap.val().rooms[ROOM_ID].time_interval.start,
+          snap.val().rooms[ROOM_ID].time_interval.end);
+
+      this.formatData({events,startDate,dates});
+    }
+  };
+
+  async componentDidMount() {
+    dbRef.on('value', this.handleData,error => alert(error));
   };
 
   render() {
