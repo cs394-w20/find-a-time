@@ -112,6 +112,19 @@ class Calendar extends Component {
         let strTime = currDay.concat("T", convertTime(currTime).concat(":00"));
         console.log("String rep of time: ", strTime);
         currTime = currTime + 1;
+
+        // CASE 1: Time slot where everybody is available
+        if (!(Object.keys(events[currDay]).includes(currTime))) {
+          const currEvent = {
+            id: currId,
+            text: "Possible meeting time",
+            start: strTime,
+            end: currDay.concat("T", currTime.concat(":00")),
+            unavailable: []
+          };
+        }
+
+
       }
 
       currTime = 0; // Reset currTime for next date
