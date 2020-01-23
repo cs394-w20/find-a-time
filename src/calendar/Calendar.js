@@ -90,7 +90,6 @@ class Calendar extends Component {
   }
 
   async componentDidMount() {
-    // Array of all the intervals where everybody is free
     const times = createTimes();
     let dates = [];
     const freeTimes = [];
@@ -130,19 +129,36 @@ class Calendar extends Component {
         while (i < 2) {
 
           strTime = currDay.concat("T", convertTime(currTime).concat(seconds));
-          console.log("THE CURRENT TIME: ", strTime);
           let timeStamp = convertTime(currTime).concat(seconds);
 
           // CASE 1: Time slot where everybody is available
           if (!(Object.keys(events[currDay]).includes(timeStamp))) {
             const currEvent = {
               id: currId,
-              text: "Possible meeting time",
+              text: "EVERYBODY is available!",
               start: strTime.concat(":00"),
               end: addThirtyMin(currDay, currTime, seconds).concat(":00"),
             };
             freeTimes.push(currEvent);
 
+          }
+          // CASE 2: Time slot is not available for everyone
+          else {
+            console.log("This time slot is available for SOME people.");
+
+            const unavailable = events[currDay][timeStamp];
+            console.log("Unavailable: ", unavailable);
+            const eventText = Object.keys(unavailable).length.toString() + " are unavailable!"
+
+
+            const currEvent = {
+              id: currId,
+              text: eventText,
+              start: strTime.concat(":00"),
+              end: addThirtyMin(currDay, currTime, seconds).concat(":00"),
+            };
+
+            freeTimes.push(currEvent);
           }
 
           if (seconds == ":00") {
@@ -162,10 +178,6 @@ class Calendar extends Component {
 
   });
 
-  console.log("The free times: ", freeTimes);
-
-  console.log("The start date: ", startDate)
-
 
   this.setState({
     startDate: startDate,
@@ -175,12 +187,11 @@ class Calendar extends Component {
   };
 
   render() {
-    // var {...config} = this.state;
     return (
       <div>
         <DayPilotCalendar
           {...this.state}
-          ref={component => {
+          ref= {component => {
             this.calendar = component && component.control;
           }}
         />
