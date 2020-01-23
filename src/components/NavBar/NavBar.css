@@ -1,6 +1,6 @@
 .nav-bar {
   text-decoration: none;
-  color: black;
+  color: var(--black);
 }
 
 .nav-bar__container {

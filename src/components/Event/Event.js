@@ -8,16 +8,16 @@ const Event = ({
 }) => {
   return (
     <div className="event__container">
-      <div className="event__title">{eventName}</div>
+      <div className="event__text event__title">{eventName}</div>
       <div className="event__creator-container">
         <img
           className="event__creator-profile-pic"
           src={eventCreatorPic}
           alt="users profile"
         />
-        <div>{eventCreator}</div>
+        <div className="event__text">{eventCreator}</div>
       </div>
-      <div className="event__description">{eventDescription}</div>
+      <div className="event__text event__description">{eventDescription}</div>
     </div>
   )
 }

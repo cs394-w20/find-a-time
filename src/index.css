@@ -22,6 +22,7 @@ root {
 
 :root {
   --nav-height: 60px;
+  --black: #1f2325;
 }
 
 @media only screen and (max-width: 600px) {
