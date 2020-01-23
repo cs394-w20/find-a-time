@@ -33,6 +33,16 @@ const convertTime = (time) => {
   }
 }
 
+
+const addThirtyMin = (currDay, currTime, seconds) => {
+  if (seconds == ":00") {
+    return currDay.concat("T", convertTime(currTime).concat(":30"));
+  }
+  else {
+    return currDay.concat("T", convertTime(currTime+1).concat(":00"));
+  }
+}
+
 const createDayArr = (start, end) => {
   let startDate = stringToDate(start);
   let endDate = stringToDate(end);
@@ -102,26 +112,39 @@ class Calendar extends Component {
       let currId = 0;
       let currStart = "";
       let currDay = dateToString(key);
+      let seconds = ":00";
       console.log("CURRENT DAY: ", currDay);
 
       if(!(Object.keys(events).includes(currDay))) {
         console.log("Date not included in firebase");
       }
 
-      while (currTime <= 24) {
-        let strTime = currDay.concat("T", convertTime(currTime).concat(":00"));
-        console.log("String rep of time: ", strTime);
-        currTime = currTime + 1;
+      let strTime = currDay.concat("T", convertTime(currTime).concat(seconds));
+
+      while (convertTime(currTime).concat(seconds) !== "24:00") {
+
+        let strTime = currDay.concat("T", convertTime(currTime).concat(seconds));
+        // let endTime = currDay.concat("T", convertTime(currTime).concat(seconds));
+
+        console.log("Start at: ", strTime);
 
         // CASE 1: Time slot where everybody is available
-        if (!(Object.keys(events[currDay]).includes(currTime))) {
-          const currEvent = {
-            id: currId,
-            text: "Possible meeting time",
-            start: strTime,
-            end: currDay.concat("T", currTime.concat(":00")),
-            unavailable: []
-          };
+        const currEvent = {
+          id: currId,
+          text: "Possible meeting time",
+          start: strTime,
+          end: addThirtyMin(currDay, currTime, seconds),
+          unavailable: []
+        };
+
+        console.log("Ends at: ", currEvent.end);
+
+        currTime = currTime + 1;
+        if (seconds == ":00") {
+          seconds = ":30";
+        }
+        else {
+          seconds = ":00";
         }
 
 
