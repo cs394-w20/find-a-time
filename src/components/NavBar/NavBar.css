@@ -7,7 +7,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 32px;
+  padding: 16px 32px;
 }
 
 .nav-bar__home {
