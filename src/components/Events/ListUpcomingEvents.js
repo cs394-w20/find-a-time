@@ -6,6 +6,7 @@ import { GetStartEndTimeForRoomId} from "../Db";
 timeMin :datetime = the lower bound for the request
 timeMax :datetime = the upper bound for the request
 */
+
 export const ListUpcomingEvents = ({roomId, userName}) => {
 
     GetStartEndTimeForRoomId(roomId).then((time_interval) =>
