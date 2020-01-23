@@ -5,8 +5,6 @@ import Calendar from "./calendar/Calendar";
 import AddEvents from "./components/Events/AddEvents"
 import UserProfile from "./components/UserProfile";
 
-
-
 function App() {
   var CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
   var API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;

@@ -14,7 +14,6 @@ import localJSON from "./dummy_data.json";
 
 const dbRef = db.ref();
 
-
 //this creates every possible hour/minute combination
 export const createTimes = () => {
     return HOURS.map(function (item) {
