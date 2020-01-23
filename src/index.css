@@ -20,6 +20,10 @@ root {
   font-size: 16px;
 }
 
+:root {
+  --nav-height: 60px;
+}
+
 @media only screen and (max-width: 600px) {
   root {
     font-size: 12px;

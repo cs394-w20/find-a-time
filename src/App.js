@@ -4,6 +4,7 @@ import { FIXED_START_DATE, FIXED_END_DATE } from "./constants"
 import { AuthButton } from "./components/AuthButton"
 import Calendar from "./calendar/Calendar"
 import { Event } from "./components/Event"
+import { NavBar } from "./components/NavBar"
 import AddEvents from "./components/Events/AddEvents"
 import UserProfile from "./components/UserProfile"
 
@@ -90,16 +91,19 @@ function App() {
 
   return (
     <div className="App">
-      {isAuthorized && <UserProfile />}
-      <div className="event-auth__container">
-        <Event />
-        <AuthButton
-          isAuthorized={isAuthorized}
-          handleAuthClick={handleAuthClick}
-          handleSignoutClick={handleSignoutClick}
-        />
+      <NavBar />
+      <div className="content">
+        {isAuthorized && <UserProfile />}
+        <div className="event-auth__container">
+          <Event />
+          <AuthButton
+            isAuthorized={isAuthorized}
+            handleAuthClick={handleAuthClick}
+            handleSignoutClick={handleSignoutClick}
+          />
+        </div>
+        <Calendar />
       </div>
-      <Calendar />
     </div>
   )
 }

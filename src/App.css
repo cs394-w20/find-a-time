@@ -37,6 +37,11 @@
   }
 }
 
+.content {
+  max-height: calc(100vh - var(--nav-height));
+  overflow: auto;
+}
+
 .event-auth__container {
   display: flex;
   flex-direction: column;

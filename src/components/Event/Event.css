@@ -21,6 +21,7 @@
 
 .event__title {
   font-size: 3rem;
+  text-align: left;
   font-weight: 600;
 }
 
