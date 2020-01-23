@@ -12,6 +12,7 @@
     "firebase": "^7.6.2",
     "json-loader": "^0.5.7",
     "moment": "^2.24.0",
+    "rainbowvis.js": "^1.0.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-scripts": "3.3.0",

@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
-import  {getDay} from "../Events/AddEvents";
 import ListUpcomingEvents from "../Events/ListUpcomingEvents";
-import {FIXED_END_DATE, FIXED_START_DATE, ROOM_ID} from "../../constants";
+import { ROOM_ID} from "../../constants";
 
 
 const UserProfile = () => {
@@ -20,8 +19,6 @@ const UserProfile = () => {
 
             // Get the upcoming events and add  to existing roomId
             ListUpcomingEvents({
-                startDate: getDay(FIXED_START_DATE),
-                endDate: getDay(FIXED_END_DATE),
                 roomId: ROOM_ID,
                 userName: userJson.name
             });

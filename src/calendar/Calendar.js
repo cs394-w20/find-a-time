@@ -10,6 +10,8 @@ import {stringToDate, dateToString} from '../utilities';
 import {ROOM_ID} from '../constants';
 import db from '../components/Db/firebaseConnect';
 import {HOURS, MINUTES} from "../constants";
+import localJSON from "./dummy_data.json";
+var Rainbow = require('rainbowvis.js');
 
 const dbRef = db.ref();
 
@@ -22,6 +24,27 @@ export const createTimes = () => {
         })
     }).flat()
 };
+
+const convertTime = (time) => {
+  if (time < 10) {
+    return "0" + time.toString();
+  }
+  else {
+    return time.toString();
+  }
+}
+
+
+const addThirtyMin = (currDay, currTime, seconds) => {
+  if (seconds == ":00") {
+    const endTime = currDay.concat("T", convertTime(currTime).concat(":30"));
+    return endTime
+  }
+  else {
+    const endTime = currDay.concat("T", convertTime(currTime+1).concat(":00"));
+    return endTime
+  }
+}
 
 const createDayArr = (start, end) => {
   let startDate = stringToDate(start);
@@ -68,96 +91,118 @@ class Calendar extends Component {
     };
   }
 
-  // method that formats data for calendar 
-  formatData({dates,events,startDate}){
-
+  async componentDidMount() {
     const times = createTimes();
+    let dates = [];
+    let users = [];
     const freeTimes = [];
+    let events;
+    let startDate = "";
+
+    // Fetch data from firebase
+    await dbRef.once('value', snap => {
+      events = snap.val().rooms[ROOM_ID].data;
+      users = snap.val().rooms[ROOM_ID].users;
+      startDate = snap.val().rooms[ROOM_ID].time_interval.start;
+      dates = createDayArr(snap.val().rooms[ROOM_ID].time_interval.start,
+                           snap.val().rooms[ROOM_ID].time_interval.end);
+    });
+
+    console.log("These are the dates we got from the database: ", dates);
+    console.log("These are the EVENTS we got from the database: ", events);
+
+    console.log("THE USERS: ", users);
+    const numUsers = Object.keys(users).length;
+    var colorSpectrum = new Rainbow();
+    colorSpectrum.setNumberRange(0, numUsers);
+    colorSpectrum.setSpectrum('green', 'red');
+    console.log("THE COLORS!! ", colorSpectrum.colourAt(2))
+
+
+    let currTime = 0;
 
     dates.forEach(function(key, dayIndex) {
       let currId = 0;
       let currStart = "";
       let currDay = dateToString(key);
+      let seconds = ":00";
+      console.log("CURRENT DAY: ", currDay);
 
-      console.log(currDay);
       if(!(Object.keys(events).includes(currDay))) {
         console.log("Date not included in firebase");
-        times.forEach(function(currTime, timeIndex) {
-          const currEvent = {
-            id: currId,
-            text: "Possible meeting time",
-            start: currDay.concat("T", "00:00:00"),
-            end: currDay.concat("T", currTime.concat(":00"))
-          };
-
-          freeTimes.push(currEvent);
-        })
       }
 
-      else {
-        times.forEach(function(currTime, timeIndex) {
+      let strTime = currDay.concat("T", convertTime(currTime).concat(seconds));
 
-          if (!(Object.keys(events[currDay]).includes(currTime))) {
-            if(currStart.length === 0) currStart = currTime;
+      while (convertTime(currTime).concat(seconds) !== "24:00") {
+
+        let i = 0;
+
+        while (i < 2) {
+
+          strTime = currDay.concat("T", convertTime(currTime).concat(seconds));
+          let timeStamp = convertTime(currTime).concat(seconds);
+
+          // CASE 1: Time slot where everybody is available
+          if (!(Object.keys(events[currDay]).includes(timeStamp))) {
+            const currEvent = {
+              id: currId,
+              text: "ALL available",
+              start: strTime.concat(":00"),
+              end: addThirtyMin(currDay, currTime, seconds).concat(":00"),
+              backColor: "#" + colorSpectrum.colourAt(0)
+            };
+            freeTimes.push(currEvent);
+
           }
+          // CASE 2: Time slot is not available for everyone
           else {
-            if (currStart.length > 0) {
-              const currEvent = {
-                id: currId,
-                text: "Possible meeting time",
-                start: currDay.concat("T", currStart.concat(":00")),
-                end: currDay.concat("T", currTime.concat(":00"))
-              };
+            const unavailable = events[currDay][timeStamp];
+            const numUnavailable = Object.keys(unavailable).length
+            const eventText = numUnavailable.toString() + " unavailable"
 
-              freeTimes.push(currEvent);
+            const currEvent = {
+              id: currId,
+              text: eventText,
+              start: strTime.concat(":00"),
+              end: addThirtyMin(currDay, currTime, seconds).concat(":00"),
+              backColor: "#" + colorSpectrum.colourAt(numUnavailable)
+            };
 
-              currStart = "";
-              currId = currId + 1;
-            }
+            freeTimes.push(currEvent);
           }
-        })
+
+          if (seconds == ":00") {
+            seconds = ":30";
+          }
+          else if (seconds == ":30") {
+            seconds = ":00";
+          }
+
+          currId = currId + 1;
+          i += 1;
+        }
+        currTime = currTime + 1;
       }
-    });
 
-    this.setState({
-      startDate: startDate,
-      events: freeTimes
-    });
-  }
+      currTime = 0; // Reset currTime for next date
+
+  });
 
 
+  this.setState({
+    startDate: startDate,
+    events: freeTimes
+  });
 
-  // disconnect the handleData on unmount
-  componentWillUnmount() {
-    db.off('value', this.handleData)
-  }
-
-  // Callback function for firebase.
-   handleData = (snap) =>{
-    let dates = [];
-    let events;
-    let startDate = "";
-    if (snap.val()){
-      events = snap.val().rooms[ROOM_ID].data;
-      startDate = snap.val().rooms[ROOM_ID].time_interval.start;
-      dates = createDayArr(snap.val().rooms[ROOM_ID].time_interval.start,
-          snap.val().rooms[ROOM_ID].time_interval.end);
-
-      this.formatData({events,startDate,dates});
-    }
-  };
-
-  async componentDidMount() {
-    dbRef.on('value', this.handleData,error => alert(error));
   };
 
   render() {
-    // var {...config} = this.state;
     return (
       <div>
         <DayPilotCalendar
           {...this.state}
-          ref={component => {
+          ref= {component => {
             this.calendar = component && component.control;
           }}
         />
