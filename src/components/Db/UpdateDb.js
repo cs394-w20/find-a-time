@@ -2,8 +2,15 @@
 import 'firebase/database';
 import 'firebase/auth';
 import db from "./firebaseConnect";
-import {createTimes} from "../../calendar/Calendar";
+import {HOURS, MINUTES} from "../../constants";
 
+const createTimes = () => {
+    return HOURS.map(function (item) {
+        return MINUTES.map(function (item2) {
+            return `${item}:${item2}`;
+        })
+    }).flat()
+};
 
 const HOURS_AND_MINUTES = createTimes();
 

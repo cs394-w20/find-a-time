@@ -3,17 +3,21 @@ import {
   DayPilot,
   DayPilotCalendar,
   DayPilotNavigator
-} from "daypilot-pro-react"
-import "./CalendarStyles.css"
-import "firebase/database"
-import { stringToDate, dateToString } from "../utilities"
-import { ROOM_ID } from "../constants"
-import db from "../components/Db/firebaseConnect"
-import { HOURS, MINUTES } from "../constants"
-import localJSON from "./dummy_data.json"
-var Rainbow = require("rainbowvis.js")
+} from "daypilot-pro-react";
+import "./CalendarStyles.css";
+import 'firebase/database';
+import {stringToDate, dateToString} from '../utilities';
+import {ROOM_ID} from '../constants';
+import db from '../components/Db/firebaseConnect';
+import {HOURS, MINUTES} from "../constants";
+import localJSON from "./dummy_data.json";
+import {AddUserToRoom} from "../components/Db";
+var Rainbow = require('rainbowvis.js');
 
-const dbRef = db.ref()
+const dbRef = db.ref();
+
+
+
 
 //this creates every possible hour/minute combination
 export const createTimes = () => {
@@ -86,34 +90,45 @@ class Calendar extends Component {
     }
   }
 
-  async componentDidMount() {
-    const times = createTimes()
-    let dates = []
-    let users = []
-    const freeTimes = []
-    let events
-    let startDate = ""
 
-    // Fetch data from firebase
-    await dbRef.once("value", snap => {
-      events = snap.val().rooms[ROOM_ID].data
-      users = snap.val().rooms[ROOM_ID].users
-      startDate = snap.val().rooms[ROOM_ID].time_interval.start
-      dates = createDayArr(
-        snap.val().rooms[ROOM_ID].time_interval.start,
-        snap.val().rooms[ROOM_ID].time_interval.end
-      )
-    })
+  /**
+   * Call back function for firebase
+   */
+  handleDataCallback = (snap) =>{
+    let dates = [];
+    let events;
+    let startDate = "";
+    let users = [];
 
-    console.log("These are the dates we got from the database: ", dates)
-    console.log("These are the EVENTS we got from the database: ", events)
+    if (snap.val()){
+      events = snap.val().rooms[ROOM_ID].data;
+      startDate = snap.val().rooms[ROOM_ID].time_interval.start;
+      users = snap.val().rooms[ROOM_ID].users;
+      dates = createDayArr(snap.val().rooms[ROOM_ID].time_interval.start,
+          snap.val().rooms[ROOM_ID].time_interval.end);
 
-    console.log("THE USERS: ", users)
-    const numUsers = Object.keys(users).length
-    var colorSpectrum = new Rainbow()
-    colorSpectrum.setNumberRange(0, numUsers)
-    colorSpectrum.setSpectrum("green", "red")
-    console.log("THE COLORS!! ", colorSpectrum.colourAt(2))
+      this.renderCalender({events,startDate,dates,users});
+    }
+  };
+
+
+  /**
+   * Code to render the calendar
+   */
+  renderCalender = ({dates,events,startDate,users})=>{
+    const times = createTimes();
+    const freeTimes = [];
+
+    console.log("These are the dates we got from the database: ", dates);
+    console.log("These are the EVENTS we got from the database: ", events);
+
+    console.log("THE USERS: ", users);
+    const numUsers = Object.keys(users).length;
+    let colorSpectrum = new Rainbow();
+    colorSpectrum.setNumberRange(0, numUsers);
+    colorSpectrum.setSpectrum('green', 'red');
+    console.log("THE COLORS!! ", colorSpectrum.colourAt(2));
+
 
     let currTime = 0
 
@@ -150,9 +165,10 @@ class Calendar extends Component {
           }
           // CASE 2: Time slot is not available for everyone
           else {
-            const unavailable = events[currDay][timeStamp]
-            const numUnavailable = Object.keys(unavailable).length
-            const eventText = numUnavailable.toString() + " unavailable"
+            const unavailable = events[currDay][timeStamp];
+            const numUnavailable = Object.keys(unavailable).length;
+            const eventText = numUnavailable.toString() + " unavailable";
+
 
             const currEvent = {
               id: currId,
@@ -180,11 +196,26 @@ class Calendar extends Component {
       currTime = 0 // Reset currTime for next date
     })
 
+    });
+
+
     this.setState({
       startDate: startDate,
       events: freeTimes
-    })
+    });
+};
+
+
+  componentDidMount() {
+    dbRef.on('value', this.handleDataCallback,error => alert(error));
+  };
+
+
+  // disconnect the handleDataCallback on unmount
+  componentWillUnmount() {
+    db.off('value', this.handleDataCallback)
   }
+
 
   render() {
     return (
