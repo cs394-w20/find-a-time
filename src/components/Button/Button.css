@@ -1,0 +1,20 @@
+.a-button {
+  border: none;
+  font-size: 16px;
+  border-radius: 5px;
+  padding: 8px 16px;
+  font-weight: 700;
+}
+
+.a-button:hover {
+  cursor: pointer;
+}
+
+.a-button-primary {
+  background: #dbd9ec;
+  color: #603dcb;
+}
+
+.a-button-primary:hover {
+  background: #d6d1ff;
+}
