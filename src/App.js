@@ -91,7 +91,7 @@ function App() {
 
   return (
     <div className="App">
-      <NavBar />
+      <NavBar isAuthorized={isAuthorized} />
       <div className="content">
         {isAuthorized && <UserProfile />}
         <div className="event-auth__container">

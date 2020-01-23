@@ -1,8 +1,13 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import "./NavBar.css"
 
-const NavBar = () => {
+const NavBar = ({ isAuthorized }) => {
+  /*
+  
+  Once creating an event is added, link `Create an event` to that route
+
+  */
   return (
     <nav className="nav-bar__container">
       <Link to="/" className="nav-bar nav-bar__home">
@@ -18,6 +23,11 @@ const NavBar = () => {
       </div>
     </nav>
   )
+}
+
+const Avatar = ({ picture }) => {
+  console.log(picture)
+  return <img src={picture} alt="user" />
 }
 
 export default NavBar
