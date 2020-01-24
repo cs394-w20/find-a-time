@@ -1,15 +1,16 @@
-import React, { useContext } from "react"
+import React, { useContext, useEffect } from "react"
 import { Link } from "react-router-dom"
 import "./NavBar.css"
 import { UserContext } from "../../context/UserContext"
 
-const NavBar = ({ isAuthorized }) => {
-  const state = useContext(UserContext)
+const NavBar = ({}) => {
+  const value = useContext(UserContext)
   /*
   
   Once creating an event is added, link `Create an event` to that route
 
   */
+
   return (
     <nav className="nav-bar__container">
       <Link to="/" className="nav-bar nav-bar__home">
@@ -22,7 +23,8 @@ const NavBar = ({ isAuthorized }) => {
         <Link to="/" className="nav-bar nav-bar__item nav-bar__inactive">
           Your events
         </Link>
-        {console.log(state)}
+        {console.log(value)}
+        {value.isUserLoaded && <Avatar picture={value.user.picture} />}
       </div>
     </nav>
   )
@@ -30,7 +32,7 @@ const NavBar = ({ isAuthorized }) => {
 
 const Avatar = ({ picture }) => {
   console.log(picture)
-  return <img src={picture} alt="user" />
+  return <img src={picture} alt="user" className="nav-bar__user-avatar" />
 }
 
 export default NavBar
