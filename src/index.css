@@ -1,3 +1,7 @@
+.app-container {
+  max-height: 100vh;
+}
+
 * {
   font-family: "DM Sans", sans-serif;
 }

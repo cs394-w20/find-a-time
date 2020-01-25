@@ -91,18 +91,16 @@ function App() {
 
   return (
     <div className="App">
-      <div className="content">
-        {isAuthorized && <UserProfile />}
-        <div className="event-auth__container">
-          <Event />
-          <AuthButton
-            isAuthorized={isAuthorized}
-            handleAuthClick={handleAuthClick}
-            handleSignoutClick={handleSignoutClick}
-          />
-        </div>
-        <Calendar />
+      {isAuthorized && <UserProfile />}
+      <div className="event-auth__container">
+        <Event />
+        <AuthButton
+          isAuthorized={isAuthorized}
+          handleAuthClick={handleAuthClick}
+          handleSignoutClick={handleSignoutClick}
+        />
       </div>
+      <Calendar />
     </div>
   )
 }
