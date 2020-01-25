@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useContext } from "react"
 import "./App.css"
-import { FIXED_START_DATE, FIXED_END_DATE } from "./constants"
 import { AuthButton } from "./components/AuthButton"
 import Calendar from "./calendar/Calendar"
 import { Event } from "./components/Event"
-import { NavBar } from "./components/NavBar"
-import AddEvents from "./components/Events/AddEvents"
 import UserProfile from "./components/UserProfile"
-import { UserContextProvider } from "./context/UserContext"
+import { UserContext } from "./context/UserContext"
 
 function App() {
   var CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID
@@ -35,6 +32,7 @@ function App() {
     handleClientLoad()
   }, [])
 
+  const { setNewUser, signOutUser } = useContext(UserContext)
   const [isAuthorized, setisAuthorized] = useState(false)
 
   /**
@@ -88,25 +86,23 @@ function App() {
   const handleSignoutClick = event => {
     window.gapi.auth2.getAuthInstance().signOut()
     setisAuthorized(false)
+    signOutUser()
   }
 
   return (
     <div className="App">
-      <UserContextProvider>
-        <NavBar isAuthorized={isAuthorized} />
-        <div className="content">
-          {isAuthorized && <UserProfile />}
-          <div className="event-auth__container">
-            <Event />
-            <AuthButton
-              isAuthorized={isAuthorized}
-              handleAuthClick={handleAuthClick}
-              handleSignoutClick={handleSignoutClick}
-            />
-          </div>
-          <Calendar />
+      <div className="content">
+        {isAuthorized && <UserProfile />}
+        <div className="event-auth__container">
+          <Event />
+          <AuthButton
+            isAuthorized={isAuthorized}
+            handleAuthClick={handleAuthClick}
+            handleSignoutClick={handleSignoutClick}
+          />
         </div>
-      </UserContextProvider>
+        <Calendar />
+      </div>
     </div>
   )
 }

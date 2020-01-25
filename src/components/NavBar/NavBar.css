@@ -41,3 +41,15 @@
 .nav-bar__inactive:hover {
   color: #79858d;
 }
+
+.nav-bar__user-avatar {
+  border: 2px solid #bfc4c8;
+  vertical-align: middle;
+  margin-right: 8px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
