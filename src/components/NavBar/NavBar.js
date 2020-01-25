@@ -17,7 +17,7 @@ const NavBar = ({}) => {
         Find A Time
       </Link>
       <div className="nav-bar__links-container">
-        <Link to="/" className="nav-bar nav-bar__item nav-bar__inactive">
+        <Link to="/create" className="nav-bar nav-bar__item nav-bar__inactive">
           Create an event
         </Link>
         <Link to="/" className="nav-bar nav-bar__item nav-bar__inactive">

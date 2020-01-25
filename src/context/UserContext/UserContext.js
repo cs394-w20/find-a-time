@@ -27,7 +27,7 @@ const UserContextProvider = ({ children }) => {
     setNewUser: handleSetUser,
     signOutUser,
     user: null,
-    userIsLoaded: false
+    isUserLoaded: false
   }
   const [state, setState] = useState(initalState)
   return <UserContext.Provider value={state}>{children}</UserContext.Provider>
