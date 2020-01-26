@@ -213,19 +213,19 @@ class Calendar extends Component {
 
 
   onEventDoubleClick = (eventData)=>{
-    console.log("testing")
-    console.log(eventData);
-     console.log(Object.keys(eventData));
-     console.log(eventData.e.data.start.value)
-     console.log(eventData.e.data.end.value)
-    console.log(this.state.eventClicked)
+    //console.log("testing")
+    //console.log(eventData);
+    // console.log(Object.keys(eventData));
+    // console.log(eventData.e.data.start.value)
+    // console.log(eventData.e.data.end.value)
+    //console.log(this.state.eventClicked)
 
     let state = this.state;
     state.eventClicked=true;
     this.setState(state);
 
-    console.log("here1")
-    console.log(state)
+    //console.log("here1")
+    //console.log(state)
    }
 
   /**
