@@ -249,7 +249,7 @@ const EventInvites = ({eventClicked, eventInviteOnCloseCallback, data}) => {
                                                 <Button onClick={handleClose} size="small" variant="outlined"
                                                         color="secondary">Cancel</Button>
                                                 <Button onClick={setSchedule} size="small" variant="contained"
-                                                        color="primary">Schedule</Button>
+                                                        color="primary">Send Invites</Button>
                                         </Fragment> :
 
                                         <Fragment>
