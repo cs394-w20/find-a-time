@@ -1,6 +1,7 @@
 import React from "react"
 import { Link } from "react-router-dom"
 import "./App.css"
+import { AuthButton } from "components/AuthButton"
 
 function App() {
   return (
@@ -11,6 +12,10 @@ function App() {
       </h2>
       <h3>
         You can also go to <Link to="/create">Create an event</Link>
+      </h3>
+      <h3>
+        Or sign in here:
+        <AuthButton />
       </h3>
       <div className="event-auth__container"></div>
     </div>

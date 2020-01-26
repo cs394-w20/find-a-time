@@ -36,15 +36,14 @@ const UserContextProvider = ({ children }) => {
     }
     const ACCESS_TOKEN = token.access_token
 
-    // Get's the user profile info
-    const userResponse = await fetch(
-      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${ACCESS_TOKEN}`
-    )
-    const userJson = await userResponse.json()
+    try {
+      // Get's the user profile info
+      const userResponse = await fetch(
+        `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${ACCESS_TOKEN}`
+      )
+      const userJson = await userResponse.json()
 
-    console.error(userJson)
-
-    // get event data
+    // get event data & push it to firebase
     await ListUpcomingEvents({
       roomId: ROOM_ID,
       userName: userJson.name
@@ -53,6 +52,11 @@ const UserContextProvider = ({ children }) => {
     // Get the upcoming events and add  to existing roomId
     console.log("User Info", userJson)
     signInUser(userJson)
+
+
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   const initClient = () => {

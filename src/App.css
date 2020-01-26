@@ -40,11 +40,17 @@
 .content {
   max-height: calc(100vh - var(--nav-height));
   overflow: auto;
+  padding: 32px;
 }
 
 .event-auth__container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 32px;
+}
+
+@media only screen and (max-width: 600px) {
+  .content {
+    padding: 16px;
+  }
 }
