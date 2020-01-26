@@ -1,7 +1,6 @@
+
 import React, {useContext, useEffect, useState} from "react"
-// import UserProfile from "components/UserProfile"
 import { AuthButton } from "components/AuthButton"
-import { UserContext } from "context/UserContext"
 import { Event } from "components/Event"
 import Calendar from "calendar/Calendar"
 import {AddUserToRoom} from "../../components/Db";
@@ -16,6 +15,7 @@ const getRoomIdFromPath = () =>{
 };
 
 const EventPage = () => {
+
     const userContext = useContext(UserContext);
 
     /**
@@ -39,6 +39,7 @@ const EventPage = () => {
     <div>
       <div className="event-auth__container">
         <Event />
+
         <AuthButton isAuthorized={userContext.isAuthorized} />
       </div>
       <Calendar />

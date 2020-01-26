@@ -5,6 +5,7 @@ import App from "./App"
 import { NavBar } from "./components/NavBar"
 import { UserContextProvider } from "./context/UserContext"
 import { Create, EventPage } from "./views"
+import ProtectedRoute from "./ProtectedRoute"
 import "./index.css"
 
 const Routes = () => {
@@ -16,7 +17,7 @@ const Routes = () => {
           <div className="content">
             <Switch>
               <Route path="/" exact component={App} />
-              <Route path="/create" exact component={Create} />
+              <ProtectedRoute path="/create" exact component={Create} />
               <Route path="/events/:id" exact component={EventPage} />
             </Switch>
           </div>
