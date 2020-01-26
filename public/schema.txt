@@ -1,0 +1,32 @@
+{
+    rooms: {
+        ROOM_ID: {
+            data: {
+                a_date: {
+                    a_time: {
+                        email: enum [AUTO, MANUAL]
+                    }
+                }
+            },
+            users: {
+                email: userName
+            },
+            time_interval: {
+                start: Time,
+                end: Time
+            },
+            meta_data:{
+                title: String,
+                description: String,
+                room_owner: USER_ID
+            }
+        }
+    },
+    users: {
+        email: {
+            active_rooms:{
+                ROOM_ID: 1
+                }
+        }
+    }
+}
