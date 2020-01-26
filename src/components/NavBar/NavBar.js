@@ -10,11 +10,8 @@ const NavBar = props => {
   const [activeLink, setActiveLink] = useState("")
 
   useEffect(() => {
-    console.log(props)
     const checkPath = () => {
-      // if (props.location.pathname.indexOf("/create" !== -1)) {
       setActiveLink(props.location.pathname)
-      // }
     }
 
     checkPath()

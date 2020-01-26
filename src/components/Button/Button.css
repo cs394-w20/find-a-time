@@ -15,6 +15,10 @@
   color: #603dcb;
 }
 
+.a-button-loading {
+  cursor: default;
+}
+
 .a-button-primary:hover {
   background: #d6d1ff;
 }
