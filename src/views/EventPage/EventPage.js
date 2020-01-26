@@ -40,7 +40,7 @@ const EventPage = () => {
       <div className="event-auth__container">
         <Event />
 
-        <AuthButton isAuthorized={userContext.isAuthorized} />
+        <AuthButton />
       </div>
       <Calendar />
     </div>
