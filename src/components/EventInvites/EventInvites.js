@@ -153,6 +153,7 @@ const EventInvites = ({
   // color="textSecondary"
   const startTime = moment(eventData.startSelected).format("LT")
   const endTime = moment(eventData.endSelected).format("LT")
+  const eventDay = moment(eventData.startSelected).format("LL")
   return (
     <div>
       <Modal
@@ -206,7 +207,7 @@ const EventInvites = ({
                           gutterBottom
                           noWrap={false}
                         >
-                          {startTime} - {endTime}, Thursday, January 30, 2020
+                          {startTime} - {endTime}, {eventDay}
                         </Typography>
                       </Grid>
                     </Grid>
