@@ -25,6 +25,7 @@ import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import StopIcon from '@material-ui/icons/Stop';
 
+// ToDo: Text Editing
 /**
  * Returns true if the attribute exists
  */
@@ -123,7 +124,7 @@ const useStyles = makeStyles(theme => ({
 
 
 const EventInvites = ({eventClicked, eventInviteOnCloseCallback, data}) => {
-    const [open, setOpen] = useState(null);
+    const [open, setOpen] = useState(false);
     const [hasScheduled, setScheduled] = useState(false);
     const userContext = useContext(UserContext);
     const classes = useStyles();
