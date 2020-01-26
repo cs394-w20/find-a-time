@@ -101,12 +101,15 @@ const useStyles = makeStyles(theme => ({
 
     },
     circleStyle: {
-        padding: '3%',
+        padding: '1%',
+        paddingLeft:"2%",
         display: 'inline-block',
-        backgroundColor: '#603dcb',
+        backgroundColor: '#585858',
         width: '100%',
-        height: '2%',
-        margin: 0
+        height: '1%',
+        margin: 0,
+        color:"white",
+        fontWeight:"bold"
     },
     root: {
         width: '100%',
@@ -169,6 +172,7 @@ const EventInvites = ({eventClicked, eventInviteOnCloseCallback, data}) => {
                     <Fade in={open}>
                         <Box maxWidth="50%">
                             <Card className={classes.card}>
+                                <div className={classes.circleStyle}> <small> Send Calendar Invites</small></div>
                                 <CardHeader
                                     title={"30 Minute Meeting"}
                                     style={{textAlign: 'center'}}
