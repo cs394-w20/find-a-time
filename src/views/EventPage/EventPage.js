@@ -5,6 +5,7 @@ import { Event } from "components/Event"
 import Calendar from "calendar/Calendar"
 import {AddUserToRoom} from "../../components/Db";
 import {normalEmailToFirebaseEmail} from "../../components/Utility";
+import { UserContext } from "../../context/UserContext"
 
 /**
  * Get roomId from the path
