@@ -34,16 +34,18 @@ const UserContextProvider = ({ children }) => {
     }
     const ACCESS_TOKEN = token.access_token
 
-    // Get's the user profile info
-    const userResponse = await fetch(
-      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${ACCESS_TOKEN}`
-    )
-    const userJson = await userResponse.json()
+    try {
+      // Get's the user profile info
+      const userResponse = await fetch(
+        `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${ACCESS_TOKEN}`
+      )
+      const userJson = await userResponse.json()
 
-    console.error(userJson)
-    // Get the upcoming events and add  to existing roomId
-    console.log("User Info", userJson)
-    signInUser(userJson)
+      // Get the upcoming events and add  to existing roomId
+      signInUser(userJson)
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   const initClient = () => {
@@ -95,7 +97,7 @@ const UserContextProvider = ({ children }) => {
     signInUser,
     signOutUser,
     user: null,
-    isUserLoaded: false,
+    isUserLoaded: null,
     isAuthorized: false
   }
   const [state, setState] = useState(initalState)
