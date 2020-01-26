@@ -3,8 +3,8 @@ import { Button } from "../Button"
 import "./AuthButton.css"
 import { UserContext } from "../../context/UserContext"
 
-const AuthButton = ({ isAuthorized }) => {
-  const { signOutUser, isUserLoaded } = useContext(UserContext)
+const AuthButton = () => {
+  const { signOutUser, isAuthorized } = useContext(UserContext)
   const handleAuthClick = event => {
     window.gapi.auth2.getAuthInstance().signIn()
   }
