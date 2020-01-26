@@ -81,7 +81,7 @@ class Calendar extends Component {
               text: modal.result
             })
           )
-        })
+        });
 
         selection.clearSelection()
       }
@@ -247,7 +247,7 @@ class Calendar extends Component {
             this.calendar = component && component.control
           }}
           onEventClick={this.onEventDoubleClick}
-          onEvent
+
         />
         <EventInvites eventClicked={this.state.eventClicked} eventInviteOnCloseCallback={this.eventInviteOnCloseCallback}/>
       </div>

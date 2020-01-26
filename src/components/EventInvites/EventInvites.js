@@ -1,19 +1,66 @@
-import React, {useContext, useEffect, useState} from "react"
-import { UserContext } from "../../context/UserContext"
+import React, {useContext, useEffect, useState, Fragment} from "react"
+import {UserContext} from "../../context/UserContext"
+import './EventInvites.css'
 
-import { makeStyles } from '@material-ui/core/styles';
+import {createMuiTheme} from '@material-ui/core/styles';
+import {ThemeProvider} from '@material-ui/styles';
+
+import {makeStyles} from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+
+import Typography from '@material-ui/core/Typography';
+
+import Button from '@material-ui/core/Button';
+import Divider from "@material-ui/core/Divider";
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
+import PublicIcon from '@material-ui/icons/Public';
+
+import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
+import StopIcon from '@material-ui/icons/Stop';
 
 /**
  * Returns true if the attribute exists
  */
-const hasAttribute = (attribute) =>{
-    return (typeof(attribute) !== 'undefined' && attribute != null)
+const hasAttribute = (attribute) => {
+    return (typeof (attribute) !== 'undefined' && attribute != null)
 };
 
 
+// Used to change the font.{theme.palette.secondary.main
+const theme = createMuiTheme({
+    palette:
+        {
+            primary: {
+                // Purple and green play nicely together.
+                main: '#603dcb',
+                light: '#956aff',
+                dark: '#231099'
+
+            },
+            secondary: {
+                // This is green.A700 as hex.
+                main: '#af3f3f',
+                light: '#e56f6a',
+                dark: '#7a0719'
+            }
+        },
+    typography: {
+        fontFamily: [
+            'Nunito',
+            'Roboto',
+            '"Helvetica Neue"',
+            'Arial',
+            'sans-serif'
+        ].join(','),
+    }
+});
 
 /* The style sheet */
 const useStyles = makeStyles(theme => ({
@@ -28,22 +75,81 @@ const useStyles = makeStyles(theme => ({
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
     },
+    overline: {
+        background: '#603dcb',
+        height: '3%',
+        width: '100%'
+
+    },
+    card: {
+        minWidth: 275,
+    },
+    bullet: {
+        display: 'inline-block',
+        margin: '0 2px',
+        transform: 'scale(0.8)',
+    },
+    title: {
+        textAlign: 'center',
+    },
+    pos: {
+        marginBottom: 12,
+    },
+    icon: {
+        padding: '10%',
+        display: 'inline-block'
+
+    },
+    circleStyle: {
+        padding: '3%',
+        display: 'inline-block',
+        backgroundColor: '#603dcb',
+        width: '100%',
+        height: '2%',
+        margin: 0
+    },
+    root: {
+        width: '100%',
+        maxWidth: 360,
+        backgroundColor: theme.palette.background.paper,
+    },
+    divider: {
+        marginBottom: theme.spacing(1)
+    }
 }));
 
-const EventInvites = ({eventClicked,eventInviteOnCloseCallback, data}) => {
+
+const EventInvites = ({eventClicked, eventInviteOnCloseCallback, data}) => {
     const [open, setOpen] = useState(null);
+    const [hasScheduled, setScheduled] = useState(false);
     const userContext = useContext(UserContext);
     const classes = useStyles();
+    const [hasConfirmed, setConfirmed] = useState(false);
 
-    useEffect(()=> setOpen(eventClicked),[eventClicked]);
+    const setSchedule = () => {
+        setScheduled(true);
+    };
+
+
+    const setConfirm = () => {
+        setConfirmed(true);
+    };
 
     const handleClose = () => {
+        setScheduled(false);
+        setConfirmed(false);
         setOpen(false);
-        if (eventInviteOnCloseCallback!=null){
+        if (hasAttribute(eventInviteOnCloseCallback) != null) {
             eventInviteOnCloseCallback();
         }
     };
 
+
+    useEffect(() => setOpen(eventClicked), [eventClicked]);
+
+
+    //style={{color:theme.palette.secondary.light}}
+// color="textSecondary"
     return (
         <div>
             <Modal
@@ -58,18 +164,106 @@ const EventInvites = ({eventClicked,eventInviteOnCloseCallback, data}) => {
                     timeout: 500,
                 }}
             >
-                <Fade in={open}>
-                    <div className={classes.paper}>
-                        <h2 id="transition-modal-title">Transition modal</h2>
-                        <p id="transition-modal-description">react-transition-group animates me.</p>
-                        <p> {hasAttribute(data)? "there is data": " no data"} </p>
-                    </div>
-                </Fade>
+
+                <ThemeProvider theme={theme}>
+                    <Fade in={open}>
+                        <Box maxWidth="50%">
+                            <Card className={classes.card}>
+                                <CardHeader
+                                    title={"30 Minute Meeting"}
+                                    style={{textAlign: 'center'}}
+                                    u/>
+                                {/*Length of meeting*/}
+
+                                <Divider/>
+
+                                <CardContent>
+
+
+                                    {/*Meeting time*/}
+                                    <Grid color="primary-light" container direction="row" alignItems="center"
+                                          spacing={1}>
+                                        <Grid item style={{}}>
+                                            <CalendarTodayIcon color="secondary"/>
+                                        </Grid>
+                                        <Grid item>
+                                            <Typography className={classes.title} color="secondary" gutterBottom>
+                                                12:45pm - 1:00pm, Thursday, January 30, 2020
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+
+                                    {/*Time Zone*/}
+                                    <Box color="text.disabled">
+                                        <Grid container direction="row" alignItems="center" spacing={1}>
+                                            <Grid item>
+                                                <PublicIcon/>
+                                            </Grid>
+                                            <Grid item>
+                                                <Typography className={classes.title} gutterBottom>
+                                                    Central Time - US & Canada
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+
+
+                                    {/*Title and editor*/}
+                                    <Box color="text.secondary">
+                                        <Grid container direction="row" alignItems="center" spacing={0}>
+                                            <Grid item>
+                                                <StopIcon/>
+                                            </Grid>
+                                            <Grid item>
+                                                <Typography variant="h6" gutterBottom>
+                                                    CS 394 Meeting
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+
+
+                                    <Box color="text.primary">
+                                        <Grid container direction="row" alignItems="center" spacing={1}>
+                                            <Grid item>
+                                                <Typography variant="body2" component="p" noWrap={false}>
+                                                    Hey everyone! Please fill out this form whenever you can so that
+                                                    we can find a time to meet weekly! Make sure to connect your Google
+                                                    calendar so you don’t have to manually fill in events!
+
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+
+
+                                </CardContent>
+                                <CardActions>
+
+                                    {!(hasScheduled) ?
+                                        <Fragment>
+                                                <Button onClick={handleClose} size="small" variant="outlined"
+                                                        color="secondary">Cancel</Button>
+                                                <Button onClick={setSchedule} size="small" variant="contained"
+                                                        color="primary">Schedule</Button>
+                                        </Fragment> :
+
+                                        <Fragment>
+                                                <Button onClick={handleClose} size="small" variant="contained"
+                                                        color="secondary">Cancel</Button>
+                                                <Button onClick={setConfirm} size="small" variant="outlined"
+                                                        color="primary">Confirm</Button>
+                                        </Fragment>}
+                                </CardActions>
+                            </Card>
+                        </Box>
+                    </Fade>
+                </ThemeProvider>
             </Modal>
         </div>
-    );
-}
 
+    );
+};
 
 
 export default EventInvites;
