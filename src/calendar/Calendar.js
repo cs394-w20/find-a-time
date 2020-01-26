@@ -220,9 +220,7 @@ class Calendar extends Component {
     // console.log(eventData.e.data.end.value)
     //console.log(this.state.eventClicked)
 
-    let state = this.state;
-    state.eventClicked=true;
-    this.setState(state);
+    this.setState({eventClicked: true});
 
     //console.log("here1")
     //console.log(state)
@@ -233,9 +231,8 @@ class Calendar extends Component {
    * @link EventInvites
    */
   eventInviteOnCloseCallback = ()=>{
-    let state = this.state;
-    state.eventClicked=false;
-    this.setState(state);
+
+    this.setState({eventClicked: false});
   };
 
   render() {
