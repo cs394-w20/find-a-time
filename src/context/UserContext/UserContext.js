@@ -105,8 +105,9 @@ const UserContextProvider = ({ children }) => {
     setNewUser: getUserProfileAndEvents,
     signInUser,
     signOutUser,
+    ListUpcomingEvents,
     user: null,
-    isUserLoaded: false,
+    isUserLoaded: null,
     isAuthorized: false
   }
   const [state, setState] = useState(initalState)
