@@ -11,7 +11,7 @@ import { ROOM_ID } from "../constants"
 import db from "../components/Db/firebaseConnect"
 import { HOURS, MINUTES } from "../constants"
 import localJSON from "./dummy_data.json"
-import {EventInvites} from "../components/EventInvites";
+import { EventInvites } from "../components/EventInvites"
 var Rainbow = require("rainbowvis.js")
 
 const dbRef = db.ref()
@@ -64,7 +64,7 @@ class Calendar extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      eventClicked:false,
+      eventClicked: false,
       viewType: "Week",
       durationBarVisible: true,
       onTimeRangeSelected: args => {
@@ -81,7 +81,7 @@ class Calendar extends Component {
               text: modal.result
             })
           )
-        });
+        })
 
         selection.clearSelection()
       }
@@ -211,8 +211,9 @@ class Calendar extends Component {
     dbRef.off("value", this.handleDataCallback)
   }
 
-
-  onEventDoubleClick = (eventData)=>{
+  onEventDoubleClick = eventData => {
+    const startSelected = eventData.e.data.start.value
+    const endSelected = eventData.e.data.end.value
     //console.log("testing")
     //console.log(eventData);
     // console.log(Object.keys(eventData));
@@ -220,20 +221,25 @@ class Calendar extends Component {
     // console.log(eventData.e.data.end.value)
     //console.log(this.state.eventClicked)
 
-    this.setState({eventClicked: true});
+    this.setState({
+      eventClicked: true,
+      eventData: {
+        startSelected,
+        endSelected
+      }
+    })
 
     //console.log("here1")
     //console.log(state)
-   }
+  }
 
   /**
    * callback function for EventInvites. Called when the popup window closes
    * @link EventInvites
    */
-  eventInviteOnCloseCallback = ()=>{
-
-    this.setState({eventClicked: false});
-  };
+  eventInviteOnCloseCallback = () => {
+    this.setState({ eventClicked: false })
+  }
 
   render() {
     return (
@@ -244,9 +250,14 @@ class Calendar extends Component {
             this.calendar = component && component.control
           }}
           onEventClick={this.onEventDoubleClick}
-
         />
-        <EventInvites eventClicked={this.state.eventClicked} eventInviteOnCloseCallback={this.eventInviteOnCloseCallback}/>
+        {this.state.eventClicked && (
+          <EventInvites
+            eventData={this.state.eventData}
+            eventClicked={this.state.eventClicked}
+            eventInviteOnCloseCallback={this.eventInviteOnCloseCallback}
+          />
+        )}
       </div>
     )
   }

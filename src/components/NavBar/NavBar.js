@@ -44,7 +44,6 @@ const NavBar = props => {
         >
           Your events
         </Link>
-        {console.log(value)}
         {value.isUserLoaded && <Avatar picture={value.user.picture} />}
       </div>
     </nav>
@@ -52,7 +51,6 @@ const NavBar = props => {
 }
 
 const Avatar = ({ picture }) => {
-  console.log(picture)
   return <img src={picture} alt="user" className="nav-bar__user-avatar" />
 }
 
