@@ -8,6 +8,10 @@ const ProtectedRoute = ({ component, children, ...rest }) => {
   if (isAuthorized) {
     return <Component {...rest} />
   }
+
+  /*
+    Replace this later with an actual built in alert
+  */
   alert("You need to be signed in ")
   return <Redirect to="/" />
 }
