@@ -100,7 +100,7 @@ const useStyles = makeStyles(theme => ({
         display: 'inline-block'
 
     },
-    circleStyle: {
+    rectangleTop: {
         padding: '1%',
         paddingLeft:"2%",
         display: 'inline-block',
@@ -171,8 +171,8 @@ const EventInvites = ({eventClicked, eventInviteOnCloseCallback, data}) => {
                 <ThemeProvider theme={theme}>
                     <Fade in={open}>
                         <Box maxWidth="50%">
-                            <Card className={classes.card}>
-                                <div className={classes.circleStyle}> <small> Send Calendar Invites</small></div>
+                            <Card className={classes.card} style={{background:'#f8f8ff'}}>
+                                <div className={classes.rectangleTop}> <small> Send Calendar Invites</small></div>
                                 <CardHeader
                                     title={"30 Minute Meeting"}
                                     style={{textAlign: 'center'}}
@@ -185,17 +185,19 @@ const EventInvites = ({eventClicked, eventInviteOnCloseCallback, data}) => {
 
 
                                     {/*Meeting time*/}
-                                    <Grid color="primary-light" container direction="row" alignItems="center"
-                                          spacing={1}>
-                                        <Grid item style={{}}>
-                                            <CalendarTodayIcon color="secondary"/>
+                                    <Box>
+                                        <Grid color="primary-light" container direction="row" alignItems="center"
+                                              spacing={1} alignContent={"flex-start"} alignItems={'flex-start'}>
+                                            <Grid item style={{}}>
+                                                <CalendarTodayIcon color="secondary"/>
+                                            </Grid>
+                                            <Grid item>
+                                                <Typography className={classes.title} color="secondary" gutterBottom noWrap={false}>
+                                                    12:45pm - 1:00pm, Thursday, January 30, 2020
+                                                </Typography>
+                                            </Grid>
                                         </Grid>
-                                        <Grid item>
-                                            <Typography className={classes.title} color="secondary" gutterBottom>
-                                                12:45pm - 1:00pm, Thursday, January 30, 2020
-                                            </Typography>
-                                        </Grid>
-                                    </Grid>
+                                    </Box>
 
                                     {/*Time Zone*/}
                                     <Box color="text.disabled">
