@@ -1,0 +1,29 @@
+.landing__header-text--bold {
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--black);
+}
+
+.landing__header-text--regular {
+  font-weight: 500;
+  color: #7b808f;
+  font-size: 18px;
+  margin-top: 24px;
+}
+
+.landing__header__container {
+  margin: 64px 164px;
+}
+
+.landing__header-cta {
+  margin-top: 48px;
+  padding: 12px 36px;
+}
+
+.landing__header-text-container {
+  margin-right: 48px;
+}
+
+.landing__header-first-section-container {
+  display: flex;
+}

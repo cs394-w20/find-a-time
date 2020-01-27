@@ -1,6 +1,5 @@
 .a-button {
   border: none;
-  font-size: 16px;
   border-radius: 5px;
   padding: 8px 16px;
   font-weight: 700;
@@ -8,6 +7,15 @@
 
 .a-button:hover {
   cursor: pointer;
+}
+
+.a-button-cta {
+  color: white;
+  background: #648f5d;
+}
+
+.a-button-cta:hover {
+  background: #4c6b47;
 }
 
 .a-button-primary {
@@ -30,4 +38,16 @@
 
 .a-button-secondary:hover {
   background-color: #e5e7eb;
+}
+
+/*
+sizes
+*/
+
+.a-button-size--m {
+  font-size: 16px;
+}
+
+.a-button-size--l {
+  font-size: 24px;
 }
