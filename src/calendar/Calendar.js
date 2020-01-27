@@ -16,6 +16,11 @@ var Rainbow = require("rainbowvis.js")
 
 const dbRef = db.ref()
 
+//password: thirtythree333333***
+const SAMPLE_EMAIL_ADDRESS = ["find.a.time1@gmail.com"];
+
+
+
 //this creates every possible hour/minute combination
 export const createTimes = () => {
   return HOURS.map(function(item) {
@@ -211,21 +216,37 @@ class Calendar extends Component {
     dbRef.off("value", this.handleDataCallback)
   }
 
+  /**
+   * ToDo: Replace static data. eventData.e.data should contain emails of people available, and need a global
+   * constant w/ the title of the event and description of event. Probably needs to be firebase real time
+   * since these can change. Probably add to the Context variable.
+   * @param eventData
+   */
   onEventDoubleClick = eventData => {
-    const startSelected = eventData.e.data.start.value
-    const endSelected = eventData.e.data.end.value
+    const startSelected = eventData.e.data.start.value;
+    const endSelected = eventData.e.data.end.value;
     //console.log("testing")
     //console.log(eventData);
-    // console.log(Object.keys(eventData));
+     console.log(eventData.e.data);
     // console.log(eventData.e.data.start.value)
     // console.log(eventData.e.data.end.value)
     //console.log(this.state.eventClicked)
+
+    const emailList = SAMPLE_EMAIL_ADDRESS;
+    const title = "CS 394 Meeting";
+    const description = "Hey everyone! Please fill out this form whenever you\n" +
+        "                          can so that we can find a time to meet weekly! Make\n" +
+        "                          sure to connect your Google calendar so you don’t have\n" +
+        "                          to manually fill in events!";
 
     this.setState({
       eventClicked: true,
       eventData: {
         startSelected,
-        endSelected
+        endSelected,
+        emailList,
+        title,
+        description
       }
     })
 

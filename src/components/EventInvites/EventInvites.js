@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, Fragment } from "react"
-import moment from "moment"
+import moment from "moment-timezone"
 import { UserContext } from "../../context/UserContext"
 import "./EventInvites.css"
 
@@ -25,6 +25,27 @@ import PublicIcon from "@material-ui/icons/Public"
 import Grid from "@material-ui/core/Grid"
 import Box from "@material-ui/core/Box"
 import StopIcon from "@material-ui/icons/Stop"
+import jstz from 'jstz';
+import _SendEventInvites from "./_SendEventInvites"
+import {Link} from "@material-ui/core";
+
+
+
+/**
+ * Converts time to the local isotime
+ * @example 2015-05-28T17:00:00 => 2015-05-28T17:00:00-06:00   // Assuming your in chicago
+ */
+const formatToLocalTime = (time)=>{
+  let currentTimeZoneOffsetInHours = new Date().getTimezoneOffset() / 60;
+  if (currentTimeZoneOffsetInHours <10){
+    currentTimeZoneOffsetInHours = '0'+currentTimeZoneOffsetInHours;
+  }
+  currentTimeZoneOffsetInHours = currentTimeZoneOffsetInHours+':00';
+  return time+'-'+currentTimeZoneOffsetInHours
+};
+
+
+let TIMEZONE_OFFSET = new Date().getTimezoneOffset();
 
 // ToDo: Text Editing
 /**
@@ -32,7 +53,42 @@ import StopIcon from "@material-ui/icons/Stop"
  */
 const hasAttribute = attribute => {
   return typeof attribute !== "undefined" && attribute != null
-}
+};
+
+/**
+ * Computes human readable timedifference between two dates
+ * @param start {String} string formatted start time
+ * @param end {String} string formatted end time
+ */
+const getTimeDifference = ({start,end}) =>{
+  const now = moment(start);
+  const then = moment(end);
+
+  let humanForm = moment.duration(now.diff(then)).humanize();
+
+  humanForm= humanForm.replace(/minutes?/, 'Minute');
+  humanForm =humanForm.replace(/hours?/, 'Hour');
+
+  return humanForm;
+};
+
+
+let abbrs = {
+  EST : 'Eastern Standard Time',
+  EDT : 'Eastern Daylight Time',
+  CST : 'Central Standard Time',
+  CDT : 'Central Daylight Time',
+  MST : 'Mountain Standard Time',
+  MDT : 'Mountain Daylight Time',
+  PST : 'Pacific Standard Time',
+  PDT : 'Pacific Daylight Time',
+};
+// formatting for timezone, overrides defaults .
+moment.fn.zoneName = function () {
+  let abbr = this.zoneAbbr();
+  return abbrs[abbr] || abbr;
+};
+
 
 // Used to change the font.{theme.palette.secondary.main
 const theme = createMuiTheme({
@@ -108,6 +164,17 @@ const useStyles = makeStyles(theme => ({
     color: "white",
     fontWeight: "bold"
   },
+  rectangleSuccess: {
+    padding: "1%",
+    paddingLeft: "2%",
+    display: "inline-block",
+    backgroundColor: "#603dcb",
+    width: "100%",
+    height: "1%",
+    margin: 0,
+    color: "white",
+    fontWeight: "bold"
+  },
   root: {
     width: "100%",
     maxWidth: 360,
@@ -116,44 +183,73 @@ const useStyles = makeStyles(theme => ({
   divider: {
     marginBottom: theme.spacing(1)
   }
-}))
+}));
+
 
 const EventInvites = ({
   eventClicked,
   eventInviteOnCloseCallback,
-  data,
   eventData
 }) => {
-  const [open, setOpen] = useState(false)
-  const [hasScheduled, setScheduled] = useState(false)
-  const userContext = useContext(UserContext)
-  const classes = useStyles()
-  const [hasConfirmed, setConfirmed] = useState(false)
+  const [open, setOpen] = useState(false);
+  const [hasScheduled, setScheduled] = useState(false);
+  const userContext = useContext(UserContext);
+  const classes = useStyles();
+  const [hasConfirmed, setConfirmed] = useState(false);
+  const [eventHtmlLink, setEventHtmlLink] = useState(null);
 
   const setSchedule = () => {
     setScheduled(true)
-  }
+  };
 
   const setConfirm = () => {
-    setConfirmed(true)
-  }
+    setConfirmed(true);
+        _SendEventInvites(payload)
+            .then((eventHtmlLink)=>setEventHtmlLink(eventHtmlLink));
+
+  };
 
   const handleClose = () => {
-    setScheduled(false)
-    setConfirmed(false)
-    setOpen(false)
+    setScheduled(false);
+    setConfirmed(false);
+    setOpen(false);
     if (hasAttribute(eventInviteOnCloseCallback) != null) {
       eventInviteOnCloseCallback()
     }
-  }
 
-  useEffect(() => setOpen(eventClicked), [eventClicked])
+    setEventHtmlLink(eventHtmlLink);
+
+  };
+
+
+  // The timezones
+  let timeZone = jstz.determine().name();
+  let longFormattedTimeZone = moment(eventData.startSelected).tz(timeZone).format('zz');
+
+  useEffect(() => setOpen(eventClicked), [eventClicked]);
 
   //style={{color:theme.palette.secondary.light}}
   // color="textSecondary"
-  const startTime = moment(eventData.startSelected).format("LT")
-  const endTime = moment(eventData.endSelected).format("LT")
-  const eventDay = moment(eventData.startSelected).format("LL")
+
+  const startTime = moment(eventData.startSelected).format("LT");
+  const endTime = moment(eventData.endSelected).format("LT");
+  const eventDay = moment(eventData.startSelected).format("LL");
+  const title = eventData.title;
+  const emailList = eventData.emailList;
+  const description = eventData.description;
+  const humanReadableTimeDiff = getTimeDifference({start: eventData.startSelected,end:eventData.endSelected});
+
+
+  const payload = {
+    emailList: emailList,
+    title:title,
+    description:description,
+    startTime: formatToLocalTime(eventData.startSelected),
+    endTime: formatToLocalTime(eventData.endSelected)
+  };
+
+
+
   return (
     <div>
       <Modal
@@ -168,16 +264,19 @@ const EventInvites = ({
           timeout: 500
         }}
       >
+
+
         <ThemeProvider theme={theme}>
           <Fade in={open}>
             <Box maxWidth="50%">
-              <Card className={classes.card} style={{ background: "#f8f8ff" }}>
-                <div className={classes.rectangleTop}>
+              <Card className={classes.card} >
+                <div className={(eventHtmlLink===null)?classes.rectangleTop:classes.rectangleSuccess}>
                   {" "}
-                  <small> Send Calendar Invites</small>
+                  <small> {(eventHtmlLink===null)?'Send Calendar Invites': 'Calendar Invites Sent!'}</small>
+
                 </div>
                 <CardHeader
-                  title={"30 Minute Meeting"}
+                  title={(eventHtmlLink===null)? `${humanReadableTimeDiff} Meeting`: 'Thank You'}
                   style={{ textAlign: "center" }}
                   u
                 />
@@ -195,11 +294,12 @@ const EventInvites = ({
                       alignItems="center"
                       spacing={1}
                       alignContent={"flex-start"}
-                      alignItems={"flex-start"}
                     >
                       <Grid item style={{}}>
                         <CalendarTodayIcon color="secondary" />
                       </Grid>
+
+
                       <Grid item>
                         <Typography
                           className={classes.title}
@@ -226,7 +326,7 @@ const EventInvites = ({
                       </Grid>
                       <Grid item>
                         <Typography className={classes.title} gutterBottom>
-                          Central Time - US & Canada
+                          {longFormattedTimeZone}
                         </Typography>
                       </Grid>
                     </Grid>
@@ -245,11 +345,13 @@ const EventInvites = ({
                       </Grid>
                       <Grid item>
                         <Typography variant="h6" gutterBottom>
-                          CS 394 Meeting
+                          {title}
                         </Typography>
                       </Grid>
                     </Grid>
                   </Box>
+                  {(eventHtmlLink===null)? <Fragment/>: <Divider style={{marginBottom:"5%"}}/>}
+
 
                   <Box color="text.primary">
                     <Grid
@@ -259,15 +361,13 @@ const EventInvites = ({
                       spacing={1}
                     >
                       <Grid item>
+
                         <Typography
                           variant="body2"
                           component="p"
                           noWrap={false}
                         >
-                          Hey everyone! Please fill out this form whenever you
-                          can so that we can find a time to meet weekly! Make
-                          sure to connect your Google calendar so you don’t have
-                          to manually fill in events!
+                          {(eventHtmlLink===null)?description: <a href={eventHtmlLink} >Visit your event page</a>}
                         </Typography>
                       </Grid>
                     </Grid>
@@ -299,10 +399,11 @@ const EventInvites = ({
                         onClick={handleClose}
                         size="small"
                         variant="contained"
-                        color="secondary"
+                        color={(eventHtmlLink===null)? 'secondary': 'primary'}
                       >
-                        Cancel
+                        {(eventHtmlLink===null)? 'Cancel': 'Close'}
                       </Button>
+                      {(eventHtmlLink===null)?
                       <Button
                         onClick={setConfirm}
                         size="small"
@@ -310,7 +411,8 @@ const EventInvites = ({
                         color="primary"
                       >
                         Confirm
-                      </Button>
+                      </Button>:
+                          <Fragment/>}
                     </Fragment>
                   )}
                 </CardActions>
