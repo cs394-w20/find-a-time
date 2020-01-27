@@ -5,6 +5,7 @@ import "./index.css"
 import Routes from "./Routes"
 import * as serviceWorker from "./serviceWorker"
 dotenv.config()
+
 ReactDOM.render(<Routes />, document.getElementById("root"))
 
 // If you want your app to work offline and load faster, you can change

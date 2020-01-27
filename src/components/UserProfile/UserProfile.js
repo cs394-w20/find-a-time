@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useContext } from "react"
 import ListUpcomingEvents from "../Events/ListUpcomingEvents"
 import { ROOM_ID } from "../../constants"
+import { UserContext } from "../../context/UserContext"
 
 const UserProfile = () => {
+  const { setNewUser } = useContext(UserContext)
   const [user, setUser] = useState(null)
   useEffect(() => {
     const getUserProfileAndEvents = async () => {
@@ -21,9 +23,9 @@ const UserProfile = () => {
         roomId: ROOM_ID,
         userName: userJson.name
       })
-
-      console.log("User Info",userJson)
+      console.log("User Info", userJson)
       setUser(userJson)
+      setNewUser(userJson)
     }
     getUserProfileAndEvents()
   }, [])

@@ -1,12 +1,34 @@
-import React from "react"
+import React, { useContext } from "react"
+import { Button } from "../Button"
 import "./AuthButton.css"
+import { UserContext } from "../../context/UserContext"
 
-const AuthButton = ({ isAuthorized, handleAuthClick, handleSignoutClick }) => {
+const AuthButton = () => {
+  const { signOutUser, isAuthorized } = useContext(UserContext)
+  const handleAuthClick = event => {
+    window.gapi.auth2.getAuthInstance().signIn()
+  }
+
+  /**
+   *  Sign out the user upon button click.
+   */
+  const handleSignoutClick = event => {
+    window.gapi.auth2.getAuthInstance().signOut()
+    signOutUser()
+  }
   const handleClick = isAuthorized ? handleSignoutClick : handleAuthClick
+  const title = isAuthorized
+    ? "Sign out of Google"
+    : "Sign in with Google Calendar"
+
+  const type = isAuthorized ? "secondary" : "primary"
   return (
-    <button onClick={handleClick} className="auth-button">
-      {isAuthorized ? "Sign out of Google" : "Sign in with Google Calendar"}
-    </button>
+    <Button
+      title={title}
+      onClick={handleClick}
+      className="auth-button"
+      type={type}
+    />
   )
 }
 

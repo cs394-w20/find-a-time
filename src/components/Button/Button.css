@@ -1,0 +1,53 @@
+.a-button {
+  border: none;
+  border-radius: 5px;
+  padding: 8px 16px;
+  font-weight: 700;
+}
+
+.a-button:hover {
+  cursor: pointer;
+}
+
+.a-button-cta {
+  color: white;
+  background: #648f5d;
+}
+
+.a-button-cta:hover {
+  background: #4c6b47;
+}
+
+.a-button-primary {
+  background: #dbd9ec;
+  color: #603dcb;
+}
+
+.a-button-loading {
+  cursor: default;
+}
+
+.a-button-primary:hover {
+  background: #d6d1ff;
+}
+
+.a-button-secondary {
+  color: #79858d;
+  background-color: #f1f5f8;
+}
+
+.a-button-secondary:hover {
+  background-color: #e5e7eb;
+}
+
+/*
+sizes
+*/
+
+.a-button-size--m {
+  font-size: 16px;
+}
+
+.a-button-size--l {
+  font-size: 24px;
+}

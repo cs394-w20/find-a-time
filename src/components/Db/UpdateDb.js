@@ -24,10 +24,10 @@ const addFreeInterval = ({roomId, date, interval, userName}) => {
         });
 };
 
-const addBusyInterval = ({roomId, date, interval, userName}) => {
+const addBusyInterval = ({roomId, date, interval, userName, type}) => {
     db.ref('rooms/' + roomId + "/data/" + date + "/" + interval)
         .child(userName)
-        .set(1)
+        .set(type)
         .catch(error => alert(error));
 };
 
@@ -67,9 +67,9 @@ const UpdateDb = ({userName, roomId, intervalData}) => {
             for (j = 0; j < HOURS_AND_MINUTES.length; j++) {
                 interval = HOURS_AND_MINUTES[j];
                 if (busyIntervalSet.has(interval)) {
-                    addBusyInterval({"roomId": roomId, "userName": userName, "date": date, "interval": interval})
+                    addBusyInterval({"roomId": roomId, "userName": userName, "date": date, "interval": interval, "type": "AUTO"})
                 } else {
-                    addFreeInterval({"roomId": roomId, "userName": userName, "date": date, "interval": interval})
+                    addFreeInterval({"roomId": roomId, "userName": userName, "date": date, "interval": interval, "type": "AUTO"})
                 }
 
             }
