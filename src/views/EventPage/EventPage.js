@@ -16,6 +16,7 @@ const getRoomIdFromPath = () => {
 
 const EventPage = () => {
   const userContext = useContext(UserContext)
+  //const {ListUpcomingEvents} = useContext(UserContext)
 
   /**
    * Adds user to room once logged in and on an EventPage by saving the email and profile pic in the roomId
@@ -23,6 +24,12 @@ const EventPage = () => {
    */
   useEffect(() => {
     if (userContext.isUserLoaded) {
+      
+      await userContext.ListUpcomingEvents({
+        roomId: getRoomIdFromPath(),
+        userName: userContext.user.name
+      })
+      
       AddUserToRoom({
         roomId: getRoomIdFromPath(),
         email: normalEmailToFirebaseEmail(userContext.user.email),
