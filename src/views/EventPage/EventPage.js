@@ -25,7 +25,7 @@ const EventPage = () => {
   useEffect(() => {
     if (userContext.isUserLoaded) {
       
-      await userContext.ListUpcomingEvents({
+      userContext.ListUpcomingEvents({
         roomId: getRoomIdFromPath(),
         userName: userContext.user.name
       })
