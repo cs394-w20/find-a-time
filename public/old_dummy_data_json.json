@@ -1,0 +1,76 @@
+{
+  "rooms": {
+    "1": {
+      "data": {
+        "2020-01-10": {
+          "09:00": {
+            "Julia": 1,
+            "Suzy": 1
+          },
+          "09:30": {
+            "Jide": 1
+          },
+          "11:00": {
+            "Suzy": 1,
+            "Julia": 1
+          },
+          "11:30": {
+            "Suzy": 1,
+            "Julia": 1
+          }
+        },
+        "2020-01-11": {
+          "09:00": {
+            "Julia": 1,
+            "Suzy": 1
+          },
+          "09:30": {
+            "Jide": 1
+          },
+          "11:00": {
+            "Suzy": 1,
+            "Julia": 1
+          },
+          "11:30": {
+            "Suzy": 1,
+            "Julia": 1
+          }
+        },
+        "2020-01-12": {
+          "09:00": {
+            "Julia": 1,
+            "Suzy": 1
+          },
+          "09:30": {
+            "Jide": 1
+          },
+          "11:00": {
+            "Suzy": 1,
+            "Julia": 1
+          },
+          "11:30": {
+            "Suzy": 1,
+            "Julia": 1
+          }
+        }
+      },
+      "users": {
+        "julia@northwestern_edu": {"name":"Julia","picture":"https://i.pinimg.com/originals/f0/03/44/f00344d904062ce92b4b3b146060d874.png"},
+        "jide@northwestern_edu": {"name":"Jide","picture":"https://i.pinimg.com/originals/f0/03/44/f00344d904062ce92b4b3b146060d874.png"},
+        "suzy@northwestern_edu": {"name":"Suzy","picture":"https://i.pinimg.com/originals/f0/03/44/f00344d904062ce92b4b3b146060d874.png"}
+      },
+      "time_interval": {
+        "start": "2020-01-10",
+        "end": "2020-01-12"
+      },
+      "meta_data": {
+        "title": "CS 394 Meeting",
+        "description": "Make sure you fill out this form so we can find a time to meet weekly!",
+        "room_owner": "suzy@northwestern_edu"
+      }
+    }
+  }
+}
+
+
+
