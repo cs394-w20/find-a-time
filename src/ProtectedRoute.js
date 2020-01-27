@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
 import { Redirect } from "react-router-dom"
-import { UserContext } from "context/UserContext"
+import { UserContext } from "./context/UserContext/UserContext"
 
 const ProtectedRoute = ({ component, children, ...rest }) => {
   const { isAuthorized } = useContext(UserContext)

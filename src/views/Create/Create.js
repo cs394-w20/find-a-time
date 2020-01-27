@@ -1,9 +1,6 @@
-import React from "react"
-
 import React, { useEffect, useState } from "react";
 import {Link} from "react-router-dom";
-import "./App.css";
-import { NavBar } from "./components/NavBar";
+import { NavBar } from "../../components/NavBar";
 import { Button, Dialog, DialogTitle, DialogContent,
          DialogContentText, Container, TextField } from "@material-ui/core";
 import { FileCopy } from "@material-ui/icons";
@@ -44,7 +41,6 @@ function Create() {
 
   return(
     <div>
-      <NavBar />
       <Container maxWidth="lg">
         <h1>Create a Group</h1>
         <h3>Potential Dates: <TextField
