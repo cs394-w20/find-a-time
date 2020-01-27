@@ -1,0 +1,24 @@
+{
+  "rooms": {
+    "1": {
+      "users": {
+        "suzy@northwestern_edu": {
+          "name": "Suzy",
+          "picture": "https://i.pinimg.com/originals/f0/03/44/f00344d904062ce92b4b3b146060d874.png"
+        }
+      },
+      "time_interval": {
+        "start": "2020-01-10",
+        "end": "2020-01-12"
+      },
+      "meta_data": {
+        "title": "CS 394 Meeting",
+        "description": "Make sure you fill out this form so we can find a time to meet weekly!",
+        "room_owner": "suzy@northwestern_edu"
+      }
+    }
+  }
+}
+
+
+
