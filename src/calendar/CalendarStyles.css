@@ -6,3 +6,7 @@
   padding: 5px;
   opacity: 0.8;
 }
+
+.calendar__container {
+  margin: 32px 0;
+}

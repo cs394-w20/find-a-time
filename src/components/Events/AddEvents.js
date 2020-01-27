@@ -7,9 +7,60 @@ import {DATE_FORMAT} from "../../constants";
 const minutes = ['00', '30'];
 //const dates = ['M', 'Tu', 'W', 'Th', 'F']; // replace this with the dates, try to get from gcal
 
-//roomId, date, interval, userName, isBusy
-const AddEvents = (roomId, userName, events) => {
-    events.map(event => findIntervals(roomId, userName, event));
+/**
+ * @private Adds all the properties from the obj2 parameter to the obj1 parameter and returns obj1
+ * @param {string} [obj1] passed by reference, the object which will be populated with the new properties
+ * @param {string} [targetValue] The object which holds all the properties which are to be merged
+ */
+const _mergeRecursive = function(obj1, obj2) {
+    //iterate over all the properties in the object which is being consumed
+    for (var p in obj2) {
+        // Property in destination object set; update its value.
+        if ( obj2.hasOwnProperty(p) && typeof obj1[p] !== "undefined" ) {
+            _mergeRecursive(obj1[p], obj2[p]);
+
+        } else {
+            //We don't have that level in the hierarchy so add it
+            obj1[p] = obj2[p];
+
+        }
+    }
+};
+
+
+const AddEvents = ({roomId, userName, events, startDate, endDate}) => {
+
+    console.log("The events",events);
+    // iterate through the events and calculate the slices they contain
+    // then merge all the slices into one big json
+    let i;
+    let intervalData={};
+    for (i=0;i<events.length; i++){
+        if (i===0){
+            intervalData=findIntervals(roomId, userName,events[i])
+        }else{
+            _mergeRecursive(intervalData,findIntervals(roomId, userName,events[i]))
+        }
+    }
+
+    // loops through the dates between startDate and endDate (inclusive) and adds
+    // a empty entry if the date does not exist in `intervalData`
+    // This is so we can know when the user is busy and free. Implicitly if a day
+    // is not in the events data, then it is free.
+    let date;
+    for (let m =startDate; m.diff(endDate, 'days') <= 0; m.add(1, 'days')) {
+        date = m.format(DATE_FORMAT);
+        if (!(date in intervalData)){
+            intervalData[date]={};
+        }
+    }
+
+    // update the firebase with the user's data for the given roomID
+    UpdateDb({roomId,userName,intervalData});
+
+
+
+
 };
 
 
@@ -36,7 +87,7 @@ export const getDay = (time) => {
 const findIntervals = (roomId, userName, event) => {
     const start = getStartTime(event);
     const end = getEndTime(event);
-    findBuckets(roomId, userName, start, end);
+    return findBuckets(roomId, userName, start, end);
 };
 
 
@@ -75,12 +126,7 @@ const findBuckets = (roomId, userName, currTime, endTime) => {
 
     payload[currentDay]=dayPayload;
 
-    // the actual payload w/ identifying information
-    const actualPayload = {userName:userName, roomId:roomId, data: payload};
-    console.log(actualPayload); 
-    // push data to firebase
-    UpdateDb(actualPayload);
+    return payload;
 
 };
-
 export default AddEvents;

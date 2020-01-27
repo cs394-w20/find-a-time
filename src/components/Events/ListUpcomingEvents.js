@@ -6,16 +6,20 @@ import { GetStartEndTimeForRoomId} from "../Db";
 timeMin :datetime = the lower bound for the request
 timeMax :datetime = the upper bound for the request
 */
+
 export const ListUpcomingEvents = ({roomId, userName}) => {
 
     GetStartEndTimeForRoomId(roomId).then((time_interval) =>
         {
             try{
+                let startDate = moment(time_interval.star,DATE_FORMAT);
+                let endDate = moment(time_interval.end,DATE_FORMAT);
+
                 window.gapi.client.calendar.events
                     .list({
                         calendarId: "primary",
-                        timeMin: moment(time_interval.start,DATE_FORMAT).toISOString(),
-                        timeMax: moment(time_interval.end,DATE_FORMAT).toISOString() ,
+                        timeMin: startDate.toISOString(),
+                        timeMax: endDate.toISOString() ,
                         showDeleted: false,
                         singleEvents: true,
                         maxResults: 10,
@@ -24,17 +28,8 @@ export const ListUpcomingEvents = ({roomId, userName}) => {
                     .then(response => {
                         const events = response.result.items;
                         // appendPre("Upcoming events:");
-                        console.log(events);
-                        AddEvents(roomId, userName, events);
-                        if (events.length > 0) {
-                            for (let i = 0; i < events.length; i++) {
-                                let event = events[i];
-                                let when = event.start.dateTime;
-                                if (!when) {
-                                    when = event.start.date;
-                                }
-                            }
-                        }
+                        AddEvents({roomId, userName, events, startDate, endDate});
+
                     })
                 
             } catch (e) {

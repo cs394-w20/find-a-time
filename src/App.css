@@ -36,3 +36,15 @@
     transform: rotate(360deg);
   }
 }
+
+.content {
+  max-height: calc(100vh - var(--nav-height));
+  overflow: auto;
+}
+
+.event-auth__container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 32px;
+}

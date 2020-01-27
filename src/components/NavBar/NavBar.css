@@ -1,0 +1,36 @@
+.nav-bar {
+  text-decoration: none;
+  color: var(--black);
+}
+
+.nav-bar__container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 32px;
+}
+
+.nav-bar__home {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.nav-bar__item {
+  padding: 8px;
+  margin: 0 16px;
+  border-radius: 8px;
+}
+
+.nav-bar__item:hover {
+  background-color: #f1f5f8;
+}
+
+.nav-bar__inactive {
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: #bfc4c8;
+}
+
+.nav-bar__inactive:hover {
+  color: #79858d;
+}
