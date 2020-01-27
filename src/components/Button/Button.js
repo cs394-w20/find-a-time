@@ -4,6 +4,7 @@ import "./Button.css"
 
 const Button = ({
   onClick,
+  children,
   isLoading,
   title,
   type,
@@ -22,7 +23,7 @@ const Button = ({
       })}
       {...rest}
     >
-      {title}
+      {children ? children : title}
     </button>
   )
 }

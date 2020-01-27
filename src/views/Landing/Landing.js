@@ -18,16 +18,11 @@ const Landing = () => {
           <div className="landing__header-text--regular">
             Keep the scheduling simple and save the brain power for the meeting.
           </div>
-          <Button
-            className="landing__header-cta"
-            title={
-              <Link style={{ color: "white" }} to="/create">
-                Schedule an event
-              </Link>
-            }
-            type="cta"
-            size="l"
-          />
+          <Button className="landing__header-cta" type="cta" size="l">
+            <Link style={{ color: "white" }} to="/create">
+              Schedule an event
+            </Link>
+          </Button>
         </div>
         <img src={landingImage} alt="People scheduling a meeting" />
       </div>
