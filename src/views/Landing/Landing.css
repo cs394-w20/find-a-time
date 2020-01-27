@@ -28,3 +28,28 @@
 .landing__header-first-section-container {
   display: flex;
 }
+
+.landing__header-delay {
+  opacity: 0;
+  animation: fade-in 1500ms 0s forwards;
+}
+
+.landing__header-delay-1 {
+  opacity: 0;
+  animation: fade-in 1500ms 500ms forwards;
+}
+
+.landing__header-delay-2 {
+  opacity: 0;
+  animation: fade-in 1500ms 1000ms forwards;
+}
+
+@keyframes fade-in {
+  /* 0% {
+    opacity: 0;
+  } */
+
+  100% {
+    opacity: 1;
+  }
+}
