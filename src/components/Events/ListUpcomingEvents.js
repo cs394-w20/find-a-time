@@ -1,5 +1,5 @@
 import {DATE_FORMAT} from "../../constants";
-import AddEvents from "./AddEvents";
+import AddGCalEvents from "./AddGCalEvents";
 import moment from 'moment';
 import {GetStartEndTimeForRoomId} from "../Db";
 /*
@@ -32,7 +32,7 @@ export const ListUpcomingEvents = async ({roomId, userName}) => {
                 console.log(events)
 
                 // appendPre("Upcoming events:");
-                AddEvents({roomId, userName, events, startDate, endDate});
+                AddGCalEvents({roomId, userName, events, startDate, endDate});
 
             })
 
