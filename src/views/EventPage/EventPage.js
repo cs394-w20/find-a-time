@@ -1,14 +1,16 @@
 import React, { useContext, useEffect } from "react"
-import { AuthButton } from "../../components/AuthButton"
-import { Event } from "../../components/Event"
-import Calendar from "../../calendar/Calendar"
-import { AddUserToRoom } from "../../components/Db"
-import { normalEmailToFirebaseEmail,getRoomIdFromPath } from "../../components/Utility"
-import { UserContext } from "../../context/UserContext"
-
+import { AuthButton } from "components/AuthButton"
+import { Event } from "components/Event"
+import Calendar from "calendar/Calendar"
+import { AddUserToRoom } from "components/Db"
+import {
+  normalEmailToFirebaseEmail,
+  getRoomIdFromPath
+} from "components/Utility"
+import { UserContext } from "context/UserContext"
 
 const EventPage = () => {
-  const userContext = useContext(UserContext);
+  const userContext = useContext(UserContext)
   //const {ListUpcomingEvents} = useContext(UserContext)
 
   /**
@@ -17,7 +19,6 @@ const EventPage = () => {
    */
   useEffect(() => {
     if (userContext.isUserLoaded) {
-
       userContext.ListUpcomingEvents({
         roomId: getRoomIdFromPath(),
         userName: userContext.user.name
@@ -39,7 +40,7 @@ const EventPage = () => {
 
         <AuthButton />
       </div>
-      <Calendar isUserLoaded={userContext.isUserLoaded}/>
+      <Calendar isUserLoaded={userContext.isUserLoaded} />
     </div>
   )
 }
