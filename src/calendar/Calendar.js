@@ -14,6 +14,7 @@ import localJSON from "./dummy_data.json"
 import { EventInvites } from "../components/EventInvites"
 import AddManualEvents from "../components/Events/AddManualEvents";
 import moment from "moment";
+import { getRoomIdFromPath } from "../components/Utility"
 import { UserContext } from "../context/UserContext"
 
 var Rainbow = require("rainbowvis.js")
