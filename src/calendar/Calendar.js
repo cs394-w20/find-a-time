@@ -13,9 +13,13 @@ import { HOURS, MINUTES } from "../constants"
 import localJSON from "./dummy_data.json"
 import { EventInvites } from "../components/EventInvites"
 import moment from "moment";
+import { getRoomIdFromPath } from "../components/Utility"
+
 var Rainbow = require("rainbowvis.js")
 
 const dbRef = db.ref()
+// DayPilotCalendar API Reference --> https://api.daypilot.org/daypilot-calendar-viewtype/
+
 
 //password: thirtythree333333***
 const SAMPLE_EMAIL_ADDRESS = ["find.a.time1@gmail.com"];
@@ -28,11 +32,6 @@ const SAMPLE_EMAIL_ADDRESS = ["find.a.time1@gmail.com"];
  * @return boolean
  */
 const checkIfDataExists =(snap,roomId) =>{
-
-  console.log('rooms' in snap.val());
-
-
-
   return (('rooms' in snap.val())
       && (ROOM_ID.toString() in snap.val()['rooms'])
       && 'data' in snap.val()['rooms'][ROOM_ID])
@@ -84,6 +83,7 @@ const createDayArr = (start, end) => {
 
 class Calendar extends Component {
   constructor(props) {
+
     super(props)
     this.state = {
       eventClicked: false,
@@ -112,6 +112,9 @@ class Calendar extends Component {
 
     // callback function for EventInvite
     this.eventInviteOnCloseCallback = this.eventInviteOnCloseCallback.bind(this)
+
+    // get the roomId
+    this.roomId = getRoomIdFromPath();
   }
 
   /**
@@ -126,20 +129,20 @@ class Calendar extends Component {
 
     if ((snap.val())) {
 
-      startDate =snap.val().rooms[ROOM_ID].time_interval.start;
-      endDate = snap.val().rooms[ROOM_ID].time_interval.end;
+      startDate =snap.val().rooms[this.roomId].time_interval.start;
+      endDate = snap.val().rooms[this.roomId].time_interval.end;
 
-      users = snap.val().rooms[ROOM_ID].users;
+      users = snap.val().rooms[this.roomId].users;
       dates = createDayArr(
           startDate,
           endDate
       );
 
 
-      if (checkIfDataExists(snap,ROOM_ID)){
+      if (checkIfDataExists(snap,this.roomId)){
 
         // add empty date to the  `events` object for all the days with missing days if there is any.
-        events = snap.val().rooms[ROOM_ID].data;
+        events = snap.val().rooms[this.roomId].data;
         let _startDate = moment(startDate, DATE_FORMAT);
         let _endDate = moment( endDate, DATE_FORMAT);
         let date;
@@ -267,9 +270,6 @@ class Calendar extends Component {
   onEventDoubleClick = eventData => {
     const startSelected = eventData.e.data.start.value;
     const endSelected = eventData.e.data.end.value;
-    //console.log("testing")
-    //console.log(eventData);
-     console.log(eventData.e.data);
     // console.log(eventData.e.data.start.value)
     // console.log(eventData.e.data.end.value)
     //console.log(this.state.eventClicked)
@@ -292,9 +292,7 @@ class Calendar extends Component {
       }
     })
 
-    //console.log("here1")
-    //console.log(state)
-  }
+  };
 
   /**
    * callback function for EventInvites. Called when the popup window closes
@@ -302,7 +300,7 @@ class Calendar extends Component {
    */
   eventInviteOnCloseCallback = () => {
     this.setState({ eventClicked: false })
-  }
+  };
 
   render() {
     return (
@@ -312,6 +310,7 @@ class Calendar extends Component {
           ref={component => {
             this.calendar = component && component.control
           }}
+
           onEventClick={this.onEventDoubleClick}
         />
         {this.state.eventClicked && (
