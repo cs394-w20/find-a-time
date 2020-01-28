@@ -2,8 +2,7 @@ import React from "react"
 import { Link } from "react-router-dom"
 import { Button } from "components/Button"
 
-import "./Landing.css"
-
+import "./Landing.scss"
 const landingImage = require("./LandingImage.svg")
 
 const Landing = () => {
@@ -34,7 +33,7 @@ const Landing = () => {
         <img
           src={landingImage}
           alt="People scheduling a meeting"
-          className="landing__header-delay-1"
+          className="landing__header-image landing__header-delay-1"
         />
       </div>
     </div>

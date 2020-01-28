@@ -13,7 +13,7 @@ const ProtectedRoute = ({ component, children, ...rest }) => {
     Replace this later with an actual built in alert
   */
   alert("You need to be signed in ")
-  return <Redirect to="/" />
+  return <Redirect to="/login" />
 }
 
 export default ProtectedRoute
