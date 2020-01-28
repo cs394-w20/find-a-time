@@ -6,9 +6,8 @@ import { AddUserToRoom } from "../../components/Db"
 import { normalEmailToFirebaseEmail,getRoomIdFromPath } from "../../components/Utility"
 import { UserContext } from "../../context/UserContext"
 
-
 const EventPage = () => {
-  const userContext = useContext(UserContext);
+  const userContext = useContext(UserContext)
   //const {ListUpcomingEvents} = useContext(UserContext)
 
   /**
@@ -17,7 +16,6 @@ const EventPage = () => {
    */
   useEffect(() => {
     if (userContext.isUserLoaded) {
-
       userContext.ListUpcomingEvents({
         roomId: getRoomIdFromPath(),
         userName: userContext.user.name
@@ -39,7 +37,7 @@ const EventPage = () => {
 
         <AuthButton />
       </div>
-      <Calendar isUserLoaded={userContext.isUserLoaded}/>
+      <Calendar isUserLoaded={userContext.isUserLoaded} />
     </div>
   )
 }
