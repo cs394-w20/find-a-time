@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, Fragment } from "react"
 import moment from "moment-timezone"
-import { UserContext } from "../../context/UserContext"
+import { UserContext } from "context/UserContext"
 import "./EventInvites.css"
 
 import { createMuiTheme } from "@material-ui/core/styles"

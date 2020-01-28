@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react"
 import { Link, withRouter } from "react-router-dom"
 import classnames from "classnames"
 import "./NavBar.scss"
-import { UserContext } from "../../context/UserContext"
+import { UserContext } from "context/UserContext"
 
 const NavBar = props => {
   const value = useContext(UserContext)

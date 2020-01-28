@@ -1,6 +1,6 @@
 import React, { useContext } from "react"
-import { AuthButton } from "../../components/AuthButton"
-import { UserContext } from "../../context/UserContext"
+import { AuthButton } from "components/AuthButton"
+import { UserContext } from "context/UserContext"
 import { Redirect } from "react-router-dom"
 import { ReactComponent as LoginImage } from "./LoginImage.svg"
 import "./login.scss"

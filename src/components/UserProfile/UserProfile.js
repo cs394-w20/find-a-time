@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react"
 import ListUpcomingEvents from "../Events/ListUpcomingEvents"
-import { ROOM_ID } from "../../constants"
-import { UserContext } from "../../context/UserContext"
+import { ROOM_ID } from "constants"
+import { UserContext } from "context/UserContext"
 
 const UserProfile = () => {
   const { setNewUser } = useContext(UserContext)

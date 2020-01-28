@@ -1,10 +1,13 @@
 import React, { useContext, useEffect } from "react"
-import { AuthButton } from "../../components/AuthButton"
-import { Event } from "../../components/Event"
-import Calendar from "../../calendar/Calendar"
-import { AddUserToRoom } from "../../components/Db"
-import { normalEmailToFirebaseEmail,getRoomIdFromPath } from "../../components/Utility"
-import { UserContext } from "../../context/UserContext"
+import { AuthButton } from "components/AuthButton"
+import { Event } from "components/Event"
+import Calendar from "calendar/Calendar"
+import { AddUserToRoom } from "components/Db"
+import {
+  normalEmailToFirebaseEmail,
+  getRoomIdFromPath
+} from "components/Utility"
+import { UserContext } from "context/UserContext"
 
 const EventPage = () => {
   const userContext = useContext(UserContext)

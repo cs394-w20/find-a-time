@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from "react"
-import ListUpcomingEvents from "../../components/Events/ListUpcomingEvents";
-import {ROOM_ID} from "../../constants";
+import ListUpcomingEvents from "components/Events/ListUpcomingEvents"
+import { ROOM_ID } from "constants"
 
 export const UserContext = createContext()
 
@@ -42,18 +42,16 @@ const UserContextProvider = ({ children }) => {
         `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${ACCESS_TOKEN}`
       )
       const userJson = await userResponse.json()
-    /*
+      /*
     // get event data & push it to firebase
     await ListUpcomingEvents({
       roomId: ROOM_ID,
       userName: userJson.name
     });
     */
-    // Get the upcoming events and add  to existing roomId
-    console.log("User Info", userJson)
-    signInUser(userJson)
-
-
+      // Get the upcoming events and add  to existing roomId
+      console.log("User Info", userJson)
+      signInUser(userJson)
     } catch (e) {
       console.error(e)
     }
@@ -90,8 +88,7 @@ const UserContextProvider = ({ children }) => {
     }
     handleClientLoad()
     // getUserProfileAndEvents()
-  }, []);
-
+  }, [])
 
   const signOutUser = () => {
     setState({
