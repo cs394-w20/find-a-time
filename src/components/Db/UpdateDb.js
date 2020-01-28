@@ -50,15 +50,19 @@ const isEmpty = (obj) => {
  * @param data (string): the data
  * @param userName (string): the username
  */
-const UpdateDb = ({userName, roomId, intervalData}) => {
+const UpdateDb = ({userName, roomId, intervalData, updateType}) => {
 
     let dateList = Object.keys(intervalData);
     let i, j, busyIntervalSet, date, interval;
     for (i = 0; i < dateList.length; i++) {
         date = dateList[i];
+        console.log(date)
+        console.log(intervalData)
 
         if (!(isEmpty(intervalData[date]))) {
             busyIntervalSet = new Set(Object.keys(intervalData[date]));
+            console.log('busyintervalset')
+            console.log(busyIntervalSet)
             /**
              * Adds busy and free intervals. Loops through the all the hr:mm pairs and checks if
              * this pair is in `busyIntervalSet` if so it updates db w/ busy, otherwise it update
@@ -67,9 +71,10 @@ const UpdateDb = ({userName, roomId, intervalData}) => {
             for (j = 0; j < HOURS_AND_MINUTES.length; j++) {
                 interval = HOURS_AND_MINUTES[j];
                 if (busyIntervalSet.has(interval)) {
-                    addBusyInterval({"roomId": roomId, "userName": userName, "date": date, "interval": interval, "type": "AUTO"})
+                    console.log('hi')
+                    addBusyInterval({"roomId": roomId, "userName": userName, "date": date, "interval": interval, "type": updateType})
                 } else {
-                    addFreeInterval({"roomId": roomId, "userName": userName, "date": date, "interval": interval, "type": "AUTO"})
+                    addFreeInterval({"roomId": roomId, "userName": userName, "date": date, "interval": interval})
                 }
 
             }

@@ -1,11 +1,8 @@
 import UpdateDb from "../Db/UpdateDb";
 import moment from 'moment'
 import {DATE_FORMAT} from "../../constants";
+import findBuckets from "./FindBuckets";
 
-
-//const hours = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23'];
-const minutes = ['00', '30'];
-//const dates = ['M', 'Tu', 'W', 'Th', 'F']; // replace this with the dates, try to get from gcal
 
 /**
  * @private Adds all the properties from the obj2 parameter to the obj1 parameter and returns obj1
@@ -28,7 +25,7 @@ const _mergeRecursive = function(obj1, obj2) {
 };
 
 
-const AddEvents = ({roomId, userName, events, startDate, endDate}) => {
+const AddGCalEvents = ({roomId, userName, events, startDate, endDate}) => {
 
     console.log("The events",events);
     // iterate through the events and calculate the slices they contain
@@ -54,9 +51,11 @@ const AddEvents = ({roomId, userName, events, startDate, endDate}) => {
             intervalData[date]={};
         }
     }
-
+    console.log('important!!!');
+    console.log(intervalData);
+    console.log(typeof intervalData);
     // update the firebase with the user's data for the given roomID
-    UpdateDb({roomId,userName,intervalData});
+    UpdateDb({roomId,userName,intervalData, updateType: 'AUTO'});
 
 
 
@@ -91,42 +90,5 @@ const findIntervals = (roomId, userName, event) => {
 };
 
 
-const findBuckets = (roomId, userName, currTime, endTime) => {
 
-    // Finding the first time interval -- figuring out what minute to start at
-    // if min is in [0,30) then set i=0, otherwise set i=1.
-    let i = 0;
-    while (i < minutes.length - 1){
-        if (Number(minutes[i]) <= currTime.minute() && currTime.minute() < Number(minutes[i + 1])){
-            currTime.minutes(Number(minutes[i]));
-            break;
-        }
-        i += 1;
-    }
-
-
-    // keep incrementing currTime by 30min until currTime>= endTime then stop,
-    // for each day record the 30min intervals seen in `dayPayload`,
-    // once the day changes add `dayPayload` to `payload`
-    let currentDay=  getDay(currTime);
-    let dayPayload = {};
-    let payload = {};
-
-    while (currTime.isBefore(endTime)) {
-        dayPayload[`${currTime.hour()}:${minutes[i]}`] = 1;
-        i = (i+1)%(minutes.length);
-        currTime.add(Number(minutes[1]),'minutes');
-
-        if (getDay(currTime) !== currentDay){
-            payload[currentDay] = dayPayload;
-            currentDay = getDay(currTime);
-            dayPayload = {};
-        }
-    }
-
-    payload[currentDay]=dayPayload;
-
-    return payload;
-
-};
-export default AddEvents;
+export default AddGCalEvents;

@@ -12,6 +12,7 @@ import db from "../components/Db/firebaseConnect"
 import { HOURS, MINUTES } from "../constants"
 import localJSON from "./dummy_data.json"
 import { EventInvites } from "../components/EventInvites"
+import AddManualEvents from "../components/Events/AddManualEvents";
 import moment from "moment";
 import { getRoomIdFromPath } from "../components/Utility"
 import { UserContext } from "../context/UserContext"
@@ -105,6 +106,10 @@ class Calendar extends Component {
               text: modal.result
             })
           )
+         const userName = "h"
+         const start = args.start;
+         const end = args.end
+          AddManualEvents({roomId: getRoomIdFromPath(), userName, start, end});
         })
 
         selection.clearSelection()
@@ -116,9 +121,6 @@ class Calendar extends Component {
 
     // get the roomId
     this.roomId = getRoomIdFromPath();
-
-
-
   }
 
   /**
@@ -174,6 +176,7 @@ class Calendar extends Component {
 
     console.log("These are the dates we got from the database: ", dates)
     console.log("These are the EVENTS we got from the database: ", events)
+    console.log("These are the USERS we got from the database: ", users)
 
     console.log("THE USERS: ", users)
     const numUsers = Object.keys(users).length
@@ -220,7 +223,8 @@ class Calendar extends Component {
             else {
               const unavailable = events[currDay][timeStamp]
               const numUnavailable = Object.keys(unavailable).length
-              const eventText = numUnavailable.toString() + " unavailable"
+              const eventText = (numUsers - numUnavailable).toString() +
+                                " / " + numUsers.toString() + " available"
 
               const currEvent = {
                 id: currId,
@@ -327,6 +331,7 @@ class Calendar extends Component {
           ref={component => {
             this.calendar = component && component.control
           }}
+
           onEventClick={this.onEventDoubleClick}
         />
         {(this.state.eventClicked && this.props.isUserLoaded) && (
@@ -342,3 +347,5 @@ class Calendar extends Component {
 }
 
 export default Calendar
+
+

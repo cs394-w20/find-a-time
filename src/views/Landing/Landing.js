@@ -1,6 +1,6 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import { Button } from "components/Button"
+import { Button } from "../../components/Button"
 
 import "./Landing.scss"
 const landingImage = require("./LandingImage.svg")

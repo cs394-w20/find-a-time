@@ -3,4 +3,3 @@ export { default as firebaseEmailToNormalEmail } from "./firebaseEmailToNormalEm
 export { default as normalEmailToFirebaseEmail } from "./normalEmailToFirebaseEmail"
 export { default as getRoomIdFromPath } from "./getRoomIdFromPath"
 
-
