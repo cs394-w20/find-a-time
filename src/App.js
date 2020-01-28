@@ -1,7 +1,7 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import "./App.css"
-import AuthButton from "./components/AuthButton/AuthButton"
+import "./App.scss"
+import { AuthButton } from "components/AuthButton"
 
 function App() {
   return (

@@ -3,19 +3,12 @@ import { AuthButton } from "../../components/AuthButton"
 import { Event } from "../../components/Event"
 import Calendar from "../../calendar/Calendar"
 import { AddUserToRoom } from "../../components/Db"
-import { normalEmailToFirebaseEmail } from "../../components/Utility"
+import { normalEmailToFirebaseEmail,getRoomIdFromPath } from "../../components/Utility"
 import { UserContext } from "../../context/UserContext"
 
-/**
- * Get roomId from the path
- * @returns {string} the roomId taken from the path
- */
-const getRoomIdFromPath = () => {
-  return window.location.pathname.split("/")[2]
-}
 
 const EventPage = () => {
-  const userContext = useContext(UserContext)
+  const userContext = useContext(UserContext);
   //const {ListUpcomingEvents} = useContext(UserContext)
 
   /**
@@ -46,7 +39,7 @@ const EventPage = () => {
 
         <AuthButton />
       </div>
-      <Calendar />
+      <Calendar isUserLoaded={userContext.isUserLoaded}/>
     </div>
   )
 }

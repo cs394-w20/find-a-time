@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react"
 import { Link, withRouter } from "react-router-dom"
 import classnames from "classnames"
-import "./NavBar.css"
+import "./NavBar.scss"
 import { UserContext } from "../../context/UserContext"
 
 const NavBar = props => {
@@ -44,7 +44,18 @@ const NavBar = props => {
         >
           Your events
         </Link>
-        {value.isUserLoaded && <Avatar picture={value.user.picture} />}
+        {value.isUserLoaded ? (
+          <Avatar picture={value.user.picture} />
+        ) : (
+          <Link
+            to="/login"
+            className={classnames("nav-bar nav-bar__item", {
+              "nav-bar__active": activeLink.indexOf("/login") !== -1
+            })}
+          >
+            Log in
+          </Link>
+        )}
       </div>
     </nav>
   )
