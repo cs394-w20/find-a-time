@@ -174,6 +174,7 @@ class Calendar extends Component {
 
     console.log("These are the dates we got from the database: ", dates)
     console.log("These are the EVENTS we got from the database: ", events)
+    console.log("These are the USERS we got from the database: ", users)
 
     console.log("THE USERS: ", users)
     const numUsers = Object.keys(users).length
@@ -220,7 +221,8 @@ class Calendar extends Component {
             else {
               const unavailable = events[currDay][timeStamp]
               const numUnavailable = Object.keys(unavailable).length
-              const eventText = numUnavailable.toString() + " unavailable"
+              const eventText = (numUsers - numUnavailable).toString() +
+                                " / " + numUsers.toString() + " available"
 
               const currEvent = {
                 id: currId,
