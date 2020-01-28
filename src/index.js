@@ -1,7 +1,7 @@
 import React from "react"
 import ReactDOM from "react-dom"
 import dotenv from "dotenv"
-import "./index.css"
+import "./index.scss"
 import Routes from "./Routes"
 import * as serviceWorker from "./serviceWorker"
 dotenv.config()

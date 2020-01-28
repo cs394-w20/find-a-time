@@ -1,0 +1,35 @@
+@import "~sass-globals/variables";
+.login-container {
+  display: flex;
+  justify-content: space-around;
+}
+
+.login-header__text {
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.login__button-container {
+  margin-top: 32px;
+  margin-right: 64px;
+
+  & > button {
+    margin-top: 32px;
+  }
+}
+.login-image {
+  height: 480px;
+}
+
+@media only screen and (max-width: $mobile-break) {
+  .login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-start;
+  }
+  .login-image {
+    width: 128px;
+    margin-top: 32px;
+  }
+}
