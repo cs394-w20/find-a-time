@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React, {Component, useContext} from "react"
 import {
   DayPilot,
   DayPilotCalendar,
@@ -14,8 +14,7 @@ import localJSON from "./dummy_data.json"
 import { EventInvites } from "../components/EventInvites"
 import AddManualEvents from "../components/Events/AddManualEvents";
 import moment from "moment";
-import { getRoomIdFromPath } from "../components/Utility"
-
+import { UserContext } from "../context/UserContext"
 
 var Rainbow = require("rainbowvis.js")
 
@@ -308,7 +307,20 @@ class Calendar extends Component {
     this.setState({ eventClicked: false })
   };
 
-  render() {
+  /**
+   * Self explanatory - if user is not logged in it turns off eventClicked
+   */
+  componentDidUpdate(prevProps, prevState , snapshot) {
+    if (prevState.eventClicked !== this.state.eventClicked) {
+      if (!(this.props.isUserLoaded)){
+        this.setState({eventClicked: false});
+      }
+    }
+  };
+
+  render()
+  {
+
     return (
       <div className="calendar__container">
         <DayPilotCalendar
@@ -319,7 +331,7 @@ class Calendar extends Component {
 
           onEventClick={this.onEventDoubleClick}
         />
-        {this.state.eventClicked && (
+        {(this.state.eventClicked && this.props.isUserLoaded) && (
           <EventInvites
             eventData={this.state.eventData}
             eventClicked={this.state.eventClicked}

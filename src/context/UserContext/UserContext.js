@@ -15,7 +15,7 @@ var DISCOVERY_DOCS = [
 // Authorization scopes required by the API; multiple scopes can be
 // included, separated by spaces.
 var SCOPES =
-  "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.profile"
+  "https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/userinfo.profile"
 // ""
 // ]
 
