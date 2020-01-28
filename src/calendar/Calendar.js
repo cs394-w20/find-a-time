@@ -22,6 +22,19 @@ const dbRef = db.ref()
 const SAMPLE_EMAIL_ADDRESS = ["find.a.time1@gmail.com"];
 
 
+/**
+ * Checks if there is data for the specific room that the calendar can render
+ * @param snap value returned from firebased
+ * @param roomId the room id
+ * @return boolean
+ */
+const checkIfDataExists =(snap,roomId) =>{
+
+
+  return (('rooms' in snap.val())
+      && (ROOM_ID.toString() in snap.val()['rooms'])
+      && 'data' in snap.val()['rooms'][ROOM_ID])
+};
 
 //this creates every possible hour/minute combination
 export const createTimes = () => {
@@ -116,18 +129,25 @@ class Calendar extends Component {
     let startDate = ""
     let users = []
 
-    if (snap.val()) {
-      events = snap.val().rooms[ROOM_ID].data
-      startDate = snap.val().rooms[ROOM_ID].time_interval.start
-      users = snap.val().rooms[ROOM_ID].users
+    if ((snap.val())) {
+
+      startDate = snap.val().rooms[ROOM_ID].time_interval.start;
+      users = snap.val().rooms[ROOM_ID].users;
       dates = createDayArr(
         snap.val().rooms[ROOM_ID].time_interval.start,
         snap.val().rooms[ROOM_ID].time_interval.end
-      )
+      );
+      console.log(checkIfDataExists(snap,ROOM_ID))
 
-      this.renderCalender({ events, startDate, dates, users })
+      if (checkIfDataExists(snap,ROOM_ID)){
+        events = snap.val().rooms[ROOM_ID].data;
+        this.renderCalender({ events, startDate, dates, users })
+      }else{
+        events =null;
+        this.renderCalender({ events, startDate, dates, users })
+      }
     }
-  }
+  };
 
   /**
    * Code to render the calendar
@@ -148,68 +168,70 @@ class Calendar extends Component {
 
     let currTime = 0
 
-    dates.forEach(function(key, dayIndex) {
-      let currId = 0
-      let currStart = ""
-      let currDay = dateToString(key)
-      let seconds = ":00"
-      console.log("CURRENT DAY: ", currDay)
+    if (events !==null){
+      dates.forEach(function(key, dayIndex) {
+        let currId = 0
+        let currStart = ""
+        let currDay = dateToString(key)
+        let seconds = ":00"
+        console.log("CURRENT DAY: ", currDay)
 
-      if (!Object.keys(events).includes(currDay)) {
-        console.log("Date not included in firebase")
-      }
-
-      let strTime = currDay.concat("T", convertTime(currTime).concat(seconds))
-
-      while (convertTime(currTime).concat(seconds) !== "24:00") {
-        let i = 0
-
-        while (i < 2) {
-          strTime = currDay.concat("T", convertTime(currTime).concat(seconds))
-          let timeStamp = convertTime(currTime).concat(seconds)
-
-          // CASE 1: Time slot where everybody is available
-          if (!Object.keys(events[currDay]).includes(timeStamp)) {
-            const currEvent = {
-              id: currId,
-              text: "ALL available",
-              start: strTime.concat(":00"),
-              end: addThirtyMin(currDay, currTime, seconds).concat(":00"),
-              backColor: "#" + colorSpectrum.colourAt(0)
-            }
-            freeTimes.push(currEvent)
-          }
-          // CASE 2: Time slot is not available for everyone
-          else {
-            const unavailable = events[currDay][timeStamp]
-            const numUnavailable = Object.keys(unavailable).length
-            const eventText = numUnavailable.toString() + " unavailable"
-
-            const currEvent = {
-              id: currId,
-              text: eventText,
-              start: strTime.concat(":00"),
-              end: addThirtyMin(currDay, currTime, seconds).concat(":00"),
-              backColor: "#" + colorSpectrum.colourAt(numUnavailable)
-            }
-
-            freeTimes.push(currEvent)
-          }
-
-          if (seconds == ":00") {
-            seconds = ":30"
-          } else if (seconds == ":30") {
-            seconds = ":00"
-          }
-
-          currId = currId + 1
-          i += 1
+        if (!Object.keys(events).includes(currDay)) {
+          console.log("Date not included in firebase")
         }
-        currTime = currTime + 1
-      }
 
-      currTime = 0 // Reset currTime for next date
-    })
+        let strTime = currDay.concat("T", convertTime(currTime).concat(seconds))
+
+        while (convertTime(currTime).concat(seconds) !== "24:00") {
+          let i = 0
+
+          while (i < 2) {
+            strTime = currDay.concat("T", convertTime(currTime).concat(seconds))
+            let timeStamp = convertTime(currTime).concat(seconds)
+
+            // CASE 1: Time slot where everybody is available
+            if (!Object.keys(events[currDay]).includes(timeStamp)) {
+              const currEvent = {
+                id: currId,
+                text: "ALL available",
+                start: strTime.concat(":00"),
+                end: addThirtyMin(currDay, currTime, seconds).concat(":00"),
+                backColor: "#" + colorSpectrum.colourAt(0)
+              }
+              freeTimes.push(currEvent)
+            }
+            // CASE 2: Time slot is not available for everyone
+            else {
+              const unavailable = events[currDay][timeStamp]
+              const numUnavailable = Object.keys(unavailable).length
+              const eventText = numUnavailable.toString() + " unavailable"
+
+              const currEvent = {
+                id: currId,
+                text: eventText,
+                start: strTime.concat(":00"),
+                end: addThirtyMin(currDay, currTime, seconds).concat(":00"),
+                backColor: "#" + colorSpectrum.colourAt(numUnavailable)
+              }
+
+              freeTimes.push(currEvent)
+            }
+
+            if (seconds == ":00") {
+              seconds = ":30"
+            } else if (seconds == ":30") {
+              seconds = ":00"
+            }
+
+            currId = currId + 1
+            i += 1
+          }
+          currTime = currTime + 1
+        }
+
+        currTime = 0 // Reset currTime for next date
+      })
+    }
 
     this.setState({
       startDate: startDate,

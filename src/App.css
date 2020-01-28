@@ -39,7 +39,9 @@
 
 .content {
   max-height: calc(100vh - var(--nav-height));
+  max-width: 1440px;
   overflow: auto;
+  margin: 0 auto;
   padding: 32px;
 }
 
