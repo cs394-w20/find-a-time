@@ -39,7 +39,7 @@ const EventPage = () => {
 
         <AuthButton />
       </div>
-      <Calendar />
+      <Calendar isUserLoaded={userContext.isUserLoaded}/>
     </div>
   )
 }
