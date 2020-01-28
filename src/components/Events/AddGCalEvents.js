@@ -25,7 +25,7 @@ const _mergeRecursive = function(obj1, obj2) {
 };
 
 
-const AddEvents = ({roomId, userName, events, startDate, endDate}) => {
+const AddGCalEvents = ({roomId, userName, events, startDate, endDate}) => {
 
     console.log("The events",events);
     // iterate through the events and calculate the slices they contain
@@ -91,4 +91,4 @@ const findIntervals = (roomId, userName, event) => {
 
 
 
-export default AddEvents;
+export default AddGCalEvents;
