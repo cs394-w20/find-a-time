@@ -40,8 +40,8 @@
 }
 
 .content {
-  $height: calc(100vh - #{$nav-height});
-  max-height: $height;
+  // $height: calc(100vh - #{$nav-height});
+  // max-height: $height;
   max-width: 1440px;
   overflow: auto;
   margin: 0 auto;
