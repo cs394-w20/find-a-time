@@ -87,7 +87,8 @@ class Calendar extends Component {
     super(props)
     this.state = {
       eventClicked: false,
-      viewType: "Week",
+      viewType: "Days",
+      days:"7",
       durationBarVisible: true,
       onTimeRangeSelected: args => {
         let selection = this.calendar
@@ -134,7 +135,7 @@ class Calendar extends Component {
           endDate
       );
 
-      
+
       if (checkIfDataExists(snap,ROOM_ID)){
 
         // add empty date to the  `events` object for all the days with missing days if there is any.
@@ -241,8 +242,6 @@ class Calendar extends Component {
       })
     }
 
-    console.log(startDate)
-    console.log(freeTimes)
     this.setState({
       startDate: startDate,
       events: freeTimes,
