@@ -18,7 +18,8 @@
                         <animateMotion path="M12,78.9002446 C114.979521,14.6901256 152.226924,8.93350827 123.742208,61.6303927 C95.2574922,114.327277 58.0100895,120.083894 12,78.9002446 Z" dur="10s" repeatCount="indefinite"/>
                  </polygon>
 
-                <polygon id="Polygon" fill="#FF9B21" points="56 690 80 714 56 738 32 714"></polygon>
+                <polygon id="Polygon" fill="#FF9B21" points="56 690 80 714 56 738 32 714">
+</polygon>
                 <polygon id="Polygon" fill="#2026A2" points="403 63 415 75 403 87 391 75"></polygon>
             </g>
             <g id="Group-4" transform="translate(610.000000, 147.000000)">

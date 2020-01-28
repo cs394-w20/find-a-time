@@ -6,7 +6,7 @@ import { UserContextProvider } from "./context/UserContext"
 import { Create, EventPage, Landing, Login } from "./views"
 import ProtectedRoute from "./ProtectedRoute"
 import "./index.scss"
-import "./App.css"
+import "./App.scss"
 
 const Routes = () => {
   return (
