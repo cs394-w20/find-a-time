@@ -125,32 +125,34 @@ class Calendar extends Component {
 
     if ((snap.val())) {
 
-      startDate = moment(snap.val().rooms[ROOM_ID].time_interval.start, DATE_FORMAT);
-      endDate = moment( snap.val().rooms[ROOM_ID].time_interval.end, DATE_FORMAT);
+      startDate =snap.val().rooms[ROOM_ID].time_interval.start;
+      endDate = snap.val().rooms[ROOM_ID].time_interval.end;
 
       users = snap.val().rooms[ROOM_ID].users;
       dates = createDayArr(
-          startDate.format(DATE_FORMAT),
-          endDate.format(DATE_FORMAT)
+          startDate,
+          endDate
       );
 
+      
       if (checkIfDataExists(snap,ROOM_ID)){
 
+        // add empty date to the  `events` object for all the days with missing days if there is any.
         events = snap.val().rooms[ROOM_ID].data;
-
-        // add empty date to events object for all the days with missing days if there is any.
+        let _startDate = moment(startDate, DATE_FORMAT);
+        let _endDate = moment( endDate, DATE_FORMAT);
         let date;
-        for (let m =startDate; m.diff(endDate, 'days') <= 0; m.add(1, 'days')) {
+        for (let m =_startDate; m.diff(_endDate, 'days') <= 0; m.add(1, 'days')) {
           date = m.format(DATE_FORMAT);
           if (!(date in events)){
             events[date]={};
           }
         }
 
-        this.renderCalender({ events:events, startDate:startDate.format(DATE_FORMAT), dates:dates, users:users })
+        this.renderCalender( {events, startDate, dates, users})
       }else{
         events =null;
-        this.renderCalender({ events:events, startDate:startDate.format(DATE_FORMAT), dates:dates, users:users })
+        this.renderCalender( {events, startDate, dates, users})
       }
     }
   };
@@ -239,6 +241,8 @@ class Calendar extends Component {
       })
     }
 
+    console.log(startDate)
+    console.log(freeTimes)
     this.setState({
       startDate: startDate,
       events: freeTimes,
