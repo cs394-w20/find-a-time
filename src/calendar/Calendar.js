@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React, {Component, useContext} from "react"
 import {
   DayPilot,
   DayPilotCalendar,
@@ -7,14 +7,20 @@ import {
 import "./CalendarStyles.css"
 import "firebase/database"
 import { stringToDate, dateToString } from "../utilities"
-import { ROOM_ID } from "../constants"
+import {DATE_FORMAT, ROOM_ID} from "../constants"
 import db from "../components/Db/firebaseConnect"
 import { HOURS, MINUTES } from "../constants"
 import localJSON from "./dummy_data.json"
 import { EventInvites } from "../components/EventInvites"
+import moment from "moment";
+import { getRoomIdFromPath } from "../components/Utility"
+import { UserContext } from "../context/UserContext"
+
 var Rainbow = require("rainbowvis.js")
 
 const dbRef = db.ref()
+// DayPilotCalendar API Reference --> https://api.daypilot.org/daypilot-calendar-viewtype/
+
 
 //password: thirtythree333333***
 const SAMPLE_EMAIL_ADDRESS = ["find.a.time1@gmail.com"];
@@ -27,8 +33,6 @@ const SAMPLE_EMAIL_ADDRESS = ["find.a.time1@gmail.com"];
  * @return boolean
  */
 const checkIfDataExists =(snap,roomId) =>{
-
-
   return (('rooms' in snap.val())
       && (ROOM_ID.toString() in snap.val()['rooms'])
       && 'data' in snap.val()['rooms'][ROOM_ID])
@@ -80,10 +84,12 @@ const createDayArr = (start, end) => {
 
 class Calendar extends Component {
   constructor(props) {
+
     super(props)
     this.state = {
       eventClicked: false,
-      viewType: "Week",
+      viewType: "Days",
+      days:"7",
       durationBarVisible: true,
       onTimeRangeSelected: args => {
         let selection = this.calendar
@@ -107,33 +113,54 @@ class Calendar extends Component {
 
     // callback function for EventInvite
     this.eventInviteOnCloseCallback = this.eventInviteOnCloseCallback.bind(this)
+
+    // get the roomId
+    this.roomId = getRoomIdFromPath();
+
+
+
   }
 
   /**
    * Call back function for firebase
    */
   handleDataCallback = snap => {
-    let dates = []
-    let events
-    let startDate = ""
-    let users = []
+    let dates = [];
+    let events;
+    let startDate = "";
+    let endDate = "";
+    let users = [];
 
     if ((snap.val())) {
 
-      startDate = snap.val().rooms[ROOM_ID].time_interval.start;
-      users = snap.val().rooms[ROOM_ID].users;
-      dates = createDayArr(
-        snap.val().rooms[ROOM_ID].time_interval.start,
-        snap.val().rooms[ROOM_ID].time_interval.end
-      );
-      console.log(checkIfDataExists(snap,ROOM_ID))
+      startDate =snap.val().rooms[this.roomId].time_interval.start;
+      endDate = snap.val().rooms[this.roomId].time_interval.end;
 
-      if (checkIfDataExists(snap,ROOM_ID)){
-        events = snap.val().rooms[ROOM_ID].data;
-        this.renderCalender({ events, startDate, dates, users })
+      users = snap.val().rooms[this.roomId].users;
+      dates = createDayArr(
+          startDate,
+          endDate
+      );
+
+
+      if (checkIfDataExists(snap,this.roomId)){
+
+        // add empty date to the  `events` object for all the days with missing days if there is any.
+        events = snap.val().rooms[this.roomId].data;
+        let _startDate = moment(startDate, DATE_FORMAT);
+        let _endDate = moment( endDate, DATE_FORMAT);
+        let date;
+        for (let m =_startDate; m.diff(_endDate, 'days') <= 0; m.add(1, 'days')) {
+          date = m.format(DATE_FORMAT);
+          if (!(date in events)){
+            events[date]={};
+          }
+        }
+
+        this.renderCalender( {events, startDate, dates, users})
       }else{
         events =null;
-        this.renderCalender({ events, startDate, dates, users })
+        this.renderCalender( {events, startDate, dates, users})
       }
     }
   };
@@ -247,9 +274,6 @@ class Calendar extends Component {
   onEventDoubleClick = eventData => {
     const startSelected = eventData.e.data.start.value;
     const endSelected = eventData.e.data.end.value;
-    //console.log("testing")
-    //console.log(eventData);
-     console.log(eventData.e.data);
     // console.log(eventData.e.data.start.value)
     // console.log(eventData.e.data.end.value)
     //console.log(this.state.eventClicked)
@@ -272,9 +296,7 @@ class Calendar extends Component {
       }
     })
 
-    //console.log("here1")
-    //console.log(state)
-  }
+  };
 
   /**
    * callback function for EventInvites. Called when the popup window closes
@@ -282,9 +304,22 @@ class Calendar extends Component {
    */
   eventInviteOnCloseCallback = () => {
     this.setState({ eventClicked: false })
-  }
+  };
 
-  render() {
+  /**
+   * Self explanatory - if user is not logged in it turns off eventClicked
+   */
+  componentDidUpdate(prevProps, prevState , snapshot) {
+    if (prevState.eventClicked !== this.state.eventClicked) {
+      if (!(this.props.isUserLoaded)){
+        this.setState({eventClicked: false});
+      }
+    }
+  };
+
+  render()
+  {
+
     return (
       <div className="calendar__container">
         <DayPilotCalendar
@@ -294,7 +329,7 @@ class Calendar extends Component {
           }}
           onEventClick={this.onEventDoubleClick}
         />
-        {this.state.eventClicked && (
+        {(this.state.eventClicked && this.props.isUserLoaded) && (
           <EventInvites
             eventData={this.state.eventData}
             eventClicked={this.state.eventClicked}
