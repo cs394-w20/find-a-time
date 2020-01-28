@@ -7,11 +7,12 @@ import {
 import "./CalendarStyles.css"
 import "firebase/database"
 import { stringToDate, dateToString } from "../utilities"
-import { ROOM_ID } from "../constants"
+import {DATE_FORMAT, ROOM_ID} from "../constants"
 import db from "../components/Db/firebaseConnect"
 import { HOURS, MINUTES } from "../constants"
 import localJSON from "./dummy_data.json"
 import { EventInvites } from "../components/EventInvites"
+import moment from "moment";
 var Rainbow = require("rainbowvis.js")
 
 const dbRef = db.ref()
@@ -27,6 +28,9 @@ const SAMPLE_EMAIL_ADDRESS = ["find.a.time1@gmail.com"];
  * @return boolean
  */
 const checkIfDataExists =(snap,roomId) =>{
+
+  console.log('rooms' in snap.val());
+
 
 
   return (('rooms' in snap.val())
@@ -113,27 +117,40 @@ class Calendar extends Component {
    * Call back function for firebase
    */
   handleDataCallback = snap => {
-    let dates = []
-    let events
-    let startDate = ""
-    let users = []
+    let dates = [];
+    let events;
+    let startDate = "";
+    let endDate = "";
+    let users = [];
 
     if ((snap.val())) {
 
-      startDate = snap.val().rooms[ROOM_ID].time_interval.start;
+      startDate = moment(snap.val().rooms[ROOM_ID].time_interval.start, DATE_FORMAT);
+      endDate = moment( snap.val().rooms[ROOM_ID].time_interval.end, DATE_FORMAT);
+
       users = snap.val().rooms[ROOM_ID].users;
       dates = createDayArr(
-        snap.val().rooms[ROOM_ID].time_interval.start,
-        snap.val().rooms[ROOM_ID].time_interval.end
+          startDate.format(DATE_FORMAT),
+          endDate.format(DATE_FORMAT)
       );
-      console.log(checkIfDataExists(snap,ROOM_ID))
 
       if (checkIfDataExists(snap,ROOM_ID)){
+
         events = snap.val().rooms[ROOM_ID].data;
-        this.renderCalender({ events, startDate, dates, users })
+
+        // add empty date to events object for all the days with missing days if there is any.
+        let date;
+        for (let m =startDate; m.diff(endDate, 'days') <= 0; m.add(1, 'days')) {
+          date = m.format(DATE_FORMAT);
+          if (!(date in events)){
+            events[date]={};
+          }
+        }
+
+        this.renderCalender({ events:events, startDate:startDate.format(DATE_FORMAT), dates:dates, users:users })
       }else{
         events =null;
-        this.renderCalender({ events, startDate, dates, users })
+        this.renderCalender({ events:events, startDate:startDate.format(DATE_FORMAT), dates:dates, users:users })
       }
     }
   };
