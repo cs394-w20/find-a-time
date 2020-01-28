@@ -2,6 +2,8 @@
 .login-container {
   display: flex;
   justify-content: space-around;
+  max-width: 1080px;
+  margin: 0 auto;
 }
 
 .login-header__text {
@@ -19,6 +21,7 @@
 }
 .login-image {
   height: 480px;
+  width: 480px;
 }
 
 @media only screen and (max-width: $mobile-break) {
@@ -29,7 +32,8 @@
     align-items: flex-start;
   }
   .login-image {
-    width: 128px;
+    height: 256px;
+    width: 256px;
     margin-top: 32px;
   }
 }
