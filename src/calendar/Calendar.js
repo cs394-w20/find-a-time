@@ -12,6 +12,8 @@ import db from "../components/Db/firebaseConnect"
 import { HOURS, MINUTES } from "../constants"
 import localJSON from "./dummy_data.json"
 import { EventInvites } from "../components/EventInvites"
+import AddManualEvents from "../components/Events/AddManualEvents";
+import { UserContext } from "../context/UserContext"
 var Rainbow = require("rainbowvis.js")
 
 const dbRef = db.ref()
@@ -86,6 +88,15 @@ class Calendar extends Component {
               text: modal.result
             })
           )
+          /*
+          const userContext = useContext(UserContext)
+          const userName = userContext.user.name
+          */
+         var roomId = 1
+         const userName = "h"
+         const start = args.start;
+         const end = args.end
+          AddManualEvents({roomId, userName, start, end});
         })
 
         selection.clearSelection()

@@ -50,7 +50,7 @@ const isEmpty = (obj) => {
  * @param data (string): the data
  * @param userName (string): the username
  */
-const UpdateDb = ({userName, roomId, intervalData}) => {
+const UpdateDb = ({userName, roomId, intervalData, updateType}) => {
 
     let dateList = Object.keys(intervalData);
     let i, j, busyIntervalSet, date, interval;
@@ -67,9 +67,9 @@ const UpdateDb = ({userName, roomId, intervalData}) => {
             for (j = 0; j < HOURS_AND_MINUTES.length; j++) {
                 interval = HOURS_AND_MINUTES[j];
                 if (busyIntervalSet.has(interval)) {
-                    addBusyInterval({"roomId": roomId, "userName": userName, "date": date, "interval": interval, "type": "AUTO"})
+                    addBusyInterval({"roomId": roomId, "userName": userName, "date": date, "interval": interval, "type": updateType})
                 } else {
-                    addFreeInterval({"roomId": roomId, "userName": userName, "date": date, "interval": interval, "type": "AUTO"})
+                    addFreeInterval({"roomId": roomId, "userName": userName, "date": date, "interval": interval})
                 }
 
             }
