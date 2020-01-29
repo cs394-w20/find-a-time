@@ -10,7 +10,6 @@ import { stringToDate, dateToString } from "../utilities"
 import {DATE_FORMAT, ROOM_ID} from "../constants"
 import db from "../components/Db/firebaseConnect"
 import { HOURS, MINUTES } from "../constants"
-import localJSON from "./dummy_data.json"
 import { EventInvites } from "../components/EventInvites"
 import AddManualEvents from "../components/Events/AddManualEvents";
 import moment from "moment";
@@ -347,5 +346,3 @@ class Calendar extends Component {
 }
 
 export default Calendar
-
-
