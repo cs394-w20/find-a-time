@@ -16,23 +16,20 @@ const HOURS_AND_MINUTES = createTimes();
 
 const addFreeInterval = ({roomId, date, interval, userName}) => {
     let dbRef = db.ref('rooms/' + roomId + "/data/" + date + "/" + interval + "/" + userName);
-    console.log(date, interval);
     dbRef.transaction((autoOrManual) => {
             if (autoOrManual === "MANUAL") {
-                console.log("MANUAL");
+                // Do nothing
                 return;
             } else {
-                console.log("AUTO");
-                dbRef.remove().then(() => {
-                    console.log("Remove succeeded.")
-                })
+                // Delete record if it exists
+                dbRef.remove()
                     .catch((error) => {
-                        console.log("Remove failed: " + error.message)
+                        console.log("remove failed: " + error.message)
                     });
                 return;
             }
         }).catch((error) => {
-        console.log("Remove failed: " + error.message)
+        console.log("addFreeInterval failed: " + error.message)
     });
 };
 
