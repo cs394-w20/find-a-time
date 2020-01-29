@@ -15,14 +15,27 @@ const createTimes = () => {
 const HOURS_AND_MINUTES = createTimes();
 
 const addFreeInterval = ({roomId, date, interval, userName}) => {
-    db.ref('rooms/' + roomId + "/data/" + date + "/" + interval + "/" + userName)
-        .remove().then(() => {
-        console.log("Remove succeeded.")
-    })
-        .catch((error) =>{
-            console.log("Remove failed: " + error.message)
-        });
+    let dbRef = db.ref('rooms/' + roomId + "/data/" + date + "/" + interval + "/" + userName);
+    console.log(date, interval);
+    dbRef.transaction((autoOrManual) => {
+            if (autoOrManual === "MANUAL") {
+                console.log("MANUAL");
+                return;
+            } else {
+                console.log("AUTO");
+                dbRef.remove().then(() => {
+                    console.log("Remove succeeded.")
+                })
+                    .catch((error) => {
+                        console.log("Remove failed: " + error.message)
+                    });
+                return;
+            }
+        }).catch((error) => {
+        console.log("Remove failed: " + error.message)
+    });
 };
+
 
 const addBusyInterval = ({roomId, date, interval, userName, type}) => {
     db.ref('rooms/' + roomId + "/data/" + date + "/" + interval)
@@ -36,8 +49,8 @@ const addBusyInterval = ({roomId, date, interval, userName, type}) => {
  * @type {Function}
  */
 const isEmpty = (obj) => {
-    for(var key in obj) {
-        if(obj.hasOwnProperty(key))
+    for (var key in obj) {
+        if (obj.hasOwnProperty(key))
             return false;
     }
     return true;
@@ -61,8 +74,6 @@ const UpdateDb = ({userName, roomId, intervalData, updateType}) => {
 
         if (!(isEmpty(intervalData[date]))) {
             busyIntervalSet = new Set(Object.keys(intervalData[date]));
-            console.log('busyintervalset')
-            console.log(busyIntervalSet)
             /**
              * Adds busy and free intervals. Loops through the all the hr:mm pairs and checks if
              * this pair is in `busyIntervalSet` if so it updates db w/ busy, otherwise it update
@@ -71,15 +82,20 @@ const UpdateDb = ({userName, roomId, intervalData, updateType}) => {
             for (j = 0; j < HOURS_AND_MINUTES.length; j++) {
                 interval = HOURS_AND_MINUTES[j];
                 if (busyIntervalSet.has(interval)) {
-                    console.log('hi')
-                    addBusyInterval({"roomId": roomId, "userName": userName, "date": date, "interval": interval, "type": updateType})
+                    addBusyInterval({
+                        "roomId": roomId,
+                        "userName": userName,
+                        "date": date,
+                        "interval": interval,
+                        "type": updateType
+                    })
                 } else {
                     addFreeInterval({"roomId": roomId, "userName": userName, "date": date, "interval": interval})
                 }
 
             }
 
-        }else{
+        } else {
             // updates the db w/ free for all the dates the user is missing interval data.
             for (j = 0; j < HOURS_AND_MINUTES.length; j++) {
                 interval = HOURS_AND_MINUTES[j];
