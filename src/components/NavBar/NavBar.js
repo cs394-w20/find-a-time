@@ -22,6 +22,8 @@ const NavBar = props => {
 
   */
 
+  console.log("THE LINKS",activeLink);
+
   return (
     <nav className="nav-bar__container">
       <Link to="/" className="nav-bar nav-bar__home">
@@ -37,9 +39,9 @@ const NavBar = props => {
           Create an event
         </Link>
         <Link
-          to="/"
+          to="/events"
           className={classnames("nav-bar nav-bar__item", {
-            "nav-bar__active": activeLink.indexOf("/my-events") !== -1
+            "nav-bar__active": "/events" === activeLink
           })}
         >
           Your events
@@ -59,10 +61,10 @@ const NavBar = props => {
       </div>
     </nav>
   )
-}
+};
 
 const Avatar = ({ picture }) => {
   return <img src={picture} alt="user" className="nav-bar__user-avatar" />
-}
+};
 
 export default withRouter(NavBar)
