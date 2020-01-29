@@ -1,0 +1,40 @@
+.share-banner__container {
+  border-radius: 8px;
+  border: 2px solid #214261;
+  background-color: #e7f3fa;
+  color: #1d4b8f;
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  padding: 8px 18px;
+  margin: 0 auto 24px auto;
+  opacity: 1;
+  transition: opacity 300ms ease-in;
+}
+
+.share-banner__text {
+  font-weight: 500;
+  margin-right: 12px;
+}
+
+.share-banner__button {
+  border: none;
+  background-color: #44548f;
+  color: white;
+  border-radius: 8px;
+  padding: 6px;
+  font-weight: 600;
+  font-size: 12px;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.share-banner__button--copied {
+  background-color: #6eb256;
+  color: white;
+  font-size: 12px;
+  &:hover {
+    cursor: default;
+  }
+}

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from "react"
 import { AuthButton } from "components/AuthButton"
 import { Event } from "components/Event"
+import { ShareBanner } from "components/ShareBanner"
 import Calendar from "calendar/Calendar"
 import { AddUserToRoom } from "components/Db"
 import {
@@ -35,9 +36,9 @@ const EventPage = () => {
 
   return (
     <div>
+      <ShareBanner />
       <div className="event-auth__container">
         <Event />
-
         <AuthButton />
       </div>
       <Calendar isUserLoaded={userContext.isUserLoaded} />
