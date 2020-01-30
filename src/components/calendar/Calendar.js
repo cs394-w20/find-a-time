@@ -6,26 +6,22 @@ import {
 } from "daypilot-pro-react"
 import "./CalendarStyles.css"
 import "firebase/database"
-import { stringToDate, dateToString } from "../utilities"
-import {DATE_FORMAT, ROOM_ID} from "../constants"
-import db from "../components/Db/firebaseConnect"
-import { HOURS, MINUTES } from "../constants"
-import localJSON from "./dummy_data.json"
-import { EventInvites } from "../components/EventInvites"
-import AddManualEvents from "../components/Events/AddManualEvents";
+import { stringToDate, dateToString } from "../../utilities"
+import {DATE_FORMAT, ROOM_ID, HOURS, MINUTES} from "../../constants"
+import db from "../Db/firebaseConnect"
+import { EventInvites } from "../EventInvites"
+import AddManualEvents from "../Events/AddManualEvents";
 import moment from "moment";
-import { getRoomIdFromPath } from "../components/Utility"
-import { UserContext } from "../context/UserContext"
+import { getRoomIdFromPath } from "../Utility"
+import { UserContext } from "../../context/UserContext"
 
 var Rainbow = require("rainbowvis.js")
 
 const dbRef = db.ref()
 // DayPilotCalendar API Reference --> https://api.daypilot.org/daypilot-calendar-viewtype/
 
-
 //password: thirtythree333333***
 const SAMPLE_EMAIL_ADDRESS = ["find.a.time1@gmail.com"];
-
 
 /**
  * Checks if there is data for the specific room that the calendar can render
@@ -85,8 +81,8 @@ const createDayArr = (start, end) => {
 
 class Calendar extends Component {
   constructor(props) {
-
     super(props)
+
     this.state = {
       eventClicked: false,
       viewType: "Days",
@@ -174,11 +170,11 @@ class Calendar extends Component {
     const times = createTimes()
     const freeTimes = []
 
-    console.log("These are the dates we got from the database: ", dates)
+    // console.log("These are the dates we got from the database: ", dates)
     console.log("These are the EVENTS we got from the database: ", events)
-    console.log("These are the USERS we got from the database: ", users)
-
-    console.log("THE USERS: ", users)
+    // console.log("These are the USERS we got from the database: ", users)
+    //
+    // console.log("THE USERS: ", users)
     const numUsers = Object.keys(users).length
     let colorSpectrum = new Rainbow()
     colorSpectrum.setNumberRange(0, numUsers)
@@ -193,7 +189,6 @@ class Calendar extends Component {
         let currStart = ""
         let currDay = dateToString(key)
         let seconds = ":00"
-        console.log("CURRENT DAY: ", currDay)
 
         if (!Object.keys(events).includes(currDay)) {
           console.log("Date not included in firebase")
@@ -262,6 +257,8 @@ class Calendar extends Component {
 
   componentDidMount() {
     dbRef.on("value", this.handleDataCallback, error => alert(error))
+
+    console.log("THIS IS THE LOGGED IN USER: ", this.props.user)
   }
 
   // disconnect the handleDataCallback on unmount
@@ -326,6 +323,7 @@ class Calendar extends Component {
 
     return (
       <div className="calendar__container">
+
         <DayPilotCalendar
           {...this.state}
           ref={component => {
@@ -347,5 +345,3 @@ class Calendar extends Component {
 }
 
 export default Calendar
-
-

@@ -28,8 +28,8 @@ export const ListUpcomingEvents = async ({roomId, userName}) => {
             })
             .then(response => {
                 const events = response.result.items;
-                console.log("EVENT DATA")
-                console.log(events)
+                // console.log("THESE ARE THE GOOGLE CALENDAR EVENTS: ")
+                // console.log(events)
 
                 // appendPre("Upcoming events:");
                 AddGCalEvents({roomId, userName, events, startDate, endDate});
