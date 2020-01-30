@@ -22,17 +22,19 @@ import SubjectIcon from '@material-ui/icons/Subject';
 import moment from "moment-timezone";
 import {DATE_FORMAT} from "../../constants";
 import jstz from "jstz";
+import {Link} from "react-router-dom"
+import CardActionArea from "@material-ui/core/CardActionArea";
 // Used to change the font.{theme.palette.secondary.main
 
 let abbrs = {
-    EST : 'Eastern Standard Time',
-    EDT : 'Eastern Daylight Time',
-    CST : 'Central Standard Time',
-    CDT : 'Central Daylight Time',
-    MST : 'Mountain Standard Time',
-    MDT : 'Mountain Daylight Time',
-    PST : 'Pacific Standard Time',
-    PDT : 'Pacific Daylight Time',
+    EST: 'Eastern Standard Time',
+    EDT: 'Eastern Daylight Time',
+    CST: 'Central Standard Time',
+    CDT: 'Central Daylight Time',
+    MST: 'Mountain Standard Time',
+    MDT: 'Mountain Daylight Time',
+    PST: 'Pacific Standard Time',
+    PDT: 'Pacific Daylight Time',
 };
 // formatting for timezone, overrides defaults .
 moment.fn.zoneName = function () {
@@ -75,90 +77,53 @@ const useStyles = makeStyles(theme => ({
         verticalAlign: 'middle',
         display: 'inline-flex'
     },
-    modal: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center"
-    },
-    paper: {
-        backgroundColor: theme.palette.background.paper,
-        border: "2px solid #000",
-        boxShadow: theme.shadows[5],
-        padding: theme.spacing(2, 4, 3)
-    },
-    overline: {
-        background: "#603dcb",
-        height: "3%",
-        width: "100%"
-    },
-    card: {
-        minWidth: 275
-    },
-    bullet: {
-        display: "inline-block",
-        margin: "0 2px",
-        transform: "scale(0.8)"
-    },
     title: {
         textAlign: "center"
-    },
-    pos: {
-        marginBottom: 12
-    },
-    icon: {
-        padding: "10%",
-        display: "inline-block"
-    },
-    rectangleTop: {
-        padding: "1%",
-        paddingLeft: "2%",
-        display: "inline-block",
-        backgroundColor: "#585858",
-        width: "100%",
-        height: "1%",
-        margin: 0,
-        color: "white",
-        fontWeight: "bold"
-    },
-    rectangleSuccess: {
-        padding: "1%",
-        paddingLeft: "2%",
-        display: "inline-block",
-        backgroundColor: "#603dcb",
-        width: "100%",
-        height: "1%",
-        margin: 0,
-        color: "white",
-        fontWeight: "bold"
-    },
-    root: {
-        width: "100%",
-        maxWidth: 360,
-        backgroundColor: theme.palette.background.paper
-    },
-    divider: {
-        marginBottom: theme.spacing(1)
     }
 }));
 
 
-const CondensedEvent = ({text,title,start,end}) => {
-    start = "2020-01-10";
-    end = "2020-01-12";
-    const classes = useStyles();
-    const startDay = moment(start,DATE_FORMAT).format("ddd, MMM DD");
-    const endDay = moment(end,DATE_FORMAT).format("ddd, MMM DD");
-    const weekDay = moment(start,DATE_FORMAT).format("ddd").toUpperCase();
-    const dayOfWeek = moment(start,DATE_FORMAT).format("DD");
+const sampleRoom3 = {
+    "roomId": 20,
+    "users": {
+        "suzy@northwestern_edu": {
+            "name": "Suzy",
+            "picture": "https://i.pinimg.com/originals/f0/03/44/f00344d904062ce92b4b3b146060d874.png"
+        }
+    },
+    "time_interval": {
+        "start": "2020-02-10",
+        "end": "2020-02-12"
+    },
+    "meta_data": {
+        "title": "Chess Club meeting",
+        "description": "Make sure you fill out this form so we can find a time to meet weekly!",
+        "room_owner": "suzy@northwestern_edu"
+    }
+};
 
-    title = "CS 394 Meeting";
-    text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+
+const CondensedEvent = ({payload}) => {
+
+    let start = payload.time_interval.start;
+    let end = payload.time_interval.end;
+    let title = payload.meta_data.title;
+    let description = payload.meta_data.description;
+
+
+    const classes = useStyles();
+    const startDay = moment(start, DATE_FORMAT).format("ddd, MMM DD");
+    const endDay = moment(end, DATE_FORMAT).format("ddd, MMM DD");
+    const weekDay = moment(start, DATE_FORMAT).format("ddd").toUpperCase();
+    const dayOfWeek = moment(start, DATE_FORMAT).format("DD");
+
+    const roomId = 1;
 
     return (
         <Fragment>
             <ListItem component="div">
 
-                <div  >
+                <div>
 
                     <div className="eventpage__container-date">
                         <span className="eventpage_container-date-dayOfweek">{weekDay}</span>
@@ -166,93 +131,92 @@ const CondensedEvent = ({text,title,start,end}) => {
                         <span>{dayOfWeek}</span>
                     </div>
 
+                    <Link to={`/events/${roomId}`}>
+                        <Card className="card">
+                            <CardActionArea>
+                                <CardHeader
+                                    title={title}
+                                    style={{textAlign: "center"}}
+                                />
+                                {/*Length of meeting*/}
 
-                <Card className="card" >
-
-                    <CardHeader
-                        title={title}
-                        style={{ textAlign: "center" }}
-                    />
-                    {/*Length of meeting*/}
-
-                    <Divider component="div"/>
-                    <CardContent>
-                        {/*Meeting time*/}
-                        <Box>
-                            <Grid
-                                component="div"
-                                color="primary-light"
-                                container
-                                direction="row"
-                                alignItems="center"
-                                spacing={1}
-                                alignContent={"flex-start"}
-                            >
-                                <Grid item component="div" >
-                                    <CalendarTodayIcon className="red" />
-                                </Grid>
-
-
-                                <Grid item component="div">
-                                    <Typography
-                                        className="red"
-
-                                        gutterBottom
-                                        noWrap={false}
-                                        component="div">
-                                        {startDay} - {endDay}
-                                    </Typography>
-                                </Grid>
-                            </Grid>
-                        </Box>
-
-                        {/*Time Zone*/}
-                        <Box color="text.disabled">
-                            <Grid
-                                component="div"
-                                container
-                                direction="row"
-                                alignItems="center"
-                                spacing={1}
-                            >
-                                <Grid item component="div">
-                                    <PublicIcon />
-                                </Grid>
-                                <Grid item component="div">
-                                    <Typography className={classes.title} gutterBottom component="div">
-                                        {longFormattedTimeZone}
-                                    </Typography>
-                                </Grid>
-                            </Grid>
-                        </Box>
-
-                        {/*Title and editor*/}
-                        <Box color="text.secondary">
-                            <Grid
-                                component="div"
-                                direction="row"
-                                alignItems="center"
-                            >
-                                <Grid item component="div">
-                                    <SubjectIcon />
-                                </Grid>
-                                <Grid item component="div">
-                                    <Typography variant="body2" className={classes.wrapIcon}
-                                                                                        component="p"
-                                                                                        noWrap={false} gutterBottom>
-                                        {text}
-                                    </Typography>
-                                </Grid>
-                            </Grid>
-                        </Box>
+                                <Divider component="div"/>
+                                <CardContent>
+                                    {/*Meeting time*/}
+                                    <Box>
+                                        <Grid
+                                            component="div"
+                                            color="primary-light"
+                                            container
+                                            direction="row"
+                                            alignItems="center"
+                                            spacing={1}
+                                            alignContent={"flex-start"}
+                                        >
+                                            <Grid item component="div">
+                                                <CalendarTodayIcon className="red"/>
+                                            </Grid>
 
 
-                    </CardContent>
-                </Card>
+                                            <Grid item component="div">
+                                                <Typography
+                                                    className="red"
+
+                                                    gutterBottom
+                                                    noWrap={false}
+                                                    component="div">
+                                                    {startDay} - {endDay}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+
+                                    {/*Time Zone*/}
+                                    <Box color="text.disabled">
+                                        <Grid
+                                            component="div"
+                                            container
+                                            direction="row"
+                                            alignItems="center"
+                                            spacing={1}
+                                        >
+                                            <Grid item component="div">
+                                                <PublicIcon/>
+                                            </Grid>
+                                            <Grid item component="div">
+                                                <Typography className={classes.title} gutterBottom component="div">
+                                                    {longFormattedTimeZone}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+
+                                    {/*Title and editor*/}
+                                    <Box color="text.secondary">
+                                        <Grid
+                                            component="div"
+                                            direction="row"
+                                            alignItems="center"
+                                        >
+                                            <Grid item component="div">
+                                                <SubjectIcon/>
+                                            </Grid>
+                                            <Grid item component="div">
+                                                <Typography variant="body2" className={classes.wrapIcon}
+                                                            component="p"
+                                                            noWrap={false} gutterBottom>
+                                                    {description}
+                                                </Typography>
+                                            </Grid>
+                                        </Grid>
+                                    </Box>
+
+
+                                </CardContent>
+                            </CardActionArea>
+                        </Card>
+                    </Link>
                 </div>
-
-
-
 
 
             </ListItem>
