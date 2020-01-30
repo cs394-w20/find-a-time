@@ -22,7 +22,7 @@ const EventPage = () => {
     if (userContext.isUserLoaded) {
       userContext.ListUpcomingEvents({
         roomId: getRoomIdFromPath(),
-        userName: userContext.user.name
+        userName: normalEmailToFirebaseEmail(userContext.user.email)
       })
 
       AddUserToRoom({

@@ -5,11 +5,7 @@ import findBuckets from "./FindBuckets";
 
 const AddManualEvents = ({roomId, userName, start, end})=> {
     const intervalData = findBuckets(roomId, userName, moment(start.toDate()), moment(end.toDate()));
-    console.log('addman')
-    console.log(start)
-    console.log(moment(start.toDate()))
     UpdateDb({roomId,userName,intervalData, updateType: "MANUAL"});
-    console.log('addmanend')
 }
 
 
