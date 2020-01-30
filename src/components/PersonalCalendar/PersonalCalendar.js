@@ -102,10 +102,8 @@ class PersonalCalendar extends Component {
               text: modal.result
             })
           )
-         const userName = "h"
-         const start = args.start;
-         const end = args.end
-          AddManualEvents({roomId: getRoomIdFromPath(), userName, start, end});
+          const currUserEmail = normalEmailToFirebaseEmail(props.user.email);
+          AddManualEvents({roomId: getRoomIdFromPath(), userName: currUserEmail, start: args.start, end: args.end});
         })
 
         selection.clearSelection()
