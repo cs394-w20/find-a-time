@@ -4,7 +4,6 @@ import {
   DayPilotCalendar,
   DayPilotNavigator
 } from "daypilot-pro-react"
-import "./CalendarStyles.css"
 import "firebase/database"
 import { stringToDate, dateToString } from "../../utilities"
 import {DATE_FORMAT, ROOM_ID, HOURS, MINUTES} from "../../constants"
@@ -14,6 +13,7 @@ import AddManualEvents from "../Events/AddManualEvents";
 import moment from "moment";
 import { getRoomIdFromPath } from "../Utility"
 import { UserContext } from "../../context/UserContext"
+import normalEmailToFirebaseEmail  from "../Utility/normalEmailToFirebaseEmail"
 
 var Rainbow = require("rainbowvis.js")
 
@@ -79,7 +79,7 @@ const createDayArr = (start, end) => {
   return dateArr
 }
 
-class Calendar extends Component {
+class PersonalCalendar extends Component {
   constructor(props) {
     super(props)
 
@@ -170,11 +170,12 @@ class Calendar extends Component {
     const times = createTimes()
     const freeTimes = []
 
+    const currUserEmail = normalEmailToFirebaseEmail(this.props.user.email);
+    console.log("USER EMAIL: ", currUserEmail);
+
     // console.log("These are the dates we got from the database: ", dates)
     console.log("These are the EVENTS we got from the database: ", events)
     // console.log("These are the USERS we got from the database: ", users)
-    //
-    // console.log("THE USERS: ", users)
     const numUsers = Object.keys(users).length
     let colorSpectrum = new Rainbow()
     colorSpectrum.setNumberRange(0, numUsers)
@@ -200,36 +201,30 @@ class Calendar extends Component {
           let i = 0
 
           while (i < 2) {
+
             strTime = currDay.concat("T", convertTime(currTime).concat(seconds))
             let timeStamp = convertTime(currTime).concat(seconds)
 
             // CASE 1: Time slot where everybody is available
             if (!Object.keys(events[currDay]).includes(timeStamp)) {
-              const currEvent = {
-                id: currId,
-                text: "ALL available",
-                start: strTime.concat(":00"),
-                end: addThirtyMin(currDay, currTime, seconds).concat(":00"),
-                backColor: "#" + colorSpectrum.colourAt(0)
-              }
-              freeTimes.push(currEvent)
+
             }
             // CASE 2: Time slot is not available for everyone
             else {
-              const unavailable = events[currDay][timeStamp]
-              const numUnavailable = Object.keys(unavailable).length
-              const eventText = (numUsers - numUnavailable).toString() +
-                                " / " + numUsers.toString() + " available"
 
-              const currEvent = {
-                id: currId,
-                text: eventText,
-                start: strTime.concat(":00"),
-                end: addThirtyMin(currDay, currTime, seconds).concat(":00"),
-                backColor: "#" + colorSpectrum.colourAt(numUnavailable)
+              const unavailable = events[currDay][timeStamp]
+
+              if (Object.keys(unavailable).includes(currUserEmail)) {
+                console.log(currUserEmail, " is UNAVAILABLE at the time: ", timeStamp, " on day: ", currDay);
+                const currEvent = {
+                  id: currId,
+                  text: 'hi',
+                  start: strTime.concat(":00"),
+                  end: addThirtyMin(currDay, currTime, seconds).concat(":00")
+                }
+                freeTimes.push(currEvent)
               }
 
-              freeTimes.push(currEvent)
             }
 
             if (seconds == ":00") {
@@ -257,8 +252,6 @@ class Calendar extends Component {
 
   componentDidMount() {
     dbRef.on("value", this.handleDataCallback, error => alert(error))
-
-    console.log("THIS IS THE LOGGED IN USER: ", this.props.user)
   }
 
   // disconnect the handleDataCallback on unmount
@@ -344,4 +337,4 @@ class Calendar extends Component {
   }
 }
 
-export default Calendar
+export default PersonalCalendar;

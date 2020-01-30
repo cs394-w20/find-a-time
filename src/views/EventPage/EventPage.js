@@ -3,6 +3,7 @@ import { AuthButton } from "components/AuthButton"
 import { Event } from "components/Event"
 import { ShareBanner } from "components/ShareBanner"
 import Calendar from "../../components/calendar/Calendar"
+import PersonalCalendar from "../../components/PersonalCalendar/PersonalCalendar"
 import { AddUserToRoom } from "components/Db"
 import {
   normalEmailToFirebaseEmail,
@@ -12,6 +13,7 @@ import { UserContext } from "context/UserContext"
 
 const EventPage = () => {
   const userContext = useContext(UserContext)
+  console.log("HERE IS THE USER CONTEXT!!!", userContext);
   //const {ListUpcomingEvents} = useContext(UserContext)
 
   /**
@@ -22,7 +24,7 @@ const EventPage = () => {
     if (userContext.isUserLoaded) {
       userContext.ListUpcomingEvents({
         roomId: getRoomIdFromPath(),
-        userName: userContext.user.name
+        userName: normalEmailToFirebaseEmail(userContext.user.email)
       })
 
       AddUserToRoom({
@@ -41,7 +43,8 @@ const EventPage = () => {
         <Event />
         <AuthButton />
       </div>
-      <Calendar isUserLoaded={userContext.isUserLoaded} />
+      { userContext.user ? <PersonalCalendar isUserLoaded={userContext.isUserLoaded} user={userContext.user} /> : null }
+      <Calendar isUserLoaded={userContext.isUserLoaded}/>
     </div>
   )
 }
