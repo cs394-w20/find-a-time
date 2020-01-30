@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState, useRef} from "react";
+import React, { useEffect, useState, useRef} from "react";
 import ReactSearchBox from 'react-search-box'
 import {UserContext} from "context/UserContext";
 import Paper from "@material-ui/core/Paper";
@@ -124,9 +124,8 @@ const defaultFuseConfigs = {
 // fuse is a fuzzy search library that ReactSearchBox uses --- this will be called
 
 const YourEvents = () => {
-    let _fuse;
     const fuse = useRef();
-    const userContext = useContext(UserContext);
+    //const userContext = useContext(UserContext);
     const [data, setData] = useState(sampleData);
 
     useEffect(()=>{

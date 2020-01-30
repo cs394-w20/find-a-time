@@ -1,8 +1,4 @@
-import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import ListItemText from "@material-ui/core/ListItemText";
-import SearchIcon from "@material-ui/core/SvgIcon/SvgIcon";
 import React, {Fragment} from "react";
 import Grid from '@material-ui/core/Grid';
 import CardHeader from "@material-ui/core/CardHeader";
@@ -10,21 +6,16 @@ import Divider from "@material-ui/core/Divider";
 import CardContent from "@material-ui/core/CardContent";
 import Box from "@material-ui/core/Box";
 import Typography from "@material-ui/core/Typography";
-import CardActions from "@material-ui/core/CardActions";
-import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
-import {createMuiTheme} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import CalendarTodayIcon from "@material-ui/icons/CalendarToday"
 import PublicIcon from "@material-ui/icons/Public"
-import StopIcon from "@material-ui/icons/Stop"
 import SubjectIcon from '@material-ui/icons/Subject';
 import moment from "moment-timezone";
 import {DATE_FORMAT} from "../../constants";
 import jstz from "jstz";
 import {Link} from "react-router-dom"
 import CardActionArea from "@material-ui/core/CardActionArea";
-// Used to change the font.{theme.palette.secondary.main
 
 let abbrs = {
     EST: 'Eastern Standard Time',
@@ -45,33 +36,7 @@ moment.fn.zoneName = function () {
 let timeZone = jstz.determine().name();
 let longFormattedTimeZone = moment().tz(timeZone).format('zz');
 
-const theme = createMuiTheme({
-    palette: {
-        primary: {
-            // Purple and green play nicely together.
-            main: "#603dcb",
-            light: "#956aff",
-            dark: "#231099"
-        },
-        secondary: {
-            // This is green.A700 as hex.
-            main: "#af3f3f",
-            light: "#e56f6a",
-            dark: "#7a0719"
-        }
-    },
-    typography: {
-        fontFamily: [
-            "Nunito",
-            "Roboto",
-            '"Helvetica Neue"',
-            "Arial",
-            "sans-serif"
-        ].join(",")
-    }
-})
-
-/* The style sheet */
+/*  style sheet */
 const useStyles = makeStyles(theme => ({
     wrapIcon: {
         verticalAlign: 'middle',
@@ -81,26 +46,6 @@ const useStyles = makeStyles(theme => ({
         textAlign: "center"
     }
 }));
-
-
-const sampleRoom3 = {
-    "roomId": 20,
-    "users": {
-        "suzy@northwestern_edu": {
-            "name": "Suzy",
-            "picture": "https://i.pinimg.com/originals/f0/03/44/f00344d904062ce92b4b3b146060d874.png"
-        }
-    },
-    "time_interval": {
-        "start": "2020-02-10",
-        "end": "2020-02-12"
-    },
-    "meta_data": {
-        "title": "Chess Club meeting",
-        "description": "Make sure you fill out this form so we can find a time to meet weekly!",
-        "room_owner": "suzy@northwestern_edu"
-    }
-};
 
 
 const CondensedEvent = ({payload}) => {
