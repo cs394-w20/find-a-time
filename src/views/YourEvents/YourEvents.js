@@ -5,8 +5,8 @@ import Paper from "@material-ui/core/Paper";
 import List from "@material-ui/core/List";
 
 import "./YourEvents.scss"
-import CondensedEvent from "./CondensedEvent";
 import Fuse from 'fuse.js'
+import {CondensedEvent} from "./components";
 
 const circleImg = require("./Images/circle.svg");
 const clockImg = require("./Images/clock.svg");
@@ -86,7 +86,7 @@ const sampleData = [
     }
 ];
 
-
+// fuse is a fuzzy search library that ReactSearchBox uses ---these are the parameters.
 const defaultFuseConfigs = {
     /**
      * At what point does the match algorithm give up. A threshold of 0.0
@@ -121,7 +121,6 @@ const defaultFuseConfigs = {
     keys: ['value'],
 };
 
-// fuse is a fuzzy search library that ReactSearchBox uses --- this will be called
 
 const YourEvents = () => {
     const fuse = useRef();
@@ -143,25 +142,23 @@ const YourEvents = () => {
 
     return (
         <div>
-            <div className="eventpage__container-header-scroll">
-                <div className="eventpage_month"> January</div>
-                <div className="eventpage__searchbar">
+            <div className="yourevents__container-header-scroll">
+                <div className="yourevents_month"> January</div>
+                <div className="yourevents__searchbar">
                     <ReactSearchBox
                         placeholder="Search ..."
                         data={data}
                         onChange={onChange}
                     />
                 </div>
-                <div className="eventpage__divider"></div>
+                <div className="yourevents__divider"></div>
             </div>
 
 
-            <div className="eventpage__container-scroll">
+            <div className="yourevents__container-scroll">
                 <Paper style={{maxHeight: '100%', overflow: 'auto'}}>
-                    <List component="div" className="eventpage__container-list">
-
+                    <List component="div" className="yourevents__container-list">
                         {data.map((value) => <CondensedEvent key={value.key.roomId} payload={value.key}/>)}
-
                     </List>
                 </Paper>
             </div>
@@ -170,25 +167,25 @@ const YourEvents = () => {
             <img
                 src={circleImg}
                 alt="A circle"
-                className="eventpage_img-circle"
+                className="yourevents_img-circle"
             />
 
             <img
                 src={clockImg}
                 alt="A Clock"
-                className="eventpage__img-clock"
+                className="yourevents__img-clock"
             />
 
             <img
                 src={strollingHumaanImg}
                 alt="Strolling human"
-                className="eventpage_img-strollingHumaan"
+                className="yourevents_img-strollingHumaan"
             />
 
             <img
                 src={runningHumaanImg}
                 alt="Running Human"
-                className="eventpage_img-runningHumaan"
+                className="yourevents_img-runningHumaan"
             />
 
         </div>

@@ -1,0 +1,41 @@
+@import "~sass-globals/variables";
+
+
+.condensedevent__container-date {
+  float: left;
+  text-align: center;
+  margin-right: 5vw;
+  width: 2em;
+  height: 5vh;
+  font-size: 1em;
+}
+
+.condensedevent_container-date-dayOfweek {
+  color: #7B7676;
+}
+.condensedevent_container-dropDown{
+  float:left;
+  z-index: 99;
+  align-content: center;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.condensedevent__container-chips{
+  width: 22vw;
+  height: 6vh;
+  flex-wrap: wrap;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  float: left;
+}
+
+.condensedevent__container-description {
+  margin-left: 5px;
+  flex-wrap: wrap;
+  display: flex;
+  width: 24vw;
+  max-height: 24vh;
+}

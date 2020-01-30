@@ -1,7 +1,7 @@
 @import "~sass-globals/variables";
 
 
-.eventpage__divider {
+.yourevents__divider {
   width: 70%;
   height: 4px;
   background: #C4C4C4;
@@ -13,14 +13,14 @@
 }
 
 @media only screen and (max-width: $tablet-break) {
-  .eventpage__divider {
+  .yourevents__divider {
     width: 100%;
     margin-left: 0;
   }
 }
 
 
-.eventpage__searchbar {
+.yourevents__searchbar {
   float: right;
   z-index: 1;
   width: 30%;
@@ -29,7 +29,7 @@
 }
 
 @media only screen and (max-width: $tablet-break) {
-  .eventpage__searchbar {
+  .yourevents__searchbar {
     width: 40%;
     margin-right: 0;
 
@@ -37,7 +37,7 @@
 }
 
 
-.eventpage__container-scroll {
+.yourevents__container-scroll {
   position: absolute;
   width: 40%;
   height: 89vh;
@@ -51,7 +51,7 @@
   background-repeat: repeat;
 }
 
-.eventpage__container-list {
+.yourevents__container-list {
   background-image: url("./Images/cream_dust.png");
   background-repeat: repeat;
   box-shadow: none;
@@ -63,14 +63,14 @@
 
 
 @media only screen and (max-width: $tablet-break) {
-  .eventpage__container-scroll {
+  .yourevents__container-scroll {
     width: 60%;
     left: 20vw;
   }
 }
 
 @media only screen and (max-width: $mobile-break) {
-  .eventpage__container-scroll {
+  .yourevents__container-scroll {
     left: 6vw;
     width: 90%;
     right: 10%;
@@ -78,7 +78,7 @@
 }
 
 
-.eventpage__container-header-scroll {
+.yourevents__container-header-scroll {
   position: absolute;
   width: 80%;
   height: 10vh;
@@ -88,7 +88,7 @@
 }
 
 @media only screen and (max-width: $tablet-break) {
-  .eventpage__container-header-scroll {
+  .yourevents__container-header-scroll {
     margin-left: -4vw;
     width: 90%;
     right: 10%;
@@ -96,7 +96,7 @@
 }
 
 
-.eventpage_month {
+.yourevents_month {
   float: left;
   font-family: DM Sans, serif;
   font-style: normal;
@@ -109,23 +109,9 @@
 }
 
 @media only screen and (max-width: $tablet-break) {
-  .eventpage_month {
+  .yourevents_month {
     margin-left: 0;
   }
-}
-
-
-.eventpage__container-date {
-  float: left;
-  text-align: center;
-  margin-right: 5vw;
-  width: 2em;
-  height: 5vh;
-  font-size: 1em;
-}
-
-.eventpage_container-date-dayOfweek {
-  color: #7B7676;
 }
 
 
@@ -155,8 +141,7 @@
   box-shadow: 2px 4px #B8B8B8;
 }
 
-
-.eventpage__img-clock {
+.yourevents__img-clock {
   position: absolute;
   width: 106px;
   height: 106px;
@@ -166,14 +151,14 @@
 }
 
 @media only screen and (max-width: $tablet-break) {
-  .eventpage__img-clock {
+  .yourevents__img-clock {
     opacity: 0;
   }
 }
 
 
 /****** Images **********/
-.eventpage_img-runningHumaan {
+.yourevents_img-runningHumaan {
   position: absolute;
   left: 58px;
   right: 70.62%;
@@ -184,13 +169,13 @@
 }
 
 @media only screen and (max-width: $tablet-break) {
-  .eventpage_img-runningHumaan {
+  .yourevents_img-runningHumaan {
     opacity: 0;
   }
 }
 
 
-.eventpage_img-strollingHumaan {
+.yourevents_img-strollingHumaan {
   position: absolute;
   left: 70%;
   right: 4.67%;
@@ -202,7 +187,7 @@
 
 }
 
-.eventpage_img-circle {
+.yourevents_img-circle {
   position: absolute;
   left: 74%;
   right: 5.62%;
@@ -211,15 +196,20 @@
 }
 
 @media only screen and (max-width: $tablet-break) {
-  .eventpage_img-strollingHumaan {
+  .yourevents_img-strollingHumaan {
     opacity: 0;
   }
 }
 
 @media only screen and (max-width: $tablet-break) {
-  .eventpage_img-circle {
+  .yourevents_img-circle {
     opacity: 0;
   }
 }
 
 
+.yourevents__wrapicon{
+  verticalAlign: middle;
+  display: inline-flex;
+  color: #424242;
+}
