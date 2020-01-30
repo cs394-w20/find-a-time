@@ -1,0 +1,227 @@
+@import "~sass-globals/variables";
+
+
+
+
+
+.eventpage__divider{
+  width: 70%;
+  height: 4px;
+  background: #C4C4C4;
+  z-index: -1;
+  clear:both;
+  margin-left: 12.5vw;
+  top: 10vh;
+  position: absolute;
+}
+
+@media only screen and (max-width: $tablet-break) {
+  .eventpage__divider {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+
+
+
+.eventpage__searchbar {
+  float: right;
+  z-index: 1;
+  width: 30%;
+  margin-right: 11.5vw;
+  margin-top: 3.5vh;
+}
+
+@media only screen and (max-width: $tablet-break) {
+  .eventpage__searchbar {
+    width: 40%;
+    margin-right: 0;
+
+  }
+}
+
+
+
+
+.eventpage__container-scroll{
+  position: absolute;
+  width: 40%;
+  height: 89vh;
+  left: 30%;
+  margin-top: 12vh;
+  border: 1px solid rgba(0, 0, 0, 0.22);
+  box-sizing: border-box;
+  border-radius: 5px;
+  z-index: -1;
+  background-image:  url("./Images/cream_dust.png");
+  background-repeat: repeat;
+}
+
+.eventpage__container-list {
+  background-image:  url("./Images/cream_dust.png");
+  background-repeat: repeat;
+  box-shadow: none;
+  border: 0;
+  height: 88.9vh;
+}
+
+
+
+@media only screen and (max-width: $tablet-break) {
+  .eventpage__container-scroll {
+    left: 6vw;
+    width: 90%;
+    right: 10%;
+  }
+}
+
+@media only screen and (max-width: $mobile-break) {
+  .eventpage__container-scroll {
+  }
+}
+
+
+
+
+.eventpage__container-header-scroll{
+  position: absolute;
+  width: 80%;
+  height: 10vh;
+  left: 10%;
+  padding: 0;
+  margin-bottom: 4vh;
+}
+
+@media only screen and (max-width: $tablet-break) {
+  .eventpage__container-header-scroll {
+    margin-left:-4vw;
+    width: 90%;
+    right: 10%;
+  }
+}
+
+
+
+
+
+.eventpage_month {
+float: left;
+  font-family: DM Sans, serif;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 1.5em;
+  margin-top: 5vh;
+  z-index: -1;
+  color: #000000;
+  margin-left: 12.5vw;
+}
+
+@media only screen and (max-width: $tablet-break) {
+  .eventpage_month {
+    margin-left: 0;
+  }
+}
+
+
+
+.eventpage__container-date{
+  float: left;
+  text-align: center;
+  margin-right: 15px;
+
+}
+
+.eventpage_container-date-dayOfweek{
+  color: #7B7676;
+}
+
+
+
+
+
+
+.borderless {
+  border-top: 0 none;
+}
+
+
+.red {
+  color: #7a0719;
+}
+
+.card {
+  min-width: 275px;
+
+}
+
+
+.eventpage__img-clock {
+  position: absolute;
+  width: 106px;
+  height: 106px;
+  left: 58px;
+  top: 264px;
+  z-index: -1;
+}
+
+@media only screen and (max-width: $tablet-break) {
+  .eventpage__img-clock {
+    opacity: 0;
+  }
+}
+
+
+
+/****** Images **********/
+.eventpage_img-runningHumaan {
+  position: absolute;
+  left: 58px;
+  right: 70.62%;
+  top: 35.33%;
+  bottom: 14.25%;
+  opacity: 0.6;
+  z-index: -1;
+}
+
+@media only screen and (max-width: $tablet-break) {
+  .eventpage_img-runningHumaan {
+    opacity: 0;
+  }
+}
+
+
+
+.eventpage_img-strollingHumaan {
+  position: absolute;
+  left: 70%;
+  right: 4.67%;
+  top: 34.22%;
+  bottom: 17.4%;
+
+  opacity: 0.9;
+  z-index: -1;
+
+}
+
+.eventpage_img-circle{
+  position: absolute;
+  left: 74%;
+  right: 5.62%;
+  top: 49vh;
+  z-index: -1;
+}
+
+@media only screen and (max-width: $tablet-break) {
+  .eventpage_img-strollingHumaan {
+    opacity: 0;
+  }
+}
+
+@media only screen and (max-width: $tablet-break) {
+  .eventpage_img-circle {
+    opacity: 0;
+  }
+}
+
+
