@@ -22,7 +22,6 @@ import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import "./CondensedEvent.scss"
 import Button from "@material-ui/core/Button";
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
-import {CardActions} from "@material-ui/core";
 import SimpleDialog from "./SimpleDialog";
 
 // Hacky way to change button color
