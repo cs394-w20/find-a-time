@@ -1,0 +1,85 @@
+@import "~sass-globals/variables";
+
+
+.condensedevent__container-date {
+  float: left;
+  text-align: center;
+  margin-right: 5vw;
+  width: 2em;
+  height: 5vh;
+  font-size: 1em;
+
+}
+
+.condensedevent_container-date-dayOfweek {
+  color: #7B7676;
+}
+
+
+
+.condensedevent__container-description {
+  margin-left: 5px;
+  flex-wrap: wrap;
+  display: flex;
+  width: 275px;
+  max-height: 500px;
+}
+
+.card {
+  z-index: -1;
+  transition: 0.9s;
+  border-style: solid;
+  border-width: 1px;
+  border-color:rgb(220,220,220);
+  width: 340px;
+
+}
+
+.card:hover {
+  background-color: rgba(222, 235, 255, .15);
+
+  transition: 0.5s;
+  box-shadow: 2px 4px #B8B8B8;
+}
+
+ .condensedevent__container-namesEmails {
+   max-height: 48px;
+   content:'';
+   clear:both;
+   white-space: nowrap;
+   padding-top: 5px;
+   overflow: hidden;
+   margin-bottom: 5px;
+   width: 315px;
+
+   padding-bottom: 0;
+   padding-left: 0;
+   padding-right: 0;
+ }
+
+.condensedevent__container-namesEmails-chips{
+  width: 241px;
+  height:100%;
+  flex-wrap: wrap;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  float: left;
+}
+.condensedevent_container-namesEmails-dropDown{
+  float:right;
+  width: 50px;
+  height: 55px;
+  margin-top: -8px;
+  z-index: -5;
+
+}
+
+
+
+ .condensedevent__container-navigate {
+   margin-top: 5px;
+   margin-bottom: -15px;
+
+ }
