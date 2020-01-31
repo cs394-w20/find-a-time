@@ -128,7 +128,7 @@
 
 }
 
-@media only screen and (max-width: $tablet-break) {
+@media only screen and (max-width: $mobile-break) {
   .yourevents__img-clock {
     display: none;
     width:0;
@@ -147,7 +147,7 @@
   z-index: -1;
 }
 
-@media only screen and (max-width: $tablet-break) {
+@media only screen and (max-width: $mobile-break) {
   .yourevents_img-runningHumaan {
     display: none;
     width:0;
@@ -178,7 +178,7 @@
   z-index: -1;
 }
 
-@media only screen and (max-width: $tablet-break) {
+@media only screen and (max-width: $mobile-break) {
   .yourevents_img-strollingHumaan {
     display: none;
     width:0;
@@ -188,7 +188,7 @@
   }
 }
 
-@media only screen and (max-width: $tablet-break) {
+@media only screen and (max-width: $mobile-break) {
   .yourevents_img-circle {
     display: none;
     width:0;
