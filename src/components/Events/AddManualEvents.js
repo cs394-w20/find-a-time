@@ -4,7 +4,14 @@ import {DATE_FORMAT} from "../../constants";
 import findBuckets from "./FindBuckets";
 
 const AddManualEvents = ({roomId, userName, start, end})=> {
-    const intervalData = findBuckets(roomId, userName, moment(start.toDate()), moment(end.toDate()));
+
+    console.log('beforetodate', start, end)
+    console.log('todate', start.toDateLocal(), end.toDateLocal())
+    const intervalData = findBuckets(roomId, userName, moment(start.toDateLocal()), moment(end.toDateLocal()));
+    console.log('addman')
+    console.log(start)
+    console.log(moment(start.toDate()))
+
     UpdateDb({roomId,userName,intervalData, updateType: "MANUAL"});
 }
 
