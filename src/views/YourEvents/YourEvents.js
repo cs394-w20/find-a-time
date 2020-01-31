@@ -114,7 +114,7 @@ const defaultFuseConfigs = {
      * match to be within 800 characters of the location to be found
      * using a threshold of 0.8.
      */
-    distance: 100,
+    distance: 1000,
     /**
      * When set to include matches, only the matches whose length exceeds this
      * value will be returned. (For instance, if you want to ignore single
@@ -166,6 +166,7 @@ const YourEvents = () => {
                             value={textValue}
                             data={data}
                             onChange={onChange}
+                            fuseConfigs={defaultFuseConfigs}
 
                         />
                     </ClickAwayListener>
