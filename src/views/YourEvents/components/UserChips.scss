@@ -1,0 +1,14 @@
+@import "~sass-globals/variables";
+
+
+.userchip__chip{
+  margin-top: -8px;
+  margin-right:  10px ;
+  margin-bottom: 20px;
+  min-width: 90px;
+  height: 8px;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}

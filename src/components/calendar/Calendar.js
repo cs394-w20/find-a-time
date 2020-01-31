@@ -279,6 +279,7 @@ class Calendar extends Component {
     // console.log(eventData.e.data.end.value)
     //console.log(this.state.eventClicked)
 
+
     const emailList = SAMPLE_EMAIL_ADDRESS;
     const title = "CS 394 Meeting";
     const description = "Hey everyone! Please fill out this form whenever you\n" +

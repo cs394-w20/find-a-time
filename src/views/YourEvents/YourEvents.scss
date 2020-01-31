@@ -1,0 +1,206 @@
+@import "~sass-globals/variables";
+
+
+.yourevents__container-main{
+  width: 600px;
+  height: 98vh;
+
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+}
+
+
+@media only screen and (max-width: $mobile-break) {
+  .yourevents__container-main {
+    width: 100%;
+  }
+}
+
+.yourevents__divider {
+  width: 100%;
+  height: 4px;
+  background: #C4C4C4;
+  z-index: -1;
+  clear: both;
+  margin: 0;
+}
+
+.yourevents__searchbar {
+  position: absolute;
+  width: 30%;
+  margin-top: 3.5vh;
+  overflow: visible;
+  z-index: 1000;
+  left:70%;
+}
+
+@media only screen and (max-width: $mobile-break) {
+  .yourevents__searchbar {
+    width: 40%;
+    left:60%
+  }
+}
+
+
+
+.yourevents__container-list {
+  background-image: url("./Images/cream_dust.png");
+  background-repeat: repeat;
+
+}
+
+.yourevents__container-scroll {
+  height: 88%;
+  width: 85%;
+  margin-top: 0;
+  border: 1px solid rgba(0, 0, 0, 0.22);
+  box-sizing: border-box;
+  border-radius: 5px;
+  z-index: -1;
+  background-image: url("./Images/cream_dust.png");
+  background-repeat: repeat;
+  overflow: scroll;
+
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media only screen and (max-width: $mobile-break) {
+  .yourevents__container-scroll {
+    width: 100%;
+  }
+}
+
+
+
+
+.yourevents__container-header-scroll {
+  width: 100%;
+  height: 10%;
+  left: 25%;
+  padding: 0;
+  margin-bottom: 4vh;
+  margin-left: auto;
+  margin-right: auto;
+
+}
+
+
+
+
+
+.yourevents__month {
+  float: left;
+  font-family: DM Sans, serif;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 1.5em;
+  margin-top: 5vh;
+  z-index: -1;
+  color: #000000;
+}
+
+
+
+.borderless {
+  border-top: 0 none;
+}
+
+
+.red {
+  color: #7a0719;
+}
+
+
+
+
+
+
+/****** Images **********/
+.yourevents__img-clock {
+  position: absolute;
+  width: 106px;
+  height: 106px;
+  top: 12%;
+  z-index: -1;
+  right:  140%;
+
+}
+
+@media only screen and (max-width: $mobile-break) {
+  .yourevents__img-clock {
+    display: none;
+    width:0;
+    height:0;
+    margin: 0;
+    padding:0;
+  }
+}
+
+.yourevents_img-runningHumaan {
+  position: absolute;
+  right:  100%;
+  top: 22%;
+  bottom: 14.25%;
+  opacity: 0.6;
+  z-index: -1;
+}
+
+@media only screen and (max-width: $mobile-break) {
+  .yourevents_img-runningHumaan {
+    display: none;
+    width:0;
+    height:0;
+    margin: 0;
+    padding:0;
+  }
+}
+
+
+.yourevents_img-strollingHumaan {
+  position: absolute;
+  left: 90%;
+  right: 4.67%;
+  top: 22%;
+  bottom: 17.4%;
+
+  opacity: 0.9;
+  z-index: -1;
+
+}
+
+.yourevents_img-circle {
+  position: absolute;
+  left: 97%;
+  right: 5.62%;
+  top: 36%;
+  z-index: -1;
+}
+
+@media only screen and (max-width: $mobile-break) {
+  .yourevents_img-strollingHumaan {
+    display: none;
+    width:0;
+    height:0;
+    margin: 0;
+    padding:0;
+  }
+}
+
+@media only screen and (max-width: $mobile-break) {
+  .yourevents_img-circle {
+    display: none;
+    width:0;
+    height:0;
+    margin: 0;
+    padding:0;
+  }
+}
+
+
+.yourevents__wrapicon{
+  verticalAlign: middle;
+  display: inline-flex;
+  color: #424242;
+}

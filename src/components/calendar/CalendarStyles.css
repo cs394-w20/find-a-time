@@ -10,3 +10,9 @@
 .calendar__container {
   margin: 32px 0;
 }
+
+.calendar_default_corner>* {
+  background: #fff !important;
+  background-color: #fff !important;
+  color: #fff !important;
+}
