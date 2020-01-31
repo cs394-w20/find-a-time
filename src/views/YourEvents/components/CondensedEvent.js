@@ -14,22 +14,19 @@ import moment from "moment-timezone";
 import {DATE_FORMAT} from "../../../constants";
 import jstz from "jstz";
 import {Link} from "react-router-dom"
-import CardActionArea from "@material-ui/core/CardActionArea";
 import GroupIcon from '@material-ui/icons/Group';
 import UserChips from "./UserChips";
-import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
-import List from "@material-ui/core/List";
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemText from '@material-ui/core/ListItemText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Dialog from '@material-ui/core/Dialog';
-import PropTypes from 'prop-types';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import "./CondensedEvent.scss"
+import Button from "@material-ui/core/Button";
+import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
+import {CardActions} from "@material-ui/core";
+import SimpleDialog from "./SimpleDialog";
 
+// Hacky way to change button color
+const purpleTheme = createMuiTheme({palette: {primary: {main: "#5243AA"}}});
 
 /******************* GETS THE TIME ZONE TO DISPLAY **************/
 let abbrs = {
@@ -42,7 +39,7 @@ let abbrs = {
     PST: 'Pacific Standard Time',
     PDT: 'Pacific Daylight Time',
 };
-    // formatting for timezone -- overrides defaults
+// formatting for timezone -- overrides defaults
 moment.fn.zoneName = function () {
     let abbr = this.zoneAbbr();
     return abbrs[abbr] || abbr;
@@ -52,41 +49,6 @@ const timeZone = jstz.determine().name();
 const longFormattedTimeZone = moment().tz(timeZone).format('zz');
 
 
-/**
- * The dialog box so you can see more info about the user's assigned to room
- * Based on --> https://material-ui.com/components/dialogs/ (almost copied word-for-word)
- * */
-const SimpleDialog = ({onClose, selectedValue, open, users}) => {
-
-    const emails = Object.keys(users);
-
-    const handleClose = () => {
-        onClose(selectedValue);
-    };
-
-    return (
-        <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
-            <DialogTitle id="simple-dialog-title" style={{margin: 0, paddingBottom: 0}}>Members</DialogTitle>
-            <List>
-                {emails.map(email => (
-                    <ListItem key={email}>
-                        <ListItemAvatar>
-                            <Avatar alt={users[email].name} src={users[email].picture}/>
-                        </ListItemAvatar>
-                        <ListItemText primary={`${users[email].name} <${email}>`}/>
-                    </ListItem>
-                ))}
-
-            </List>
-        </Dialog>
-    );
-};
-
-SimpleDialog.propTypes = {
-    onClose: PropTypes.func.isRequired,
-    open: PropTypes.bool.isRequired,
-    selectedValue: PropTypes.string.isRequired,
-};
 
 
 /** The event card **/
@@ -96,8 +58,8 @@ const CondensedEvent = ({payload}) => {
     const title = payload.meta_data.title;
     const description = payload.meta_data.description;
     const roomId = 1; //FixMe: Hard coded
-    const [open, setOpen] = React.useState(false);
 
+    const [open, setOpen] = React.useState(false);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -107,8 +69,8 @@ const CondensedEvent = ({payload}) => {
         setOpen(false);
     };
 
-    const startDay = moment(start, DATE_FORMAT).format("ddd, MMM DD");
-    const endDay = moment(end, DATE_FORMAT).format("ddd, MMM DD");
+    const startDay = moment(start, DATE_FORMAT).format("ddd, MMM Do");
+    const endDay = moment(end, DATE_FORMAT).format("ddd, MMM Do");
     const weekDay = moment(start, DATE_FORMAT).format("ddd").toUpperCase();
     const dayOfWeek = moment(start, DATE_FORMAT).format("DD");
 
@@ -118,143 +80,139 @@ const CondensedEvent = ({payload}) => {
             <ListItem component="div">
 
                 <div>
-
+                    {/*Day of week right next to card*/}
                     <div className="condensedevent__container-date">
                         <span className="condensedevent_container-date-dayOfweek">{weekDay}</span>
                         <br/>
                         <span>{dayOfWeek}</span>
                     </div>
 
-                    <Card className="card">
-                        <CardActionArea disableRipple>
-                            <Link to={`/events/${roomId}`} color="inherit">
-                                {/*Title of the meeting*/}
-                                <CardHeader
-                                    title={title}
-                                    style={{textAlign: "center", color: "black"}}
-                                />
-                                <Divider component="div"/>
-                            </Link>
+                    <Card className={`card`}>
+                        {/*Title of the event*/}
+                        <CardHeader
+                            title={title}
+                            style={{textAlign: "center", color: "black"}}
+                        />
+                        <Divider component="div"/>
 
-                            <CardContent>
-                                <Link to={`/events/${roomId}`} color="inherit">
-                                    {/*Meeting time*/}
-                                    <Box>
-                                        <Grid
-                                            component="div"
-                                            color="primary-light"
-                                            container
-                                            direction="row"
-                                            alignItems="center"
-                                            spacing={1}
-                                            alignContent={"flex-start"}
-                                        >
-                                            <Grid item component="div">
-                                                <CalendarTodayIcon className="red"/>
-                                            </Grid>
-                                            <Grid item component="div">
-                                                <Typography
-                                                    className="red"
+                        <CardContent>
+                            {/*Day interval of event */}
+                            <Box>
+                                <Grid
+                                    component="div"
+                                    color="primary-light"
+                                    container
+                                    direction="row"
+                                    alignItems="center"
+                                    spacing={1}
+                                    alignContent={"flex-start"}>
+                                    <Grid item component="div">
+                                        <CalendarTodayIcon className="red"/>
+                                    </Grid>
+                                    <Grid item component="div">
+                                        <Typography
+                                            className="red"
 
-                                                    gutterBottom
-                                                    noWrap={false}
-                                                    component="div">
-                                                    {startDay} - {endDay}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
+                                            gutterBottom
+                                            noWrap={false}
+                                            component="div">
+                                            {startDay} - {endDay}
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
+                            </Box>
 
-                                    {/*Time Zone*/}
-                                    <Box color="text.disabled">
-                                        <Grid
-                                            component="div"
-                                            container
-                                            direction="row"
-                                            alignItems="center"
-                                            spacing={1}
-                                        >
-                                            <Grid item component="div">
-                                                <PublicIcon/>
-                                            </Grid>
-                                            <Grid item component="div">
-                                                <Typography gutterBottom component="div">
-                                                    {longFormattedTimeZone}
-                                                </Typography>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                </Link>
+                            {/*Time Zone or event*/}
+                            <Box color="text.disabled">
+                                <Grid
+                                    component="div"
+                                    container
+                                    direction="row"
+                                    alignItems="center"
+                                    spacing={1}>
+                                    <Grid item component="div">
+                                        <PublicIcon/>
+                                    </Grid>
+                                    <Grid item component="div">
+                                        <Typography gutterBottom component="div">
+                                            {longFormattedTimeZone}
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
+                            </Box>
 
 
-                                {/* People going*/}
+                            {/* Members of the event*/}
+                            <Box color="text.secondary" className="condensedevent__container-namesEmails">
+                                <Grid
+                                    direction="row"
+                                    container>
+                                    <Grid item>
+                                        <GroupIcon style={{color: '#424242'}}/>
+                                    </Grid>
+                                    <Grid item>
+                                        <Box mx="auto" p={1} className="condensedevent__container-namesEmails-chips">
+                                            {Object.keys(payload.users)
+                                                .map((email) =>
+                                                    <UserChips key={email}
+                                                               email={email}
+                                                               picture={payload.users[email].picture}
+                                                               name={payload.users[email].name}/>)}
+                                        </Box>
+
+                                        <Box className="condensedevent_container-namesEmails-dropDown">
+                                                <IconButton
+                                                    onClick={handleClickOpen}>
+                                                    {open ?
+                                                        <ArrowDropUpIcon />
+                                                        :
+                                                        <ArrowDropDownIcon />
+                                                    }
+                                                </IconButton>
+                                                <SimpleDialog open={open} onClose={handleClose}
+                                                              users={payload.users}/>
+                                        </Box>
+                                    </Grid>
+                                </Grid>
+                            </Box>
+
+
+                            {/*Description or event*/}
+                            <Box>
                                 <Box color="text.secondary">
-                                    <Grid
-                                        direction="row"
-                                        container
-                                    >
-                                        <Link to={`/events/${roomId}`} color="inherit">
-                                            <Grid item>
-                                                <GroupIcon style={{color: '#424242'}}/>
-                                            </Grid>
-                                        </Link>
-                                        <Grid item>
-                                            <Box mx="auto" p={1} className="condensedevent__container-chips">
-                                                {Object.keys(payload.users)
-                                                    .map((email) =>
-                                                        <UserChips key={email}
-                                                                   email={email}
-                                                                   picture={payload.users[email].picture}
-                                                                   name={payload.users[email].name}/>)}
+                                    <Grid container direction="row">
+                                        <Grid item component="div">
+                                            <SubjectIcon/>
+                                        </Grid>
+                                        <Grid item component="div">
+                                            <Box className="condensedevent__container-description">
+                                                <Typography variant="body2"
+                                                            component="p"
+                                                            noWrap={false} gutterBottom>
+                                                    {description}
+                                                </Typography>
                                             </Box>
-
-                                            <Box className="condensedevent_container-dropDown">
-                                                <ClickAwayListener onClickAway={handleClose}>
-                                                    <IconButton style={{zIndex: 9999, verticalAlign: 'middle'}}
-                                                                onClick={handleClickOpen}>
-                                                        {open ? <ArrowDropUpIcon onClick={handleClickOpen}/> :
-                                                            <ArrowDropDownIcon onClick={handleClickOpen}/>}
-                                                        <SimpleDialog open={open} onClose={handleClose}
-                                                                      users={payload.users}/>
-                                                    </IconButton>
-                                                </ClickAwayListener>
-                                            </Box>
-
                                         </Grid>
                                     </Grid>
                                 </Box>
 
-
-                                {/*Description*/}
-                                <Link to={`/events/${roomId}`}>
-                                    <Box color="text.secondary">
-                                        <Grid
-                                            container
-                                            direction="row"
-
-                                        >
-                                            <Grid item component="div">
-                                                <SubjectIcon/>
-                                            </Grid>
-                                            <Grid item component="div">
-                                                <Box className="condensedevent__container-description">
-                                                    <Typography variant="body2"
-                                                                component="p"
-                                                                noWrap={false} gutterBottom>
-                                                        {description}
-                                                    </Typography>
-                                                </Box>
-                                            </Grid>
-                                        </Grid>
-                                    </Box>
-                                </Link>
-                            </CardContent>
-                        </CardActionArea>
+                                {/*Link to the event calendar*/}
+                                    <ThemeProvider theme={purpleTheme}>
+                                        <Box className="condensedevent__container-navigate">
+                                            <Link to={`/events/${roomId}`}>
+                                                <Button
+                                                    size="small"
+                                                    color="primary"
+                                                    variant="outlined">
+                                                    GO TO EVENT
+                                                </Button>
+                                            </Link>
+                                        </Box>
+                                    </ThemeProvider>
+                            </Box>
+                        </CardContent>
                     </Card>
-
                 </div>
-
-
             </ListItem>
         </Fragment>
     )

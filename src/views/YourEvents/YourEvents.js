@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useRef} from "react";
 import ReactSearchBox from 'react-search-box'
 import {UserContext} from "context/UserContext";
-import Paper from "@material-ui/core/Paper";
 import List from "@material-ui/core/List";
-
+import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import "./YourEvents.scss"
 import Fuse from 'fuse.js'
 import {CondensedEvent} from "./components";
@@ -18,6 +17,14 @@ const sampleRoom1 = {
     "users": {
         "suzy@northwestern_edu": {
             "name": "Suzy",
+            "picture": "https://i.pinimg.com/originals/f0/03/44/f00344d904062ce92b4b3b146060d874.png"
+        },
+        "jide@northwestern_edu": {
+            "name": "Jidé",
+            "picture": "https://i.pinimg.com/originals/f0/03/44/f00344d904062ce92b4b3b146060d874.png"
+        },
+        "julia@northwestern_edu": {
+            "name": "Julia",
             "picture": "https://i.pinimg.com/originals/f0/03/44/f00344d904062ce92b4b3b146060d874.png"
         }
     },
@@ -126,6 +133,7 @@ const YourEvents = () => {
     const fuse = useRef();
     //const userContext = useContext(UserContext);
     const [data, setData] = useState(sampleData);
+    const [textValue, setTextValue] = useState('');
 
     useEffect(()=>{
         fuse.current = new Fuse(sampleData, defaultFuseConfigs);
@@ -138,29 +146,38 @@ const YourEvents = () => {
         } else {
             setData(sampleData);
         }
+
+        setTextValue(text);
     };
 
+    const closeSearchBox = () =>{
+        setTextValue('');
+    };
+
+
     return (
-        <div>
+        <div className="yourevents__container-main">
             <div className="yourevents__container-header-scroll">
-                <div className="yourevents_month"> January</div>
+                <div className="yourevents__month"> January</div>
                 <div className="yourevents__searchbar">
-                    <ReactSearchBox
-                        placeholder="Search ..."
-                        data={data}
-                        onChange={onChange}
-                    />
+                    <ClickAwayListener onClickAway={closeSearchBox}>
+                        <ReactSearchBox
+                            placeholder="Search ..."
+                            value={textValue}
+                            data={data}
+                            onChange={onChange}
+
+                        />
+                    </ClickAwayListener>
                 </div>
                 <div className="yourevents__divider"></div>
             </div>
 
 
             <div className="yourevents__container-scroll">
-                <Paper style={{maxHeight: '100%', overflow: 'auto'}}>
                     <List component="div" className="yourevents__container-list">
                         {data.map((value) => <CondensedEvent key={value.key.roomId} payload={value.key}/>)}
                     </List>
-                </Paper>
             </div>
 
 

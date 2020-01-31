@@ -1,102 +1,96 @@
 @import "~sass-globals/variables";
 
 
+.yourevents__container-main{
+  width: 600px;
+  height: 98vh;
+
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+}
+
+
+@media only screen and (max-width: $mobile-break) {
+  .yourevents__container-main {
+    width: 100%;
+  }
+}
+
 .yourevents__divider {
-  width: 70%;
+  width: 100%;
   height: 4px;
   background: #C4C4C4;
   z-index: -1;
   clear: both;
-  margin-left: 12.5vw;
-  top: 10vh;
-  position: absolute;
+  margin: 0;
 }
-
-@media only screen and (max-width: $tablet-break) {
-  .yourevents__divider {
-    width: 100%;
-    margin-left: 0;
-  }
-}
-
 
 .yourevents__searchbar {
-  float: right;
-  z-index: 1;
+  position: absolute;
   width: 30%;
-  margin-right: 11.5vw;
   margin-top: 3.5vh;
+  overflow: visible;
+  z-index: 1000;
+  left:70%;
 }
 
-@media only screen and (max-width: $tablet-break) {
+@media only screen and (max-width: $mobile-break) {
   .yourevents__searchbar {
     width: 40%;
-    margin-right: 0;
-
+    left:60%
   }
 }
 
 
+
+.yourevents__container-list {
+  background-image: url("./Images/cream_dust.png");
+  background-repeat: repeat;
+
+}
+
 .yourevents__container-scroll {
-  position: absolute;
-  width: 40%;
-  height: 89vh;
-  left: 30%;
-  margin-top: 12vh;
+  height: 88%;
+  width: 85%;
+  margin-top: 0;
   border: 1px solid rgba(0, 0, 0, 0.22);
   box-sizing: border-box;
   border-radius: 5px;
   z-index: -1;
   background-image: url("./Images/cream_dust.png");
   background-repeat: repeat;
-}
+  overflow: scroll;
 
-.yourevents__container-list {
-  background-image: url("./Images/cream_dust.png");
-  background-repeat: repeat;
-  box-shadow: none;
-  border: 0;
-  height: 88.9vh;
-  opacity: .8;
-
-}
-
-
-@media only screen and (max-width: $tablet-break) {
-  .yourevents__container-scroll {
-    width: 60%;
-    left: 20vw;
-  }
+  margin-left: auto;
+  margin-right: auto;
 }
 
 @media only screen and (max-width: $mobile-break) {
   .yourevents__container-scroll {
-    left: 6vw;
-    width: 90%;
-    right: 10%;
+    width: 100%;
   }
 }
+
+
 
 
 .yourevents__container-header-scroll {
-  position: absolute;
-  width: 80%;
-  height: 10vh;
-  left: 10%;
+  width: 100%;
+  height: 10%;
+  left: 25%;
   padding: 0;
   margin-bottom: 4vh;
-}
+  margin-left: auto;
+  margin-right: auto;
 
-@media only screen and (max-width: $tablet-break) {
-  .yourevents__container-header-scroll {
-    margin-left: -4vw;
-    width: 90%;
-    right: 10%;
-  }
 }
 
 
-.yourevents_month {
+
+
+
+.yourevents__month {
   float: left;
   font-family: DM Sans, serif;
   font-style: normal;
@@ -105,14 +99,8 @@
   margin-top: 5vh;
   z-index: -1;
   color: #000000;
-  margin-left: 12.5vw;
 }
 
-@media only screen and (max-width: $tablet-break) {
-  .yourevents_month {
-    margin-left: 0;
-  }
-}
 
 
 .borderless {
@@ -124,45 +112,36 @@
   color: #7a0719;
 }
 
-.card {
-  min-width: 275px;
-  transition: 0.9s;
-  border-style: solid;
-  border-width: 1px;
-  border-color:rgb(220,220,220);
 
 
-}
 
-.card:hover {
-  background-color: rgba(135, 119, 217, .05);
 
-  transition: 0.5s;
-  box-shadow: 2px 4px #B8B8B8;
-}
 
+/****** Images **********/
 .yourevents__img-clock {
   position: absolute;
   width: 106px;
   height: 106px;
-  left: 58px;
-  top: 264px;
+  top: 12%;
   z-index: -1;
+  right:  140%;
+
 }
 
 @media only screen and (max-width: $tablet-break) {
   .yourevents__img-clock {
-    opacity: 0;
+    display: none;
+    width:0;
+    height:0;
+    margin: 0;
+    padding:0;
   }
 }
 
-
-/****** Images **********/
 .yourevents_img-runningHumaan {
   position: absolute;
-  left: 58px;
-  right: 70.62%;
-  top: 35.33%;
+  right:  100%;
+  top: 22%;
   bottom: 14.25%;
   opacity: 0.6;
   z-index: -1;
@@ -170,16 +149,20 @@
 
 @media only screen and (max-width: $tablet-break) {
   .yourevents_img-runningHumaan {
-    opacity: 0;
+    display: none;
+    width:0;
+    height:0;
+    margin: 0;
+    padding:0;
   }
 }
 
 
 .yourevents_img-strollingHumaan {
   position: absolute;
-  left: 70%;
+  left: 90%;
   right: 4.67%;
-  top: 34.22%;
+  top: 22%;
   bottom: 17.4%;
 
   opacity: 0.9;
@@ -189,21 +172,29 @@
 
 .yourevents_img-circle {
   position: absolute;
-  left: 74%;
+  left: 97%;
   right: 5.62%;
-  top: 49vh;
+  top: 36%;
   z-index: -1;
 }
 
 @media only screen and (max-width: $tablet-break) {
   .yourevents_img-strollingHumaan {
-    opacity: 0;
+    display: none;
+    width:0;
+    height:0;
+    margin: 0;
+    padding:0;
   }
 }
 
 @media only screen and (max-width: $tablet-break) {
   .yourevents_img-circle {
-    opacity: 0;
+    display: none;
+    width:0;
+    height:0;
+    margin: 0;
+    padding:0;
   }
 }
 
