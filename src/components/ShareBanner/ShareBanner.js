@@ -23,7 +23,7 @@ const ShareBanner = () => {
   return (
     <div className="share-banner__container" ref={copyContainer}>
       <div className="share-banner__text">
-        Use this link to invite people!
+        Share this link to invite people!
       </div>
       {isCopied ? (
         <div className="share-banner__button share-banner__button--copied">
