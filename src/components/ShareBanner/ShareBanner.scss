@@ -4,10 +4,8 @@
   background-color: #e7f3fa;
   color: #1d4b8f;
   display: flex;
-  width: fit-content;
-  align-items: center;
+  align-self: flex-start;
   padding: 8px 18px;
-  margin: 0 auto 24px auto;
   opacity: 1;
   transition: opacity 300ms ease-in;
 }

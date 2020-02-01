@@ -8,19 +8,14 @@ const ShareBanner = () => {
   const url = window.location.href
 
   useEffect(() => {
-    const hideElement = () => {
-      setTimeout(() => {
-        copyContainer.current.style.display = "none"
-      }, 300)
-    }
 
     if (isCopied) {
       setTimeout(() => {
-        copyContainer.current.style.opacity = "0"
-        hideElement()
+        setIsCopied(false);
       }, 1000)
     }
-  }, [isCopied])
+  }, [isCopied]);
+
   const handleCopyLink = () => {
     setIsCopied(true)
     copy(url)
@@ -28,7 +23,7 @@ const ShareBanner = () => {
   return (
     <div className="share-banner__container" ref={copyContainer}>
       <div className="share-banner__text">
-        To share this event, just send the link to all the your event members!
+        Use this link to invite people!
       </div>
       {isCopied ? (
         <div className="share-banner__button share-banner__button--copied">

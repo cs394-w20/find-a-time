@@ -1,12 +1,6 @@
 .event__creator-profile-pic {
   vertical-align: middle;
   margin-right: 8px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
 }
 .event__creator-container {
   display: flex;
@@ -14,13 +8,15 @@
   margin-top: 8px;
 }
 
+/*MaterialUI secondart text color*/
 .event__text {
-  color: var(--black);
+  color: rgba(0, 0, 0, 0.54);
 }
 .event__container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  margin-bottom: 24px;
 }
 
 .event__title {
