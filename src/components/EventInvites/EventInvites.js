@@ -278,7 +278,7 @@ const EventInvites = ({
                 <CardHeader
                   title={(eventHtmlLink===null)? `${humanReadableTimeDiff} Meeting`: 'Thank You'}
                   style={{ textAlign: "center" }}
-                  u
+
                 />
                 {/*Length of meeting*/}
 

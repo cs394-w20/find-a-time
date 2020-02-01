@@ -1,0 +1,32 @@
+@import "~sass-globals/variables";
+
+.toggleCalendar__container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 10px 32px;
+  border-top: solid;
+  border-left: solid;
+  border-right: solid;
+  border-width: 1px;
+  border-color: #ccc;
+  background: #f3f3f3;
+  margin-top: 36px;
+}
+
+.toggleCalendar__links-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+
+
+@media only screen and (max-width: $mobile-break) {
+  .toggleCalendar__links-container {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+}
+

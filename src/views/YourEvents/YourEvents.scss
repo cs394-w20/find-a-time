@@ -1,6 +1,7 @@
 @import "~sass-globals/variables";
 
 
+
 .yourevents__container-main{
   width: 600px;
   height: 98vh;
@@ -125,6 +126,8 @@
   top: 12%;
   z-index: -1;
   right:  135%;
+  animation: yourevents_fade-in 1500ms 500ms forwards;
+  animation-delay: 0ms;
 
 }
 
@@ -145,6 +148,8 @@
   bottom: 14.25%;
   opacity: 0.6;
   z-index: -1;
+  animation: yourevents_fade-in 1500ms 500ms forwards;
+  animation-delay: 0ms;
 }
 
 @media only screen and (max-width: $mobile-break) {
@@ -167,7 +172,8 @@
 
   opacity: 0.9;
   z-index: -1;
-
+  animation: yourevents_fade-in 1500ms 500ms forwards;
+  animation-delay: 0ms;
 }
 
 .yourevents_img-circle {
@@ -176,6 +182,9 @@
   right: 5.62%;
   top: 36%;
   z-index: -1;
+  animation: yourevents_fade-in 1500ms 500ms forwards;
+  animation-delay: 0ms;
+
 }
 
 @media only screen and (max-width: $mobile-break) {
@@ -203,4 +212,22 @@
   verticalAlign: middle;
   display: inline-flex;
   color: #424242;
+}
+
+
+
+@keyframes yourevents_fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  10% {
+    opacity: .5;
+    transform: translateY(20px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
 }

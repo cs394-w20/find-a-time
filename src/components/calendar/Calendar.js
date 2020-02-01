@@ -323,7 +323,7 @@ class Calendar extends Component {
   {
 
     return (
-      <div className="calendar__container">
+      <div className={"calendar__container"}>
 
         <DayPilotCalendar
           {...this.state}

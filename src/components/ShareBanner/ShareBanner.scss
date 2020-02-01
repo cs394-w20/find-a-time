@@ -1,16 +1,24 @@
+@import "~sass-globals/variables";
+
 .share-banner__container {
   border-radius: 8px;
   border: 2px solid #214261;
   background-color: #e7f3fa;
   color: #1d4b8f;
   display: flex;
-  width: fit-content;
-  align-items: center;
+  align-self: flex-start;
   padding: 8px 18px;
-  margin: 0 auto 24px auto;
   opacity: 1;
   transition: opacity 300ms ease-in;
 }
+
+@media only screen and (max-width: $mobile-break) {
+  .share-banner__container {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
 
 .share-banner__text {
   font-weight: 500;
