@@ -16,7 +16,7 @@ const Event = ({
 
         <div className="event__creator-container">
             <Avatar alt={eventCreator} src={eventCreatorPic} className="event__creator-profile-pic"/>
-            
+
             <div className="event__text">{eventCreator}</div>
         </div>
 
