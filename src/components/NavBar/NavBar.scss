@@ -41,6 +41,17 @@
   color: var(--black);
 }
 
+.nav-bar__pop-over-button {
+  border: none;
+  font-size: 16px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  &:hover {
+    cursor: pointer;
+    background: #f5f6f9;
+  }
+}
+
 .nav-bar__active::after {
   /* content: "";
   display: block;

@@ -1,0 +1,13 @@
+.popover__wrapper {
+  & > *:first-child:hover {
+    cursor: pointer;
+  }
+}
+
+.popover__container {
+  position: absolute;
+  background: white;
+  box-shadow: 0px 5px 7px #00000014;
+  padding: 8px;
+  border-radius: 8px;
+}
