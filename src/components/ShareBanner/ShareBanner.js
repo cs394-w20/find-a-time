@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useRef } from "react"
 import copy from "copy-to-clipboard"
 import "./ShareBanner.scss"
 
@@ -6,15 +6,6 @@ const ShareBanner = () => {
   const [isCopied, setIsCopied] = useState(false)
   const copyContainer = useRef(null)
   const url = window.location.href
-
-  useEffect(() => {
-
-    if (isCopied) {
-      setTimeout(() => {
-        setIsCopied(false);
-      }, 1000)
-    }
-  }, [isCopied]);
 
   const handleCopyLink = () => {
     setIsCopied(true)
