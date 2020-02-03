@@ -1,7 +1,5 @@
 import React from "react"
-import Typography from "@material-ui/core/Typography"
 import "./Event.css"
-import Avatar from "@material-ui/core/Avatar"
 const Event = ({
   eventName,
   eventDescription,
@@ -13,10 +11,10 @@ const Event = ({
       <div className="event__title">{eventName}</div>
 
       <div className="event__creator-container">
-        <Avatar
+        <img
           alt={eventCreator}
           src={eventCreatorPic}
-          className="event__creator-profile-pic"
+          className="event__creator-profile-pic nav-bar__user-avatar"
         />
 
         <div className="event__text">{eventCreator}</div>
