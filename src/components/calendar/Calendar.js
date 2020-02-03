@@ -86,7 +86,7 @@ class Calendar extends Component {
     this.state = {
       eventClicked: false,
       viewType: "Days",
-      days:"7",
+      days:"4",
       durationBarVisible: true,
       onTimeRangeSelected: args => {
         let selection = this.calendar
