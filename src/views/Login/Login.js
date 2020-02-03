@@ -5,21 +5,23 @@ import { Redirect } from "react-router-dom"
 import { ReactComponent as LoginImage } from "./LoginImage.svg"
 import "./login.scss"
 
-const Login = () => {
-  const { isAuthorized } = useContext(UserContext)
+const Login = ({ redirectOptions }) => {
+  const { isAuthorized, setNewUser } = useContext(UserContext)
 
   /*
   Change this to a separate route later
   */
+
+  console.log(isAuthorized)
   return isAuthorized ? (
-    <Redirect to="/events/1" />
+    <Redirect to="/events" />
   ) : (
     <div className="login-container">
       <div className="login__button-container">
         <div className="login-header__text">
           Start using Find A Time with your Google account.
         </div>
-        <AuthButton />
+        <AuthButton signInCallback={setNewUser} />
       </div>
       <div>
         <LoginImage alt="people next to a phone" className="login-image" />
