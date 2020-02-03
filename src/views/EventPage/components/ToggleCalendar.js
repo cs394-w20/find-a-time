@@ -48,24 +48,25 @@ const ToggleCalendar = ({onGroupAvailabilityClick, onYourAvailabilityClick,isUse
 
     return (
         <nav className="toggleCalendar__container">
-            <div className="toggleCalendar__links-container">
-                    <ButtonGroup size="large" aria-label="small outlined button group"
-                                 className={classes.buttonGroup} >
-                        <Button
-                            className={isGroupAvailButton? classes.buttonActive : classes.buttonNotActive }
-                            onClick={onGroupClick}
-                            variant="contained">
-                            Group Availability
-                        </Button>
-                        <Button
-                            className={!(isGroupAvailButton)? classes.buttonActive : classes.buttonNotActive }
-                            onClick={onYourClick}
-                            disabled={!(isUserLoaded)}
-                            variant="contained">
-                            Your Availability
-                        </Button>
-                    </ButtonGroup>
-            </div>
+          <ButtonGroup size="small" aria-label="small outlined button group"
+                       fullWidth={true}
+                       className={classes.buttonGroup} >
+              <Button
+                  size="small"
+                  className={isGroupAvailButton? classes.buttonActive : classes.buttonNotActive }
+                  onClick={onGroupClick}
+                  variant="contained">
+                  Meeting Times
+              </Button>
+              <Button
+                  size="small"
+                  className={!(isGroupAvailButton)? classes.buttonActive : classes.buttonNotActive }
+                  onClick={onYourClick}
+                  disabled={!(isUserLoaded)}
+                  variant="contained">
+                  My Schedule
+              </Button>
+          </ButtonGroup>
         </nav>
     )
 };
