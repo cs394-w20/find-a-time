@@ -1,55 +1,12 @@
 import React, { useEffect, useState, useContext } from "react"
-import { Link } from "react-router-dom"
 import moment from "moment"
-import {
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  TextField
-} from "@material-ui/core"
-
-import { FileCopy } from "@material-ui/icons"
+import { TextField, Button } from "@material-ui/core"
 import db from "components/Db/firebaseConnect"
 import { UserContext } from "context/UserContext"
-
+import GroupDialog from "./GroupDialog"
 import "./create.scss"
+import { Redirect } from "react-router-dom"
 const uuidv4 = require("uuid/v4")
-
-const GroupDialog = ({ handleSubmit }) => {
-  const [open, setOpen] = useState(false)
-
-  const handleClickOpen = () => {
-    setOpen(true)
-  }
-
-  const handleClose = () => {
-    setOpen(false)
-  }
-
-  return (
-    <div>
-      <Button onClick={handleSubmit}>Create Group</Button>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Group Created</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            <div>
-              Room ID: 343{" "}
-              <Button>
-                <FileCopy />
-              </Button>
-              <Button>
-                <Link to="/">Go to Group</Link>
-              </Button>
-            </div>
-          </DialogContentText>
-        </DialogContent>
-      </Dialog>
-    </div>
-  )
-}
 
 const date_types = {
   START: "start",
@@ -61,7 +18,7 @@ const time_types = {
   END: "end_time"
 }
 
-const Create = () => {
+const Create = ({ history }) => {
   const { user } = useContext(UserContext)
   const today = moment()
   const todayFormatted = moment().format("YYYY-MM-DD")
@@ -99,6 +56,10 @@ const Create = () => {
   })
 
   const [dateHasError, setDateHasError] = useState(false)
+  const [showDialog, setShowDialog] = useState({
+    shouldOpen: false,
+    roomId: ""
+  })
 
   const handleDateChange = (e, start_or_end) => {
     const value = moment(e.target.value)
@@ -150,7 +111,7 @@ const Create = () => {
     })
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     let start = moment(eventFields.times.start_time, "HH:mm")
     let times = [start.clone().format("HH:mm")]
     let end = moment(eventFields.times.end_time, "HH:mm")
@@ -161,7 +122,6 @@ const Create = () => {
     }
 
     times.push(end.format("HH:mm"))
-    console.log(times)
 
     let start_date = moment(eventFields.time_interval.start)
     let dates = [start_date.clone().format("YYYY-MM-DD")]
@@ -171,8 +131,6 @@ const Create = () => {
       dates.push(start_date.format("YYYY-MM-DD"))
     }
     dates.push(end_date.format("YYYY-MM-DD"))
-    console.log(dates)
-    const id = uuidv4()
     const dbRef = db.ref("/rooms")
     const newRoom = dbRef.push()
 
@@ -181,7 +139,7 @@ const Create = () => {
       return acc
     }, {})
 
-    db.ref("/rooms/" + newRoom.key).set({
+    await db.ref("/rooms/" + newRoom.key).set({
       meta_data: eventFields.meta_data,
       time_interval: eventFields.time_interval,
       data: {
@@ -195,6 +153,12 @@ const Create = () => {
         }
       }
     })
+    // .then(() => {
+
+    //   // setShowDialog({ shouldOpen: true, roomId: newRoom.key })
+    // })
+
+    history.push(`/events/${newRoom.key}`)
   }
 
   return (
@@ -273,8 +237,8 @@ const Create = () => {
           onChange={e => handleTimeChange(e, time_types.END)}
         />
       </div>
-
-      <GroupDialog handleSubmit={handleSubmit} />
+      <Button onClick={handleSubmit}>Create Group</Button>
+      {showDialog.shouldOpen && <GroupDialog roomId={showDialog.roomId} />}
     </div>
   )
 }
