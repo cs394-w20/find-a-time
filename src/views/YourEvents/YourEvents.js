@@ -6,6 +6,7 @@ import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import "./YourEvents.scss"
 import Fuse from 'fuse.js'
 import {CondensedEvent} from "./components";
+import {GetRoomsByUser} from "components/Db";
 
 const circleImg = require("./Images/circle.svg");
 const clockImg = require("./Images/clock.svg");
@@ -132,11 +133,13 @@ const defaultFuseConfigs = {
 const YourEvents = () => {
     const fuse = useRef();
     //const userContext = useContext(UserContext);
-    const [data, setData] = useState(sampleData);
+    const [data, setData] = useState(GetRoomsByUser("suzy@northwestern_edu"));
+    //console.log(GetRoomsByUser("s"));
+    //console.log(sampleData)
     const [textValue, setTextValue] = useState('');
 
     useEffect(()=>{
-        fuse.current = new Fuse(sampleData, defaultFuseConfigs);
+        fuse.current = new Fuse(GetRoomsByUser("suzy@northwestern_edu"), defaultFuseConfigs);
     },[]);
 
 
@@ -144,7 +147,7 @@ const YourEvents = () => {
         if (text !== '') {
             setData(fuse.current.search(text));
         } else {
-            setData(sampleData);
+            setData(GetRoomsByUser("suzy@northwestern_edu"));
         }
 
         setTextValue(text);
