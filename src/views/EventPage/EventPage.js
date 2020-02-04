@@ -72,9 +72,9 @@ const EventPage = ({ match }) => {
     <div>
       <div className="event-auth__container">
         <Event
-          eventCreator={eventData.users[eventData.meta_data.room_owner_id].name}
+          eventCreator={eventData.users[eventData.meta_data.room_owner].name}
           eventCreatorPic={
-            eventData.users[eventData.meta_data.room_owner_id].picture
+            eventData.users[eventData.meta_data.room_owner].picture
           }
           eventDescription={eventData.meta_data.description}
           eventName={eventData.meta_data.title}

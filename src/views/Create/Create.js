@@ -5,8 +5,7 @@ import db from "components/Db/firebaseConnect"
 import { UserContext } from "context/UserContext"
 import GroupDialog from "./GroupDialog"
 import "./create.scss"
-import { Redirect } from "react-router-dom"
-const uuidv4 = require("uuid/v4")
+import normalEmailToFirebaseEmail from "components/Utility/normalEmailToFirebaseEmail"
 
 const date_types = {
   START: "start",
@@ -30,12 +29,13 @@ const Create = ({ history }) => {
   componentDidMount
   */
   useEffect(() => {
+    const email = normalEmailToFirebaseEmail(user.email)
     const setIdEventFields = () => {
       setEventFields({
         ...eventFields,
         meta_data: {
           ...eventFields.meta_data,
-          room_owner: user.email,
+          room_owner: email,
           room_owner_id: user.id
         }
       })
@@ -141,12 +141,14 @@ const Create = ({ history }) => {
       return acc
     }, {})
 
+    const email = normalEmailToFirebaseEmail(user.email)
+
     await db.ref("/rooms/" + newRoom.key).set({
       meta_data: eventFields.meta_data,
       time_interval: eventFields.time_interval,
       data: allTimes,
       users: {
-        [user.id]: {
+        [email]: {
           picture: user.picture,
           name: user.name,
           id: user.id
