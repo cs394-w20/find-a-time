@@ -1,5 +1,5 @@
 import React, { useContext } from "react"
-import { Redirect } from "react-router-dom"
+import { Redirect, withRouter } from "react-router-dom"
 import { UserContext } from "./context/UserContext/UserContext"
 
 const ProtectedRoute = ({ component, children, ...rest }) => {
@@ -16,4 +16,4 @@ const ProtectedRoute = ({ component, children, ...rest }) => {
   return <Redirect to="/login" />
 }
 
-export default ProtectedRoute
+export default withRouter(ProtectedRoute)

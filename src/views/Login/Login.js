@@ -5,7 +5,7 @@ import { Redirect } from "react-router-dom"
 import { ReactComponent as LoginImage } from "./LoginImage.svg"
 import "./login.scss"
 
-const Login = ({ redirectOptions }) => {
+const Login = ({ signInCallback }) => {
   const { isAuthorized, setNewUser } = useContext(UserContext)
 
   /*
@@ -21,7 +21,9 @@ const Login = ({ redirectOptions }) => {
         <div className="login-header__text">
           Start using Find A Time with your Google account.
         </div>
-        <AuthButton signInCallback={setNewUser} />
+        <AuthButton
+          signInCallback={signInCallback ? signInCallback : setNewUser}
+        />
       </div>
       <div>
         <LoginImage alt="people next to a phone" className="login-image" />
