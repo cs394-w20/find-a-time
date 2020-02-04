@@ -1,7 +1,7 @@
 // setting up configuration for the app.
 import 'firebase/database';
 import 'firebase/auth';
-import db from "./firebaseConnect";
+import db from "../Db/firebaseConnect";
 
 const GetRoomsByUser = async (user)=>{
     let roomlist =null;
