@@ -1,11 +1,12 @@
-import 'firebase/database';
-import 'firebase/auth';
-import db from "./firebaseConnect";
+import "firebase/database"
+import "firebase/auth"
+import db from "./firebaseConnect"
 
-const AddUserToRoom = async ({email, userName, roomId, picture}) =>{
-        await db.ref('rooms/' + roomId + "/users/"+email +"/")
-            .set({name:userName,picture:picture})
-            .catch(error => alert(error));
-};
+const AddUserToRoom = async ({ email, userId, userName, roomId, picture }) => {
+  await db
+    .ref("rooms/" + roomId + "/users/" + userId + "/")
+    .set({ name: userName, picture: picture, email, id: userId })
+    .catch(error => alert(error))
+}
 
-export default AddUserToRoom;
+export default AddUserToRoom

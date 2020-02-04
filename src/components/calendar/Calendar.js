@@ -1,4 +1,4 @@
-import React, {Component, useContext} from "react"
+import React, { Component, useContext } from "react"
 import {
   DayPilot,
   DayPilotCalendar,
@@ -7,11 +7,11 @@ import {
 import "./CalendarStyles.css"
 import "firebase/database"
 import { stringToDate, dateToString } from "../../utilities"
-import {DATE_FORMAT, ROOM_ID, HOURS, MINUTES} from "../../constants"
+import { DATE_FORMAT, ROOM_ID, HOURS, MINUTES } from "../../constants"
 import db from "../Db/firebaseConnect"
 import { EventInvites } from "../EventInvites"
-import AddManualEvents from "../Events/AddManualEvents";
-import moment from "moment";
+import AddManualEvents from "../Events/AddManualEvents"
+import moment from "moment"
 import { getRoomIdFromPath } from "../Utility"
 import { UserContext } from "../../context/UserContext"
 
@@ -21,7 +21,7 @@ const dbRef = db.ref()
 // DayPilotCalendar API Reference --> https://api.daypilot.org/daypilot-calendar-viewtype/
 
 //password: thirtythree333333***
-const SAMPLE_EMAIL_ADDRESS = ["find.a.time1@gmail.com"];
+const SAMPLE_EMAIL_ADDRESS = ["find.a.time1@gmail.com"]
 
 /**
  * Checks if there is data for the specific room that the calendar can render
@@ -29,11 +29,13 @@ const SAMPLE_EMAIL_ADDRESS = ["find.a.time1@gmail.com"];
  * @param roomId the room id
  * @return boolean
  */
-const checkIfDataExists =(snap,roomId) =>{
-  return (('rooms' in snap.val())
-      && (ROOM_ID.toString() in snap.val()['rooms'])
-      && 'data' in snap.val()['rooms'][ROOM_ID])
-};
+const checkIfDataExists = (snap, roomId) => {
+  return (
+    "rooms" in snap.val() &&
+    roomId.toString() in snap.val()["rooms"] &&
+    "data" in snap.val()["rooms"][roomId]
+  )
+}
 
 //this creates every possible hour/minute combination
 export const createTimes = () => {
@@ -86,7 +88,7 @@ class Calendar extends Component {
     this.state = {
       eventClicked: false,
       viewType: "Days",
-      days:"7",
+      days: "7",
       durationBarVisible: true,
       onTimeRangeSelected: args => {
         let selection = this.calendar
@@ -102,10 +104,10 @@ class Calendar extends Component {
               text: modal.result
             })
           )
-         const userName = "h"
-         const start = args.start;
-         const end = args.end
-          AddManualEvents({roomId: getRoomIdFromPath(), userName, start, end});
+          const userName = "h"
+          const start = args.start
+          const end = args.end
+          AddManualEvents({ roomId: getRoomIdFromPath(), userName, start, end })
         })
 
         selection.clearSelection()
@@ -116,52 +118,50 @@ class Calendar extends Component {
     this.eventInviteOnCloseCallback = this.eventInviteOnCloseCallback.bind(this)
 
     // get the roomId
-    this.roomId = getRoomIdFromPath();
+    this.roomId = getRoomIdFromPath()
   }
 
   /**
    * Call back function for firebase
    */
   handleDataCallback = snap => {
-    let dates = [];
-    let events;
-    let startDate = "";
-    let endDate = "";
-    let users = [];
+    let dates = []
+    let events
+    let startDate = ""
+    let endDate = ""
+    let users = []
 
-    if ((snap.val())) {
+    if (snap.val()) {
+      startDate = snap.val().rooms[this.roomId].time_interval.start
+      endDate = snap.val().rooms[this.roomId].time_interval.end
 
-      startDate =snap.val().rooms[this.roomId].time_interval.start;
-      endDate = snap.val().rooms[this.roomId].time_interval.end;
+      users = snap.val().rooms[this.roomId].users
+      dates = createDayArr(startDate, endDate)
 
-      users = snap.val().rooms[this.roomId].users;
-      dates = createDayArr(
-          startDate,
-          endDate
-      );
-
-
-      if (checkIfDataExists(snap,this.roomId)){
-
+      if (checkIfDataExists(snap, this.roomId)) {
         // add empty date to the  `events` object for all the days with missing days if there is any.
-        events = snap.val().rooms[this.roomId].data;
-        let _startDate = moment(startDate, DATE_FORMAT);
-        let _endDate = moment( endDate, DATE_FORMAT);
-        let date;
-        for (let m =_startDate; m.diff(_endDate, 'days') <= 0; m.add(1, 'days')) {
-          date = m.format(DATE_FORMAT);
-          if (!(date in events)){
-            events[date]={};
+        events = snap.val().rooms[this.roomId].data
+        let _startDate = moment(startDate, DATE_FORMAT)
+        let _endDate = moment(endDate, DATE_FORMAT)
+        let date
+        for (
+          let m = _startDate;
+          m.diff(_endDate, "days") <= 0;
+          m.add(1, "days")
+        ) {
+          date = m.format(DATE_FORMAT)
+          if (!(date in events)) {
+            events[date] = {}
           }
         }
 
-        this.renderCalender( {events, startDate, dates, users})
-      }else{
-        events =null;
-        this.renderCalender( {events, startDate, dates, users})
+        this.renderCalender({ events, startDate, dates, users })
+      } else {
+        events = null
+        this.renderCalender({ events, startDate, dates, users })
       }
     }
-  };
+  }
 
   /**
    * Code to render the calendar
@@ -183,7 +183,7 @@ class Calendar extends Component {
 
     let currTime = 0
 
-    if (events !==null){
+    if (events !== null) {
       dates.forEach(function(key, dayIndex) {
         let currId = 0
         let currStart = ""
@@ -218,8 +218,11 @@ class Calendar extends Component {
             else {
               const unavailable = events[currDay][timeStamp]
               const numUnavailable = Object.keys(unavailable).length
-              const eventText = (numUsers - numUnavailable).toString() +
-                                " / " + numUsers.toString() + " available"
+              const eventText =
+                (numUsers - numUnavailable).toString() +
+                " / " +
+                numUsers.toString() +
+                " available"
 
               const currEvent = {
                 id: currId,
@@ -273,19 +276,19 @@ class Calendar extends Component {
    * @param eventData
    */
   onEventDoubleClick = eventData => {
-    const startSelected = eventData.e.data.start.value;
-    const endSelected = eventData.e.data.end.value;
+    const startSelected = eventData.e.data.start.value
+    const endSelected = eventData.e.data.end.value
     // console.log(eventData.e.data.start.value)
     // console.log(eventData.e.data.end.value)
     //console.log(this.state.eventClicked)
 
-
-    const emailList = SAMPLE_EMAIL_ADDRESS;
-    const title = "CS 394 Meeting";
-    const description = "Hey everyone! Please fill out this form whenever you\n" +
-        "                          can so that we can find a time to meet weekly! Make\n" +
-        "                          sure to connect your Google calendar so you don’t have\n" +
-        "                          to manually fill in events!";
+    const emailList = SAMPLE_EMAIL_ADDRESS
+    const title = "CS 394 Meeting"
+    const description =
+      "Hey everyone! Please fill out this form whenever you\n" +
+      "                          can so that we can find a time to meet weekly! Make\n" +
+      "                          sure to connect your Google calendar so you don’t have\n" +
+      "                          to manually fill in events!"
 
     this.setState({
       eventClicked: true,
@@ -297,8 +300,7 @@ class Calendar extends Component {
         description
       }
     })
-
-  };
+  }
 
   /**
    * callback function for EventInvites. Called when the popup window closes
@@ -306,34 +308,30 @@ class Calendar extends Component {
    */
   eventInviteOnCloseCallback = () => {
     this.setState({ eventClicked: false })
-  };
+  }
 
   /**
    * Self explanatory - if user is not logged in it turns off eventClicked
    */
-  componentDidUpdate(prevProps, prevState , snapshot) {
+  componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevState.eventClicked !== this.state.eventClicked) {
-      if (!(this.props.isUserLoaded)){
-        this.setState({eventClicked: false});
+      if (!this.props.isUserLoaded) {
+        this.setState({ eventClicked: false })
       }
     }
-  };
+  }
 
-  render()
-  {
-
+  render() {
     return (
       <div className={"calendar__container"}>
-
         <DayPilotCalendar
           {...this.state}
           ref={component => {
             this.calendar = component && component.control
           }}
-
           onEventClick={this.onEventDoubleClick}
         />
-        {(this.state.eventClicked && this.props.isUserLoaded) && (
+        {this.state.eventClicked && this.props.isUserLoaded && (
           <EventInvites
             eventData={this.state.eventData}
             eventClicked={this.state.eventClicked}

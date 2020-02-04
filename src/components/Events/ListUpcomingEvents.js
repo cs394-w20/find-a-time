@@ -7,7 +7,7 @@ timeMin :datetime = the lower bound for the request
 timeMax :datetime = the upper bound for the request
 */
 
-export const ListUpcomingEvents = async ({ roomId, userName }) => {
+export const ListUpcomingEvents = async ({ roomId, user }) => {
   // firebaseDb call to get the time_interval data for roomId
   let time_interval = await GetStartEndTimeForRoomId(roomId)
 
@@ -29,7 +29,7 @@ export const ListUpcomingEvents = async ({ roomId, userName }) => {
         // console.log(events)
 
         // appendPre("Upcoming events:");
-        AddGCalEvents({ roomId, userName, events, startDate, endDate })
+        AddGCalEvents({ roomId, user, events, startDate, endDate })
       })
   } catch (e) {
     console.error(

@@ -53,7 +53,8 @@ const EventPage = ({ match }) => {
 
       AddUserToRoom({
         roomId: getRoomIdFromPath(),
-        email: normalEmailToFirebaseEmail(userContext.user.email),
+        email: userContext.user.email,
+        userId: userContext.user.id,
         userName: userContext.user.name,
         picture: userContext.user.picture
       })

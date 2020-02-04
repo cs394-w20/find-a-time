@@ -133,32 +133,30 @@ const Create = ({ history }) => {
     dates.push(end_date.format("YYYY-MM-DD"))
     const dbRef = db.ref("/rooms")
     const newRoom = dbRef.push()
+    const timesReduced = times.reduce((o, key) => ({ ...o, [key]: false }), {})
 
     const allTimes = dates.reduce((acc, curr) => {
-      acc[curr] = times
+      acc[curr] = timesReduced
       return acc
     }, {})
 
-    await db.ref("/rooms/" + newRoom.key).set({
-      meta_data: eventFields.meta_data,
-      time_interval: eventFields.time_interval,
-      data: {
-        ...allTimes
-      },
-      users: {
-        [user.id]: {
-          picture: user.picture,
-          name: user.name,
-          id: user.id
+    db.ref("/rooms/" + newRoom.key)
+      .set({
+        data: allTimes,
+        meta_data: eventFields.meta_data,
+        time_interval: eventFields.time_interval,
+        users: {
+          [user.id]: {
+            picture: user.picture,
+            name: user.name,
+            id: user.id
+          }
         }
-      }
-    })
-    // .then(() => {
-
-    //   // setShowDialog({ shouldOpen: true, roomId: newRoom.key })
-    // })
-
-    history.push(`/events/${newRoom.key}`)
+      })
+      .then(() => {
+        history.push(`/events/${newRoom.key}`)
+        // setShowDialog({ shouldOpen: true, roomId: newRoom.key })
+      })
   }
 
   return (
