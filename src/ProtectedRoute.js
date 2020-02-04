@@ -1,6 +1,7 @@
 import React, { useContext } from "react"
 import { Redirect, withRouter } from "react-router-dom"
 import { UserContext } from "./context/UserContext/UserContext"
+import { Loading } from "components/Loading"
 
 const ProtectedRoute = ({ component, children, ...rest }) => {
   const { isLoading, isAuthorized } = useContext(UserContext)
@@ -17,7 +18,7 @@ const ProtectedRoute = ({ component, children, ...rest }) => {
     return <Redirect to="/login" />
   }
 
-  return <div>Loading</div>
+  return <Loading />
 }
 
 export default withRouter(ProtectedRoute)

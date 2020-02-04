@@ -3,6 +3,7 @@ import { AuthButton } from "components/AuthButton"
 import { Event } from "components/Event"
 import { ShareBanner } from "components/ShareBanner"
 import Calendar from "../../components/calendar/Calendar"
+import { Loading } from "components/Loading"
 import PersonalCalendar from "../../components/PersonalCalendar/PersonalCalendar"
 import { AddUserToRoom } from "components/Db"
 import db from "components/Db/firebaseConnect"
@@ -97,7 +98,7 @@ const EventPage = ({ match }) => {
       )}
     </div>
   ) : (
-    <div>Loading</div>
+    <Loading />
   )
 }
 
