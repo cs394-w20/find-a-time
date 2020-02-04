@@ -6,17 +6,17 @@ import { Loading } from "components/Loading"
 const ProtectedRoute = ({ component, children, ...rest }) => {
   const { isLoading, isAuthorized } = useContext(UserContext)
   const Component = component
-  // if (isAuthorized && !isLoading) {
-  //   return <Component {...rest} />
-  // }
+  if (isAuthorized && !isLoading) {
+    return <Component {...rest} />
+  }
 
-  // /*
-  //   Replace this later with an actual built in alert
-  // */
-  // if (!isLoading) {
-  //   alert("You need to be signed in ")
-  //   return <Redirect to="/login" />
-  // }
+  /*
+    Replace this later with an actual built in alert
+  */
+  if (!isLoading) {
+    alert("You need to be signed in ")
+    return <Redirect to="/login" />
+  }
 
   return <Loading />
 }
