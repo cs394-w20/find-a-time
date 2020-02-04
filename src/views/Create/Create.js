@@ -3,6 +3,7 @@ import moment from "moment"
 import { TextField, Button } from "@material-ui/core"
 import db from "components/Db/firebaseConnect"
 import { UserContext } from "context/UserContext"
+import { QueryBuilder, endpoints, methods } from "api"
 import GroupDialog from "./GroupDialog"
 import "./create.scss"
 import normalEmailToFirebaseEmail from "components/Utility/normalEmailToFirebaseEmail"
@@ -142,8 +143,7 @@ const Create = ({ history }) => {
     }, {})
 
     const email = normalEmailToFirebaseEmail(user.email)
-
-    await db.ref("/rooms/" + newRoom.key).set({
+    const params = {
       meta_data: eventFields.meta_data,
       time_interval: eventFields.time_interval,
       data: allTimes,
@@ -154,11 +154,15 @@ const Create = ({ history }) => {
           id: user.id
         }
       }
-    })
-    // .then(() => {
+    }
+    const q = new QueryBuilder()
+      .setEndpoint(endpoints.NEW_ROOM)
+      .setId(newRoom.key)
+      .setMethod(methods.POST)
+      .setParams(params)
 
-    //   // setShowDialog({ shouldOpen: true, roomId: newRoom.key })
-    // })
+    await q.runQuery()
+    // await db.ref("/rooms/" + newRoom.key).set()
 
     history.push(`/events/${newRoom.key}`)
   }
