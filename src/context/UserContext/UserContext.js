@@ -95,12 +95,24 @@ const UserContextProvider = ({ children }) => {
       ...state,
       user: null,
       isUserLoaded: false,
-      isAuthorized: false
+      isAuthorized: false,
+      isLoading: false
     })
   }
+
+  /*
+
+  
+  */
   const signInUser = user => {
-    // user is nullified (signed out) so set to null and change userIsloaded to false
-    setState({ ...state, user, isUserLoaded: true, isAuthorized: true })
+    // user is nullified (signed out) so set to null
+    setState({
+      ...state,
+      user,
+      isUserLoaded: true,
+      isAuthorized: true,
+      isLoading: false
+    })
   }
   const initalState = {
     setNewUser: getUserProfileAndEvents,
@@ -109,6 +121,7 @@ const UserContextProvider = ({ children }) => {
     ListUpcomingEvents,
     user: null,
     isUserLoaded: null,
+    isLoading: true,
     isAuthorized: false
   }
   const [state, setState] = useState(initalState)

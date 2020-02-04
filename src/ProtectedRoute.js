@@ -3,17 +3,21 @@ import { Redirect, withRouter } from "react-router-dom"
 import { UserContext } from "./context/UserContext/UserContext"
 
 const ProtectedRoute = ({ component, children, ...rest }) => {
-  const { isAuthorized } = useContext(UserContext)
+  const { isLoading, isAuthorized } = useContext(UserContext)
   const Component = component
-  if (isAuthorized) {
+  if (isAuthorized && !isLoading) {
     return <Component {...rest} />
   }
 
   /*
     Replace this later with an actual built in alert
   */
-  alert("You need to be signed in ")
-  return <Redirect to="/login" />
+  if (!isLoading) {
+    alert("You need to be signed in ")
+    return <Redirect to="/login" />
+  }
+
+  return <div>Loading</div>
 }
 
 export default withRouter(ProtectedRoute)
