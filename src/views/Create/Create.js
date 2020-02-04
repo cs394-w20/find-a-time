@@ -134,17 +134,17 @@ const Create = ({ history }) => {
     const dbRef = db.ref("/rooms")
     const newRoom = dbRef.push()
 
+    const timesReduced = times.reduce((o, key) => ({ ...o, [key]: false }), {})
+
     const allTimes = dates.reduce((acc, curr) => {
-      acc[curr] = times
+      acc[curr] = timesReduced
       return acc
     }, {})
 
     await db.ref("/rooms/" + newRoom.key).set({
       meta_data: eventFields.meta_data,
       time_interval: eventFields.time_interval,
-      data: {
-        ...allTimes
-      },
+      data: allTimes,
       users: {
         [user.id]: {
           picture: user.picture,
