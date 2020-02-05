@@ -2,6 +2,8 @@
 import 'firebase/database';
 import 'firebase/auth';
 import db from "../Db/firebaseConnect";
+import {normalEmailToFirebaseEmail} from "components/Utility";
+import {FilterOldRooms} from "./index";
 
 const sampleRoom1 = {
     "roomId": 1,
@@ -90,10 +92,9 @@ const getRoom = async ({roomId})=>{
 };
 
 const GetRoomsByUser = async ({email})=>{
-
-
     let roomlist =null;
     let userrooms =null;
+    let result=[];
     const process = (snapshot) =>{
         roomlist = snapshot.val()||{}
     };
@@ -101,14 +102,23 @@ const GetRoomsByUser = async ({email})=>{
     const process2 = (snapshot) =>{
         userrooms = snapshot.val()||{}
     };
-    await db.ref('/users/' + email+"/active_rooms/").once('value',process2);
+    await db.ref('/users/' + normalEmailToFirebaseEmail(email)+"/active_rooms/").once('value',process2);
     console.log(roomlist);
     console.log(userrooms);
+    let roomlistjson = {};
+   // for(var i in userrooms)
+   //        userrooms["roomId"] = 1;
+   // userrooms = FilterOldRooms(email,userrooms);
+
     /* var result = [];
-    for(var i in roomlist)
-        result[i] = roomlist[i];
+    for(var i in userrooms)
+        result.push({
+        key: roomlist.(i["roomId"]),
+        value: 'i["roomId"]',
+    })
+            roomlist.(i["roomId"]);
     console.log(result); */
-    //return roomlist;
+    //return result;
 
     return sampleData
 };
