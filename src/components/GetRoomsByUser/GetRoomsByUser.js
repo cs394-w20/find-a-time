@@ -112,7 +112,11 @@ const GetRoomsByUser = async ({email})=>{
 
     /* var result = [];
     for(var i in userrooms)
-        result.push(roomlist.(i["roomId"]);
+        result.push({
+        key: roomlist.(i["roomId"]),
+        value: 'i["roomId"]',
+    })
+            roomlist.(i["roomId"]);
     console.log(result); */
     //return result;
 
