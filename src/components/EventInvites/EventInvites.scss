@@ -1,3 +1,5 @@
+@import "~sass-globals/variables";
+
 @font-face {
     font-family: 'Nunito';
     font-style: normal;
@@ -10,3 +12,20 @@
     U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212,
     U+2215, U+FEFF, U+FFFD;
 }
+
+
+.eventinvite__title{
+    text-align: center;
+};
+
+.eventinvite__container-title{
+    font-size: 1em;
+    color: #af3f3f;
+}
+
+@media only screen and (max-width: $mobile-break) {
+    .eventinvite__container-title {
+        width: 210px;
+    }
+}
+

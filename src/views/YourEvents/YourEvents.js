@@ -77,12 +77,43 @@ const sampleRoom3 = {
     }
 };
 
+
+
+const sampleRoom4 = {
+    "roomId": 33,
+    "users": {
+        "bernie@northwestern_edu": {
+            "name": "Bernie",
+            "picture": "https://i.pinimg.com/originals/f0/03/44/f00344d904062ce92b4b3b146060d874.png"
+        },
+        "pete@northwestern_edu": {
+            "name": "Pete",
+            "picture": "https://i.pinimg.com/originals/f0/03/44/f00344d904062ce92b4b3b146060d874.png"
+        },
+        "warren@northwestern_edu": {
+            "name": "Elizabeth",
+            "picture": "https://i.pinimg.com/originals/f0/03/44/f00344d904062ce92b4b3b146060d874.png"
+        },
+        "suzy@northwestern_edu": {
+            "name": "Suzy",
+            "picture": "https://i.pinimg.com/originals/f0/03/44/f00344d904062ce92b4b3b146060d874.png"
+        }
+    },
+    "time_interval": {
+        "start": "2020-02-10",
+        "end": "2020-02-13"
+    },
+    "meta_data": {
+        "title": "Caucusing",
+        "description": "In Iowa",
+        "room_owner": "warren@northwestern_edu"
+    }
+};
+
+
+
 // ReactSearchBox `searches' on value, and the payload is key.
 const sampleData = [
-    {
-        key: sampleRoom1,
-        value: 'CS 396 Project v3',
-    },
     {
         key: sampleRoom2,
         value: 'CS 394 Meeting',
@@ -90,6 +121,14 @@ const sampleData = [
     {
         key: sampleRoom3,
         value: 'Chess Club meeting',
+    },
+    {
+        key: sampleRoom4,
+        value: 'Caucusing',
+    },
+    {
+        key: sampleRoom1,
+        value: 'CS 396 Project v3',
     }
 ];
 
@@ -155,6 +194,22 @@ const YourEvents = () => {
     };
 
 
+    const listEvents = () =>{
+        let seenDates = new Set();
+
+        let eventList = [];
+        let _data;
+        let start;
+
+        for (let i=0;i<data.length;i++){
+            _data = data[i];
+            start = _data.key.time_interval.start;
+            eventList.push(<CondensedEvent key={_data.key.roomId} payload={_data.key} hasDate={!(seenDates.has(start))}/>)
+            seenDates.add(start);
+        }
+        return eventList;
+    };
+
     return (
         <div className="yourevents__container-main">
             <div className="yourevents__container-header-scroll">
@@ -177,7 +232,7 @@ const YourEvents = () => {
 
             <div className="yourevents__container-scroll">
                     <List component="div" className="yourevents__container-list">
-                        {data.map((value) => <CondensedEvent key={value.key.roomId} payload={value.key}/>)}
+                        {listEvents()}
                     </List>
             </div>
 

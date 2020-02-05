@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, Fragment } from "react"
 import moment from "moment-timezone"
 import { UserContext } from "context/UserContext"
-import "./EventInvites.css"
+import "./EventInvites.scss"
 
 import { createMuiTheme } from "@material-ui/core/styles"
 import { ThemeProvider } from "@material-ui/styles"
@@ -33,7 +33,7 @@ import {Link} from "@material-ui/core";
 
 /**
  * Converts time to the local isotime
- * @example 2015-05-28T17:00:00 => 2015-05-28T17:00:00-06:00   // Assuming your in chicago
+ * @example 2015-05-28T17:00:00 => 2015-05-28T17:00:00-06:00   // This example assumes you are in chicago
  */
 const formatToLocalTime = (time)=>{
   let currentTimeZoneOffsetInHours = new Date().getTimezoneOffset() / 60;
@@ -47,7 +47,6 @@ const formatToLocalTime = (time)=>{
 
 let TIMEZONE_OFFSET = new Date().getTimezoneOffset();
 
-// ToDo: Text Editing
 /**
  * Returns true if the attribute exists
  */
@@ -115,7 +114,7 @@ const theme = createMuiTheme({
       "sans-serif"
     ].join(",")
   }
-})
+});
 
 /* The style sheet */
 const useStyles = makeStyles(theme => ({
@@ -142,9 +141,6 @@ const useStyles = makeStyles(theme => ({
     display: "inline-block",
     margin: "0 2px",
     transform: "scale(0.8)"
-  },
-  title: {
-    textAlign: "center"
   },
   pos: {
     marginBottom: 12
@@ -301,14 +297,16 @@ const EventInvites = ({
 
 
                       <Grid item>
-                        <Typography
-                          className={classes.title}
-                          color="secondary"
-                          gutterBottom
-                          noWrap={false}
-                        >
-                          {startTime} - {endTime}, {eventDay}
-                        </Typography>
+                        <Box className="eventinvite__container-title">
+                          <Typography
+                            className="eventinvite__title"
+                            color="secondary"
+                            gutterBottom
+                            noWrap={false}
+                          >
+                            {startTime} - {endTime}, {eventDay}
+                          </Typography>
+                        </Box>
                       </Grid>
                     </Grid>
                   </Box>

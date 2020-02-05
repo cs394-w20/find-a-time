@@ -3,13 +3,53 @@
 
 .condensedevent__container-date {
   float: left;
-  text-align: center;
   margin-right: 5vw;
   width: 2em;
   height: 5vh;
   font-size: 1em;
+  text-align: center;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+}
+
+.condensedevent__card {
+  z-index: -1;
+  transition: 0.9s;
+  border-style: solid;
+  border-width: 1px;
+  border-color:rgb(220,220,220);
+  width: 340px;
 
 }
+
+@media only screen and (max-width: $mobile-break) {
+  .condensedevent__card {
+    width: 282px;
+  }
+
+  .condensedevent__container-date{
+    margin-right: 10px;
+    font-size: .9rem;
+    margin-left: -12px;
+  }
+  .condensedevent__container-dateInterval{
+    width: 220px;
+    font-size: .90rem;
+  }
+
+  .condensedevent__timeZone{
+    width: 220px;
+    font-size: .95rem;
+  }
+
+}
+
+
+
+
+
+
 
 .condensedevent_container-date-dayOfweek {
   color: #7B7676;
@@ -25,17 +65,35 @@
   max-height: 500px;
 }
 
-.card {
-  z-index: -1;
-  transition: 0.9s;
-  border-style: solid;
-  border-width: 1px;
-  border-color:rgb(220,220,220);
-  width: 340px;
+@media only screen and (max-width: $mobile-break) {
+  .condensedevent__container-description{
+    width: 210px;
+  }
+}
+
+@media only screen and (min-width: $mobile-break) {
+  .condensedevent__container-description{
+    width: 275px;
+  }
+}
+
+
+
+
+.condensedevent__red {
+  color: #7a0719;
+}
+
+.condensedevent__container-dateInterval{
 
 }
 
-.card:hover {
+.condensedevent__timeZone{
+
+}
+
+
+.condensedevent__card:hover {
   background-color: rgba(222, 235, 255, .15);
 
   transition: 0.5s;
@@ -43,39 +101,63 @@
 }
 
  .condensedevent__container-namesEmails {
-   max-height: 48px;
-   content:'';
-   clear:both;
-   white-space: nowrap;
+   height: 48px;
    padding-top: 5px;
-   overflow: hidden;
-   margin-bottom: 5px;
    width: 315px;
+   display: flex;
+   padding:0;
+   overflow: hidden;
 
-   padding-bottom: 0;
-   padding-left: 0;
-   padding-right: 0;
+
  }
 
+@media only screen and (max-width: $mobile-break) {
+  .condensedevent__container-namesEmails{
+    width: 260px;
+
+  }
+}
+
+@media only screen and (max-width: $mobile-break) {
+  .condensedevent__container-namesEmails-chips{
+    width: 180px;
+  }
+}
+
+@media only screen and (min-width: $mobile-break) {
+  .condensedevent__container-namesEmails-chips{
+    width: 244px;
+
+  }
+}
+
+
+
+
 .condensedevent__container-namesEmails-chips{
-  width: 241px;
   height:100%;
-  flex-wrap: wrap;
-  display: flex;
   margin: 0;
   padding: 0;
   overflow: hidden;
+  clip: auto;
   float: left;
+  position: relative;
+
+
 }
 .condensedevent_container-namesEmails-dropDown{
   float:right;
-  width: 50px;
+  width: 30px;
   height: 55px;
-  margin-top: -8px;
   z-index: -5;
+  margin-left: 0;
 
 }
 
+.condensedevent__card-groupIcon{
+  color: #424242;
+  margin-top:10px;
+}
 
 
  .condensedevent__container-navigate {
