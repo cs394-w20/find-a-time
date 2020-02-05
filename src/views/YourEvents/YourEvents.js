@@ -67,9 +67,7 @@ const YourEvents = () => {
      */
     useEffect(() => {
         if (userContext.isUserLoaded) {
-            let email = normalEmailToFirebaseEmail(userContext.user.email);
-
-            GetRoomsByUser({email}).then((roomData) => {
+            GetRoomsByUser({email:userContext.user.email}).then((roomData) => {
                 fuse.current = new Fuse(roomData, defaultFuseConfigs);
                 setData(roomData);
                 initialData.current=roomData;
