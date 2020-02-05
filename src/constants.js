@@ -9,6 +9,7 @@ export const FIXED_END_DATE = moment()
   .month("00")
   .date("11");
 
+export const HOST_NAME = "https://find-a-time-19756.firebaseapp.com";
 
 export const ROOM_ID = "1";
 

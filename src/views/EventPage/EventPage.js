@@ -13,6 +13,7 @@ import {
 } from "components/Utility"
 import { UserContext } from "context/UserContext"
 import { ToggleCalendar } from "./components"
+import {EventPageQRCode} from "../../components/ShareBanner";
 
 const EventPage = ({ match }) => {
   const userContext = useContext(UserContext)
@@ -73,6 +74,7 @@ const EventPage = ({ match }) => {
     <div>
       <div className="event-auth__container">
         <ShareBanner />
+        <EventPageQRCode/>
         <Event
           eventCreator={eventData.users[eventData.meta_data.room_owner].name}
           eventCreatorPic={
@@ -86,6 +88,8 @@ const EventPage = ({ match }) => {
           <AuthButton title="Sign in with Google to start using Find a Time!" />
         )}
       </div>
+
+
       <ToggleCalendar
         onGroupAvailabilityClick={onGroupAvailabilityClick}
         onYourAvailabilityClick={onYourAvailabilityClick}
