@@ -6,6 +6,7 @@ import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import "./YourEvents.scss"
 import Fuse from 'fuse.js'
 import {CondensedEvent} from "./components";
+import {FilterOldRooms} from "../../components/GetRoomsByUser";
 
 const circleImg = require("./Images/circle.svg");
 const clockImg = require("./Images/clock.svg");
@@ -130,6 +131,7 @@ const defaultFuseConfigs = {
 
 
 const YourEvents = () => {
+    FilterOldRooms();
     const fuse = useRef();
     //const userContext = useContext(UserContext);
     const [data, setData] = useState(sampleData);

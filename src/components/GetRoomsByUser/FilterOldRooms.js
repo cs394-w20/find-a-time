@@ -1,0 +1,55 @@
+import db from "../Db/firebaseConnect";
+import moment from "moment";
+import {DATE_FORMAT} from "../../constants";
+
+
+const removeRooms = async ({oldRooms,email})=>{
+    const _removeRoom = (roomId) =>{
+        db.ref().transaction(()=>{
+            // remove entry from the /users
+            db.ref('/users/'+email+'/active_rooms/'+roomId).remove();
+            // remove entry from the /rooms
+            db.ref('/rooms/'+roomId).remove()
+            }
+        );
+    };
+    oldRooms.forEach((room)=>_removeRoom(room.id));
+};
+
+/**
+ * Filters the stale rooms from the current rooms rooms
+ * and launches a async function in the background to delete the old
+ * rooms
+ * @param email - email address of the user in question
+ * @param rooms - a list of rooms from dB each room needs to have
+ *                a extra parameter called "id" which holds the "id"
+ *                if you get data from Db this "id" is automatically exluced
+ *                so must add this parameter manually, eg room["id"]=1, for
+ *                each room. 
+ * @return list of current rooms
+ */
+const FilterOldRooms = ({email,rooms}) =>{
+    const today = moment();
+    let oldRooms = [];
+
+    // used in `reduce` to filter the stale rooms from the current rooms
+    const _filterRooms = (currentRooms, room) => {
+        let endDay = moment(room.time_interval.end, DATE_FORMAT);
+
+        if (today.isAfter(endDay)){
+            oldRooms.push(room);
+            return currentRooms
+        }else{
+            currentRooms.push(room);
+            return currentRooms
+        }
+    };
+
+    let currentRooms = rooms.reduce(_filterRooms,[]);
+    // async remove of old rooms
+    removeRooms({email,oldRooms});
+    return currentRooms;
+
+};
+
+export default FilterOldRooms;
