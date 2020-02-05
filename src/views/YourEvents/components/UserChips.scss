@@ -7,9 +7,6 @@
   z-index: 100;
   margin-right:  1px ;
   margin-left: 0;
-  padding-bottom: 900px;
-  line-height: 200%;
-
 }
 
 @media only screen and (max-width: $mobile-break) {
@@ -27,7 +24,10 @@
 
 @media only screen and (min-width: $mobile-break) {
   .userchip__chip{
-    margin-bottom: 20px;
+    margin-bottom: 100px;
+    max-width: 80px;
+
+
   }
 }
 

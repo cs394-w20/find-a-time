@@ -51,12 +51,12 @@ const longFormattedTimeZone = moment().tz(timeZone).format('zz');
 
 
 /** The event card **/
-const CondensedEvent = ({payload}) => {
+const CondensedEvent = ({payload, hasDate}) => {
     const start = payload.time_interval.start;
     const end = payload.time_interval.end;
     const title = payload.meta_data.title;
     const description = payload.meta_data.description;
-    const roomId = 1; //FixMe: Hard coded
+    const roomId = 1; //FixMe: Hard coded <payload.roomId>
 
     const [open, setOpen] = React.useState(false);
 
@@ -80,14 +80,24 @@ const CondensedEvent = ({payload}) => {
         let emailList = Object.keys(payload.users);
         let i = 0;
         let email;
+        let letterLimit = 15;
 
+        let names = '';
         for (i; i< emailList.length && i<3; i++){
             email = emailList[i];
             chips.push(<UserChips key={email}
                                           email={email}
                                           picture={payload.users[email].picture}
-                                          name={payload.users[email].name}/>)
+                                          name={payload.users[email].name}/>
+                                          );
+            names+=payload.users[email].name
         }
+
+        if (names.length>letterLimit){
+            chips.pop();
+        }
+
+
         return chips;
     };
 
@@ -98,11 +108,13 @@ const CondensedEvent = ({payload}) => {
             <ListItem component="div">
 
                 <div >
+
+
                     {/*Day of week right next to card*/}
                     <div className="condensedevent__container-date" >
-                        <span className="condensedevent_container-date-dayOfweek">{weekDay}</span>
+                        <span className="condensedevent_container-date-dayOfweek">{hasDate?weekDay:''}</span>
                         <br/>
-                        <span >{dayOfWeek}</span>
+                        <span >{hasDate?dayOfWeek:''}</span>
                     </div>
 
                     <Card className="condensedevent__card">
