@@ -10,7 +10,12 @@
   align-items: center;
   padding: 8px 18px;
   opacity: 1;
+  margin: 16px 0;
   transition: opacity 300ms ease-in;
+}
+
+.share-banner__icon {
+  margin-right: 8px;
 }
 
 @media only screen and (max-width: $mobile-break) {

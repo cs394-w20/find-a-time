@@ -3,7 +3,7 @@ import { Button } from "../Button"
 import "./AuthButton.css"
 import { UserContext } from "../../context/UserContext"
 
-const AuthButton = ({ signInCallback, className }) => {
+const AuthButton = ({ signInCallback, className, title }) => {
   const { signOutUser, isAuthorized } = useContext(UserContext)
   const handleAuthClick = async event => {
     await window.gapi.auth2.getAuthInstance().signIn()
@@ -18,14 +18,14 @@ const AuthButton = ({ signInCallback, className }) => {
     signOutUser()
   }
   const handleClick = isAuthorized ? handleSignoutClick : handleAuthClick
-  const title = isAuthorized
+  const defualtTitle = isAuthorized
     ? "Sign out of Google"
     : "Sign in with Google Calendar"
 
   const type = isAuthorized ? "secondary" : "primary"
   return (
     <Button
-      title={title}
+      title={title ? title : defualtTitle}
       onClick={handleClick}
       className={`auth-button ${className}`}
       type={type}

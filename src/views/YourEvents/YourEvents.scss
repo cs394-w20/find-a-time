@@ -50,7 +50,6 @@
   background-repeat: repeat;
   animation: yourevents_fade-in 1500ms 500ms forwards;
   animation-delay: 0ms;
-
 }
 
 .yourevents__container-scroll {
@@ -67,6 +66,7 @@
 
   margin-left: auto;
   margin-right: auto;
+
   animation: yourevents_fade-in 1500ms 500ms forwards;
   animation-delay: 0ms;
 }
@@ -110,11 +110,6 @@
 
 .borderless {
   border-top: 0 none;
-}
-
-
-.red {
-  color: #7a0719;
 }
 
 
