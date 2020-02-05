@@ -3,7 +3,7 @@ import 'firebase/database';
 import 'firebase/auth';
 import db from "../Db/firebaseConnect";
 import {normalEmailToFirebaseEmail} from "components/Utility";
-import {FilterOldRooms} from "./index";
+import FilterOldRooms from "./FilterOldRooms";
 
 const sampleRoom1 = {
     "roomId": 1,
