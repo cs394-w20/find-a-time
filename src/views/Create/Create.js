@@ -243,7 +243,7 @@ const Create = ({ history }) => {
           onChange={e => handleTimeChange(e, time_types.END)}
         />
       </div>
-      <Button onClick={handleSubmit}>Create Group</Button>
+      <Button onClick={handleSubmit}>Create Event</Button>
       {showDialog.shouldOpen && <GroupDialog roomId={showDialog.roomId} />}
     </div>
   )
