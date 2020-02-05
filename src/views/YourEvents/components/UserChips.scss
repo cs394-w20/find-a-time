@@ -3,12 +3,31 @@
 
 .userchip__chip{
   margin-top: -8px;
-  margin-right:  10px ;
-  margin-bottom: 20px;
-  min-width: 90px;
   height: 8px;
   z-index: 100;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
+  margin-right:  1px ;
+  margin-left: 0;
+  padding-bottom: 900px;
+  line-height: 200%;
+
 }
+
+@media only screen and (max-width: $mobile-break) {
+  .userchip__chip{
+    width: 80px;
+    margin-top: 900px;
+  }
+
+  .userchip__chip:nth-child(3){
+    width: 0;
+    height: 0;
+    display: none;
+  }
+}
+
+@media only screen and (min-width: $mobile-break) {
+  .userchip__chip{
+    margin-bottom: 20px;
+  }
+}
+

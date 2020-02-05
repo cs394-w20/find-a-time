@@ -19,7 +19,7 @@ import UserChips from "./UserChips";
 import IconButton from "@material-ui/core/IconButton";
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
-import "./CondensedEvent.scss"
+import './CondensedEvent.scss';
 import Button from "@material-ui/core/Button";
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 import SimpleDialog from "./SimpleDialog";
@@ -74,19 +74,38 @@ const CondensedEvent = ({payload}) => {
     const dayOfWeek = moment(start, DATE_FORMAT).format("DD");
 
 
+
+    const getFirstThreeChips = ({payload}) =>{
+        let chips = [];
+        let emailList = Object.keys(payload.users);
+        let i = 0;
+        let email;
+
+        for (i; i< emailList.length && i<3; i++){
+            email = emailList[i];
+            chips.push(<UserChips key={email}
+                                          email={email}
+                                          picture={payload.users[email].picture}
+                                          name={payload.users[email].name}/>)
+        }
+        return chips;
+    };
+
+
+
     return (
         <Fragment>
             <ListItem component="div">
 
-                <div>
+                <div >
                     {/*Day of week right next to card*/}
-                    <div className="condensedevent__container-date">
+                    <div className="condensedevent__container-date" >
                         <span className="condensedevent_container-date-dayOfweek">{weekDay}</span>
                         <br/>
-                        <span>{dayOfWeek}</span>
+                        <span >{dayOfWeek}</span>
                     </div>
 
-                    <Card className={`card`}>
+                    <Card className="condensedevent__card">
                         {/*Title of the event*/}
                         <CardHeader
                             title={title}
@@ -106,17 +125,11 @@ const CondensedEvent = ({payload}) => {
                                     spacing={1}
                                     alignContent={"flex-start"}>
                                     <Grid item component="div">
-                                        <CalendarTodayIcon className="red"/>
+                                        <CalendarTodayIcon className="condensedevent__red"/>
                                     </Grid>
-                                    <Grid item component="div">
-                                        <Typography
-                                            className="red"
-
-                                            gutterBottom
-                                            noWrap={false}
-                                            component="div">
+                                    <Grid item component="div"
+                                          className="condensedevent__red condensedevent__container-dateInterval">
                                             {startDay} - {endDay}
-                                        </Typography>
                                     </Grid>
                                 </Grid>
                             </Box>
@@ -132,31 +145,26 @@ const CondensedEvent = ({payload}) => {
                                     <Grid item component="div">
                                         <PublicIcon/>
                                     </Grid>
-                                    <Grid item component="div">
-                                        <Typography gutterBottom component="div">
+                                    <Grid item component="div" className="condensedevent__timeZone">
                                             {longFormattedTimeZone}
-                                        </Typography>
                                     </Grid>
                                 </Grid>
                             </Box>
 
 
                             {/* Members of the event*/}
-                            <Box color="text.secondary" className="condensedevent__container-namesEmails">
+
+                            <Box color="text.secondary"  className={"condensedevent__container-namesEmails"}>
                                 <Grid
+
                                     direction="row"
                                     container>
                                     <Grid item>
-                                        <GroupIcon style={{color: '#424242'}}/>
+                                        <GroupIcon className="condensedevent__card-groupIcon"/>
                                     </Grid>
                                     <Grid item>
                                         <Box mx="auto" p={1} className="condensedevent__container-namesEmails-chips">
-                                            {Object.keys(payload.users)
-                                                .map((email) =>
-                                                    <UserChips key={email}
-                                                               email={email}
-                                                               picture={payload.users[email].picture}
-                                                               name={payload.users[email].name}/>)}
+                                           {getFirstThreeChips({payload})}
                                         </Box>
 
                                         <Box className="condensedevent_container-namesEmails-dropDown">
