@@ -1,6 +1,8 @@
 import db from "../Db/firebaseConnect";
 import moment from "moment";
 import {DATE_FORMAT} from "../../constants";
+import {normalEmailToFirebaseEmail} from "components/Utility";
+
 
 /**
  * Removes old rooms from the Db
@@ -9,7 +11,7 @@ const removeRooms = async ({oldRooms,email})=>{
     const _removeRoom = (roomId) =>{
         db.ref().transaction(()=>{
                 // remove entry from the /users
-                db.ref('/users/'+email+'/active_rooms/'+roomId).remove();
+                db.ref('/users/'+normalEmailToFirebaseEmail(email)+'/active_rooms/'+roomId).remove();
                 // remove entry from the /rooms
                 db.ref('/rooms/'+roomId).remove()
             }
@@ -50,7 +52,7 @@ const FilterOldRooms = ({email,rooms}) =>{
 
     let currentRooms = rooms.reduce(_filterRooms,[]);
     // async remove of old rooms -- don't care about promise
-    //removeRooms({email,oldRooms});
+    removeRooms({email,oldRooms});
     return currentRooms;
 
 };

@@ -124,7 +124,6 @@ const getRoomsFromRoomIds = async ({roomIds})=>{
 };
 
 // Sorts an array of rooms by Start Date
-
 let sortTime = (arr) => {
     let time1 = moment();
     let time2 = moment();
@@ -145,7 +144,7 @@ let sortTime = (arr) => {
         }
     }
     return arr;
-}
+};
 
 const GetRoomsByUser = async ({email})=>{
 
@@ -158,10 +157,9 @@ const GetRoomsByUser = async ({email})=>{
     
     // filter the old rooms from the current rooms
     let currentRooms = FilterOldRooms({email, rooms});
-    console.log(currentRooms);
 
     // change emails to normal emails
-    let userlist = 0
+    let userlist = 0;
     for (let i=0; i<currentRooms.length;i++){
         userlist = Object.keys(currentRooms[i].users);
         for (let j=0; j<userlist.length; j++){
@@ -177,10 +175,9 @@ const GetRoomsByUser = async ({email})=>{
         key: currentRooms[i],
         value: currentRooms[i].meta_data.title})
     }
-    console.log(result);
+
     // sort rooms by Start Date
     let sortedresult = sortTime(result);
-    console.log(sortedresult);
     return sortedresult
 };
 export default GetRoomsByUser;
