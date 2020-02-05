@@ -50,7 +50,7 @@ const FilterOldRooms = ({email,rooms}) =>{
 
     let currentRooms = rooms.reduce(_filterRooms,[]);
     // async remove of old rooms -- don't care about promise
-    removeRooms({email,oldRooms});
+    //removeRooms({email,oldRooms});
     return currentRooms;
 
 };
