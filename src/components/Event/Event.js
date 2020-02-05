@@ -25,6 +25,7 @@ const Event = ({
   )
 }
 
+/*
 Event.defaultProps = {
   eventName: "CS 394 Meeting",
   eventDescription:
@@ -32,6 +33,6 @@ Event.defaultProps = {
   eventCreatorPic:
     "https://media.vanityfair.com/photos/545f9049cb308b5575a4902f/master/w_2560%2Cc_limit/matt-damon-bourne-again-rexusa_1338570b.jpg",
   eventCreator: "Jason Bourne"
-}
+}*/
 
 export default Event

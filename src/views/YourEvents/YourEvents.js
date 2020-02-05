@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef} from "react";
+import React, {useEffect, useState, useRef, useContext} from "react";
 import ReactSearchBox from 'react-search-box'
 import {UserContext} from "context/UserContext";
 import List from "@material-ui/core/List";
@@ -6,111 +6,13 @@ import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import "./YourEvents.scss"
 import Fuse from 'fuse.js'
 import {CondensedEvent} from "./components";
+import {GetRoomsByUser} from "../../components/GetRoomsByUser";
+import {normalEmailToFirebaseEmail} from "../../components/Utility";
 
 const circleImg = require("./Images/circle.svg");
 const clockImg = require("./Images/clock.svg");
 const strollingHumaanImg = require("./Images/strollingHumaan.svg");
 const runningHumaanImg = require("./Images/runningHumaan.svg");
-
-const sampleRoom1 = {
-    "roomId": 1,
-    "users": {
-        "suzy@northwestern_edu": {
-            "name": "Suzy",
-            "picture": "https://i.pinimg.com/originals/f0/03/44/f00344d904062ce92b4b3b146060d874.png"
-        },
-        "jide@northwestern_edu": {
-            "name": "Jidé",
-            "picture": "https://i.pinimg.com/originals/f0/03/44/f00344d904062ce92b4b3b146060d874.png"
-        },
-        "julia@northwestern_edu": {
-            "name": "Julia",
-            "picture": "https://i.pinimg.com/originals/f0/03/44/f00344d904062ce92b4b3b146060d874.png"
-        }
-    },
-    "time_interval": {
-        "start": "2020-01-20",
-        "end": "2020-01-22"
-    },
-    "meta_data": {
-        "title": "CS 396 Project v3",
-        "description": "Make sure you fill out this form so we can find a time to meet weekly!",
-        "room_owner": "suzy@northwestern_edu"
-    }
-};
-
-const sampleRoom2 = {
-    "roomId": 19,
-    "users": {
-        "suzy@northwestern_edu": {
-            "name": "Suzy",
-            "picture": "https://i.pinimg.com/originals/f0/03/44/f00344d904062ce92b4b3b146060d874.png"
-        }
-    },
-    "time_interval": {
-        "start": "2020-01-10",
-        "end": "2020-01-12"
-    },
-    "meta_data": {
-        "title": "CS 394 Meeting",
-        "description": "Make sure you fill out this form so we can find a time to meet weekly!",
-        "room_owner": "suzy@northwestern_edu"
-    }
-};
-
-const sampleRoom3 = {
-    "roomId": 20,
-    "users": {
-        "suzy@northwestern_edu": {
-            "name": "Suzy",
-            "picture": "https://i.pinimg.com/originals/f0/03/44/f00344d904062ce92b4b3b146060d874.png"
-        }
-    },
-    "time_interval": {
-        "start": "2020-02-10",
-        "end": "2020-02-12"
-    },
-    "meta_data": {
-        "title": "Chess Club meeting",
-        "description": "Make sure you fill out this form so we can find a time to meet weekly!",
-        "room_owner": "suzy@northwestern_edu"
-    }
-};
-
-
-
-const sampleRoom4 = {
-    "roomId": 33,
-    "users": {
-        "bernie@northwestern_edu": {
-            "name": "Bernie",
-            "picture": "https://i.pinimg.com/originals/f0/03/44/f00344d904062ce92b4b3b146060d874.png"
-        },
-        "pete@northwestern_edu": {
-            "name": "Pete",
-            "picture": "https://i.pinimg.com/originals/f0/03/44/f00344d904062ce92b4b3b146060d874.png"
-        },
-        "warren@northwestern_edu": {
-            "name": "Elizabeth",
-            "picture": "https://i.pinimg.com/originals/f0/03/44/f00344d904062ce92b4b3b146060d874.png"
-        },
-        "suzy@northwestern_edu": {
-            "name": "Suzy",
-            "picture": "https://i.pinimg.com/originals/f0/03/44/f00344d904062ce92b4b3b146060d874.png"
-        }
-    },
-    "time_interval": {
-        "start": "2020-02-10",
-        "end": "2020-02-13"
-    },
-    "meta_data": {
-        "title": "Caucusing",
-        "description": "In Iowa",
-        "room_owner": "warren@northwestern_edu"
-    }
-};
-
-
 
 // ReactSearchBox `searches' on value, and the payload is key.
 const sampleData = [
@@ -169,27 +71,40 @@ const defaultFuseConfigs = {
 
 
 const YourEvents = () => {
-    const fuse = useRef();
-    //const userContext = useContext(UserContext);
-    const [data, setData] = useState(sampleData);
+    //handy for keeping any mutable value around similar to how you’d use instance fields in classes.
+    const fuse = useRef(new Fuse([], defaultFuseConfigs));
+    const initialData = useRef([]);
+
+    // gets user data
+    const userContext = useContext(UserContext);
+
+    const [data, setData] = useState([]);
     const [textValue, setTextValue] = useState('');
 
-    useEffect(()=>{
-        fuse.current = new Fuse(sampleData, defaultFuseConfigs);
-    },[]);
+    /**
+     * Sets the data and the fuzzy searcher for the room list once the user is logged in.
+     */
+    useEffect(() => {
+        if (userContext.isUserLoaded) {
+            GetRoomsByUser({email:userContext.user.email}).then((roomData) => {
+                fuse.current = new Fuse(roomData, defaultFuseConfigs);
+                setData(roomData);
+                initialData.current=roomData;
+            });
+        }
+    }, [userContext.isUserLoaded]);
 
 
     const onChange = (text) => {
         if (text !== '') {
             setData(fuse.current.search(text));
         } else {
-            setData(sampleData);
+            setData(initialData.current);
         }
-
         setTextValue(text);
     };
 
-    const closeSearchBox = () =>{
+    const closeSearchBox = () => {
         setTextValue('');
     };
 
@@ -222,7 +137,6 @@ const YourEvents = () => {
                             data={data}
                             onChange={onChange}
                             fuseConfigs={defaultFuseConfigs}
-
                         />
                     </ClickAwayListener>
                 </div>
