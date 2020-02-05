@@ -2,8 +2,9 @@
 import 'firebase/database';
 import 'firebase/auth';
 import db from "../Db/firebaseConnect";
-import {normalEmailToFirebaseEmail} from "components/Utility";
+import {normalEmailToFirebaseEmail,firebaseEmailToNormalEmail} from "components/Utility";
 import FilterOldRooms from "./FilterOldRooms";
+import {DATE_FORMAT} from "../../constants";
 
 const sampleRoom1 = {
     "roomId": 1,
@@ -121,35 +122,60 @@ const getRoomsFromRoomIds = async ({roomIds})=>{
     return rooms;
 };
 
+// Sorts an array of rooms by Start Date
+
+let sortTime = (arr) => {
+    let len = arr.length;
+    for (let i = 0; i < len; i++) {
+        let min = i;
+        for (let j = i + 1; j < len; j++) {
+            if (arr[min].time_interval.start.isBefore(arr[j].time_interval.start)) {
+                min = j;
+            }
+        }
+        if (min !== i) {
+            let tmp = arr[i];
+            arr[i] = arr[min];
+            arr[min] = tmp;
+        }
+    }
+    return arr;
+}
+
 const GetRoomsByUser = async ({email})=>{
 
     // get the list of roomIds for the user
     let roomIds = await getUserRoomIds({email});
     roomIds =Object.keys(roomIds);
-    console.log(roomIds);
 
     // get the rooms by using the list of roomIds
     let rooms = await getRoomsFromRoomIds({roomIds});
-    console.log(rooms);
-
+    
     // filter the old rooms from the current rooms
     let currentRooms = FilterOldRooms({email, rooms});
     console.log(currentRooms);
 
-   // for(var i in userrooms)
-   //        userrooms["roomId"] = 1;
-   // userrooms = FilterOldRooms(email,userrooms);
-
-    /* var result = [];
-    for(var i in userrooms)
+    // change emails to normal emails
+    let userlist = 0
+    for (let i=0; i<currentRooms.length;i++){
+        userlist = Object.keys(currentRooms[i].users);
+        for (let j=0; j<userlist.length; j++){
+            currentRooms[i].users[firebaseEmailToNormalEmail(userlist[j])] = currentRooms[i].users[userlist[j]]
+            delete currentRooms[i].users[userlist[j]];
+        }
+    }
+        
+    // put rooms into format for YourEvents
+    let result = [];
+    for (let i=0; i<currentRooms.length;i++){
         result.push({
-        key: roomlist.(i["roomId"]),
-        value: 'i["roomId"]',
-    })
-            roomlist.(i["roomId"]);
-    console.log(result); */
-    //return result;
-
-    return sampleData
+        key: currentRooms[i],
+        value: currentRooms[i].meta_data.title})
+    }
+    
+    // sort rooms by Start Date
+    let sortedresult = sortTime(result);
+    console.log(sortedresult);
+    return sortedresult
 };
 export default GetRoomsByUser;
