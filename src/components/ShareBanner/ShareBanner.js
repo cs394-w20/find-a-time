@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react"
+import GroupAddIcon from "@material-ui/icons/GroupAdd"
 import copy from "copy-to-clipboard"
 import "./ShareBanner.scss"
 
@@ -13,6 +14,7 @@ const ShareBanner = () => {
   }
   return (
     <div className="share-banner__container" ref={copyContainer}>
+      <GroupAddIcon className="share-banner__icon" />
       <div className="share-banner__text">
         Share this link to invite people!
       </div>

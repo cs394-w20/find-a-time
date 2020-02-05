@@ -81,6 +81,10 @@ const UserContextProvider = ({ children }) => {
     if (isSignedIn) {
       getUserProfileAndEvents()
     }
+    setState({
+      ...state,
+      isLoading: false
+    })
   }
   useEffect(() => {
     const handleClientLoad = () => {
@@ -98,6 +102,7 @@ const UserContextProvider = ({ children }) => {
       isAuthorized: false,
       isLoading: false
     })
+    window.gapi.auth2.getAuthInstance().signOut()
   }
 
   /*

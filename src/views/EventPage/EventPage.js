@@ -72,6 +72,7 @@ const EventPage = ({ match }) => {
   return eventData ? (
     <div>
       <div className="event-auth__container">
+        <ShareBanner />
         <Event
           eventCreator={eventData.users[eventData.meta_data.room_owner].name}
           eventCreatorPic={
@@ -80,7 +81,10 @@ const EventPage = ({ match }) => {
           eventDescription={eventData.meta_data.description}
           eventName={eventData.meta_data.title}
         />
-        <ShareBanner />
+
+        {!userContext.isAuthorized && !userContext.isLoading && (
+          <AuthButton title="Sign in with Google to start using Find a Time!" />
+        )}
       </div>
       <ToggleCalendar
         onGroupAvailabilityClick={onGroupAvailabilityClick}
