@@ -5,6 +5,7 @@ import db from "../Db/firebaseConnect";
 import {normalEmailToFirebaseEmail,firebaseEmailToNormalEmail} from "components/Utility";
 import FilterOldRooms from "./FilterOldRooms";
 import {DATE_FORMAT} from "../../constants";
+import moment from "moment";
 
 const sampleRoom1 = {
     "roomId": 1,
@@ -125,11 +126,15 @@ const getRoomsFromRoomIds = async ({roomIds})=>{
 // Sorts an array of rooms by Start Date
 
 let sortTime = (arr) => {
+    let time1 = moment();
+    let time2 = moment();
     let len = arr.length;
     for (let i = 0; i < len; i++) {
         let min = i;
         for (let j = i + 1; j < len; j++) {
-            if (arr[min].time_interval.start.isBefore(arr[j].time_interval.start)) {
+            time1=moment(arr[min].key.time_interval.start, DATE_FORMAT);
+            time2=moment(arr[j].key.time_interval.start, DATE_FORMAT);
+            if (time1.isAfter(time2)) {
                 min = j;
             }
         }
@@ -172,7 +177,7 @@ const GetRoomsByUser = async ({email})=>{
         key: currentRooms[i],
         value: currentRooms[i].meta_data.title})
     }
-    
+    console.log(result);
     // sort rooms by Start Date
     let sortedresult = sortTime(result);
     console.log(sortedresult);
