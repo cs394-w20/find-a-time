@@ -8,6 +8,13 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        //  redirect to "index.html" for requests to both "/events" and "/events/**"
+        "source": "events{,/**}",
+        "destination": "/index.html"
+      }
     ]
   }
 }
