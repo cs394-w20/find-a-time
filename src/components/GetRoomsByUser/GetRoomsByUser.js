@@ -86,26 +86,28 @@ const sampleData = [
     }
 ];
 
-
+/**
+ * Gets the room given a roomId
+ */
 const getRoom = async ({roomId})=>{
     let snapval = await db.ref('rooms/'+roomId).once('value');
     return snapval.val()||{};
 };
 
+/**
+ * Gets the roomId given a user's email
+ * @param email - example: dominicanene@gmail.com
+ */
 const getUserRoomIds = async ({email})=>{
     let snapval = await db.ref('users/'+normalEmailToFirebaseEmail(email)+"/active_rooms").once('value');
     return snapval.val()||{};
 };
 
-
-const GetRoomsByUser = async ({email})=>{
-
-    // get the list of roomIds for the user
-    let roomIds = await getUserRoomIds({email});
-    roomIds =Object.keys(roomIds);
-    console.log(roomIds);
-
-    // get the rooms by using the list of roomIds
+/**
+ * Gets the rooms given a list of roomIds
+ * @return {Promise<[]>} - a list of rooms wrapped in a promise
+ */
+const getRoomsFromRoomIds = async ({roomIds})=>{
     let rooms =[];
     let room;
     let roomId;
@@ -115,6 +117,19 @@ const GetRoomsByUser = async ({email})=>{
         room["roomId"] = roomIds[i];
         rooms.push(room)
     }
+
+    return rooms;
+};
+
+const GetRoomsByUser = async ({email})=>{
+
+    // get the list of roomIds for the user
+    let roomIds = await getUserRoomIds({email});
+    roomIds =Object.keys(roomIds);
+    console.log(roomIds);
+
+    // get the rooms by using the list of roomIds
+    let rooms = await getRoomsFromRoomIds({roomIds});
     console.log(rooms);
 
     // filter the old rooms from the current rooms
