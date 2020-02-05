@@ -2,7 +2,7 @@
 import 'firebase/database';
 import 'firebase/auth';
 import db from "../Db/firebaseConnect";
-
+import FilterOldRooms from "./FilterOldRooms";
 const sampleRoom1 = {
     "roomId": 1,
     "users": {
@@ -86,24 +86,39 @@ const sampleData = [
 
 
 const getRoom = async ({roomId})=>{
-    return await db.ref('rooms/'+roomId).once('value').val();
+    let snapval = await db.ref('rooms/'+roomId).once('value');
+    return snapval.val();
 };
 
+const getUserRoomIds = async ({email})=>{
+    let snapval = await db.ref('users/'+email+"/active_rooms").once('value');
+    return snapval.val();
+};
 const GetRoomsByUser = async ({email})=>{
 
+    // get the roomIds that a user is associated with
+    let roomIds = await getUserRoomIds({email});
+    roomIds =Object.keys(roomIds);
 
-    let roomlist =null;
-    let userrooms =null;
-    const process = (snapshot) =>{
-        roomlist = snapshot.val()||{}
-    };
-    await db.ref('rooms').once('value',process);
-    const process2 = (snapshot) =>{
-        userrooms = snapshot.val()||{}
-    };
-    await db.ref('/users/' + email+"/active_rooms/").once('value',process2);
-    console.log(roomlist);
-    console.log(userrooms);
+    console.log(roomIds);
+
+    // get the rooms for that user by using the roomIds
+    let rooms =[];
+    let room;
+    for (let i=0; i<roomIds.length;i++){
+        room = await getRoom({roomId:roomIds[i]});
+        room["roomId"] = roomIds[i];
+        rooms.push(room)
+    }
+    console.log(rooms);
+
+    // filter the old rooms
+    let currentRooms = FilterOldRooms({email, rooms});
+
+    console.log(currentRooms);
+
+
+
     /* var result = [];
     for(var i in roomlist)
         result[i] = roomlist[i];
