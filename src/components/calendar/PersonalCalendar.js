@@ -15,8 +15,16 @@ import moment from "moment";
 import { getRoomIdFromPath } from "../Utility"
 import { UserContext } from "../../context/UserContext"
 import normalEmailToFirebaseEmail  from "../Utility/normalEmailToFirebaseEmail"
-
+import Calendar from "./Calendar"
 var Rainbow = require("rainbowvis.js")
+
+
+const PersonalCalendar = (isUserLoaded, user) => {
+  return (
+    <Calendar isUserLoaded={isUserLoaded} type={'PERSONAL'} user={user} />
+  )
+};
+
 
 const dbRef = db.ref()
 // DayPilotCalendar API Reference --> https://api.daypilot.org/daypilot-calendar-viewtype/
@@ -36,7 +44,7 @@ const checkIfDataExists =(snap,roomId) =>{
       && 'data' in snap.val()['rooms'][ROOM_ID])
 };
 
-class PersonalCalendar extends Component {
+class PersonalCalendar2 extends Component {
   constructor(props) {
     super(props)
 
