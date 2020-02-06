@@ -5,7 +5,8 @@ import {
   DayPilotNavigator
 } from "daypilot-pro-react"
 import "firebase/database"
-import { stringToDate, dateToString } from "../../utilities"
+import { stringToDate, dateToString, convertTime,
+         addThirtyMin, createTimes, createDayArr } from "../../utilities"
 import {DATE_FORMAT, ROOM_ID, HOURS, MINUTES} from "../../constants"
 import db from "../Db/firebaseConnect"
 import { EventInvites } from "../EventInvites"
@@ -34,50 +35,6 @@ const checkIfDataExists =(snap,roomId) =>{
       && (ROOM_ID.toString() in snap.val()['rooms'])
       && 'data' in snap.val()['rooms'][ROOM_ID])
 };
-
-//this creates every possible hour/minute combination
-export const createTimes = () => {
-  return HOURS.map(function(item) {
-    return MINUTES.map(function(item2) {
-      return `${item}:${item2}`
-    })
-  }).flat()
-}
-
-const convertTime = time => {
-  if (time < 10) {
-    return "0" + time.toString()
-  } else {
-    return time.toString()
-  }
-}
-
-const addThirtyMin = (currDay, currTime, seconds) => {
-  if (seconds == ":00") {
-    const endTime = currDay.concat("T", convertTime(currTime).concat(":30"))
-    return endTime
-  } else {
-    const endTime = currDay.concat("T", convertTime(currTime + 1).concat(":00"))
-    return endTime
-  }
-}
-
-const createDayArr = (start, end) => {
-  let startDate = stringToDate(start)
-  let endDate = stringToDate(end)
-
-  let newDate = startDate
-  let dateArr = []
-  while (newDate.getDate() !== endDate.getDate()) {
-    dateArr.push(newDate)
-    let tempDate = new Date(newDate)
-    tempDate.setDate(newDate.getDate() + 1)
-    newDate = tempDate
-  }
-
-  dateArr.push(endDate)
-  return dateArr
-}
 
 class PersonalCalendar extends Component {
   constructor(props) {

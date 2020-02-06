@@ -1,3 +1,15 @@
+import {DATE_FORMAT, HOURS, MINUTES} from "./constants"
+
+export function addThirtyMin(currDay, currTime, seconds) {
+  if (seconds == ":00") {
+    const endTime = currDay.concat("T", convertTime(currTime).concat(":30"))
+    return endTime
+  } else {
+    const endTime = currDay.concat("T", convertTime(currTime + 1).concat(":00"))
+    return endTime
+  }
+}
+
 export function stringToDate(str) {
   let year = parseInt(str.substring(0,4));
   let month = parseInt(str.substring(5,7));
@@ -15,4 +27,38 @@ export function dateToString(date) {
   let monthString = month < 9 ? "0".concat((month + 1).toString()) : (month + 1).toString();
 
   return year.toString().concat("-".concat(monthString.concat("-").concat(dayString)));
+}
+
+export function convertTime(time) {
+  if (time < 10) {
+    return "0" + time.toString()
+  } else {
+    return time.toString()
+  }
+}
+
+//this creates every possible hour/minute combination
+export function createTimes() {
+  return HOURS.map(function(item) {
+    return MINUTES.map(function(item2) {
+      return `${item}:${item2}`
+    })
+  }).flat()
+}
+
+export function createDayArr(start, end) {
+  let startDate = stringToDate(start)
+  let endDate = stringToDate(end)
+
+  let newDate = startDate
+  let dateArr = []
+  while (newDate.getDate() !== endDate.getDate()) {
+    dateArr.push(newDate)
+    let tempDate = new Date(newDate)
+    tempDate.setDate(newDate.getDate() + 1)
+    newDate = tempDate
+  }
+
+  dateArr.push(endDate)
+  return dateArr
 }
