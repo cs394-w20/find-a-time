@@ -43,7 +43,7 @@ class Calendar extends Component {
       days:"4",
       durationBarVisible: true,
       eventMoveHandling: "Disabled",
-      eventResizeHandling: "Update",
+      eventResizeHandling: "Disabled",
       onTimeRangeSelected: args => {
         let selection = this.calendar
 
