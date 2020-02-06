@@ -56,7 +56,8 @@ const CondensedEvent = ({payload, hasDate}) => {
     const end = payload.time_interval.end;
     const title = payload.meta_data.title;
     const description = payload.meta_data.description;
-    const roomId = 1; //FixMe: Hard coded <payload.roomId>
+    const roomId = payload.roomId;
+
 
     const [open, setOpen] = React.useState(false);
 
