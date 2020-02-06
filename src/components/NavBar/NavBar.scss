@@ -28,12 +28,18 @@
 }
 
 .nav-bar__item {
+  border: none;
   padding: 8px;
+  white-space: nowrap;
   margin: 0 16px;
   border-radius: 8px;
   font-weight: 600;
   font-size: 1.2rem;
   color: #bfc4c8;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .nav-bar__item:hover:not(.nav-bar__active) {
@@ -112,15 +118,8 @@
 }
 
 @media only screen and (max-width: $mobile-break) {
-  .nav-bar__container {
-    align-items: flex-start;
-  }
   .nav-bar__links-container {
     flex-direction: column;
-    align-items: flex-end;
-
-    & > * {
-      text-align: right;
-    }
+    // align-items: flex-end;
   }
 }
