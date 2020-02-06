@@ -118,6 +118,9 @@ class Calendar extends Component {
         }
     };
 
+
+
+
     /**
      * Code to render the calendar
      */
@@ -132,25 +135,20 @@ class Calendar extends Component {
         let currTime = 0
 
         if (events !== null) {
-            dates.forEach(function (key, dayIndex) {
-                let currId = 0
-                let currDay = dateToString(key)
-                let seconds = ":00"
-
-                if (!Object.keys(events).includes(currDay)) {
-                    console.log("Date not included in firebase")
-                }
-
-                let strTime = currDay.concat("T", convertTime(currTime).concat(seconds))
-
-                if (type === "GROUP") {
+            if (type === "GROUP") {
+                dates.forEach(function (key, dayIndex) {
+                    let currId = 0
+                    let currDay = dateToString(key)
+                    let seconds = ":00"
+                    if (!Object.keys(events).includes(currDay)) {
+                        console.log("Date not included in firebase")
+                    }
+                    let strTime = currDay.concat("T", convertTime(currTime).concat(seconds))
                     while (convertTime(currTime).concat(seconds) !== "24:00") {
                         let i = 0
-
                         while (i < 2) {
                             strTime = currDay.concat("T", convertTime(currTime).concat(seconds))
                             let timeStamp = convertTime(currTime).concat(seconds)
-
                             // CASE 1: Time slot where everybody is available
                             if (!Object.keys(events[currDay]).includes(timeStamp)) {
                                 const currEvent = {
@@ -168,7 +166,6 @@ class Calendar extends Component {
                                 const numUnavailable = Object.keys(unavailable).length
                                 const eventText = (numUsers - numUnavailable).toString() +
                                     " / " + numUsers.toString() + " available"
-
                                 const currEvent = {
                                     id: currId,
                                     text: eventText,
@@ -176,72 +173,66 @@ class Calendar extends Component {
                                     end: addThirtyMin(currDay, currTime, seconds).concat(":00"),
                                     backColor: "#" + colorSpectrum.colourAt(numUnavailable)
                                 }
-
                                 freeTimes.push(currEvent)
                             }
-
                             //elif (prop)
-
                             if (seconds == ":00") {
                                 seconds = ":30"
                             } else if (seconds == ":30") {
                                 seconds = ":00"
                             }
-
                             currId = currId + 1
                             i += 1
                         }
                         currTime = currTime + 1
                     }
-
                     currTime = 0 // Reset currTime for next date
-                }
-                if (type === "PERSONAL") {
-                    const currUserEmail = "szaslan@gmail_com";//normalEmailToFirebaseEmail(this.props.user.email);
-                    while (convertTime(currTime).concat(seconds) !== "24:00") {
-                        let i = 0
-
-                        while (i < 2) {
-
-                            strTime = currDay.concat("T", convertTime(currTime).concat(seconds))
-                            console.log('strTime', strTime)
-                            let timeStamp = convertTime(currTime).concat(seconds)
-                            console.log('timeStamp', timeStamp)
-
-                            // CASE 1: Time slot where everybody is available
-                            if (Object.keys(events[currDay]).includes(timeStamp)) {
-                                const unavailable = events[currDay][timeStamp]
-
-                                if (Object.keys(unavailable).includes(currUserEmail)) {
-                                    console.log(currUserEmail, " is UNAVAILABLE at the time: ", timeStamp, " on day: ", currDay);
-                                    const currEvent = {
-                                        id: currId,
-                                        text: 'hi',
-                                        start: strTime.concat(":00"),
-                                        end: addThirtyMin(currDay, currTime, seconds).concat(":00")
-                                    }
-                                    freeTimes.push(currEvent)
-                                }
-                            }
-
-                            if (seconds == ":00") {
-                                seconds = ":30"
-                            } else if (seconds == ":30") {
-                                seconds = ":00"
-                            }
-
-                            currId = currId + 1
-                            i += 1
-                        }
-                        currTime = currTime + 1
-                    }
-
-                    currTime = 0 // Reset currTime for next date
-                }
-
+                })
             }
-            )
+            if (type === "PERSONAL") {
+                const currUserEmail = "szaslan@gmail_com";//normalEmailToFirebaseEmail(this.props.user.email);
+                var time = moment(startDate);
+                console.log('og', time)
+                time.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+                var strtime = `${time.hours()}:${time.minutes()}`
+                while (strtime !== "24:00") {//(convertTime(currTime).concat(seconds) !== "24:00") {
+                    let i = 0
+
+                    while (i < 2) {
+
+                        var strTime = startDate.concat("T", strtime)
+                        console.log('strTime', strTime)
+                        console.log('fake', time, strtime)
+
+                        // CASE 1: Time slot where everybody is available
+                        if (Object.keys(events[currDay]).includes(strtime)) {
+                            const unavailable = events[currDay][strtime]
+                            /*
+                            if (Object.keys(unavailable).includes(currUserEmail)) {
+                                console.log(currUserEmail, " is UNAVAILABLE at the time: ", fakestrtime, " on day: ", currDay);
+                                const currEvent = {
+                                    id: currId,
+                                    text: 'hi',
+                                    start: strTime.concat(":00"),
+                                    end: strTime.concat(":00")//addThirtyMin(currDay, currTime, seconds).concat(":00")
+                                }
+                                freeTimes.push(currEvent)
+                            }
+                            */
+                        }
+                        faketime.add(30, 'm');
+
+                        currId = currId + 1
+                        i += 1
+                    }
+                    currTime = currTime + 1
+                }
+
+                currTime = 0 // Reset currTime for next date
+            }
+
         }
+
 
         this.setState({
             startDate: startDate,
