@@ -8,6 +8,8 @@ import Fuse from 'fuse.js'
 import {CondensedEvent} from "./components";
 import {GetRoomsByUser} from "../../components/GetRoomsByUser";
 import {normalEmailToFirebaseEmail} from "../../components/Utility";
+import moment from "moment-timezone";
+import {DATE_FORMAT} from "../../constants";
 
 const circleImg = require("./Images/circle.svg");
 const clockImg = require("./Images/clock.svg");
@@ -50,18 +52,25 @@ const defaultFuseConfigs = {
     keys: ['value'],
 };
 
+// Returns the month given a text date
+const getMonth = (date) =>{
+    return moment(date, DATE_FORMAT).format("MMMM");
+};
 
 const YourEvents = () => {
     //handy for keeping any mutable value around similar to how you’d use instance fields in classes.
     const fuse = useRef(new Fuse([], defaultFuseConfigs));
     const initialData = useRef([]);
+    const ref = useRef();
 
     // gets user data
     const userContext = useContext(UserContext);
 
     const [data, setData] = useState([]);
     const [textValue, setTextValue] = useState('');
+    const [month, setMonth] = useState('');
 
+    //const dayOfWeek = moment(start, DATE_FORMAT).format("DD");
     /**
      * Sets the data and the fuzzy searcher for the room list once the user is logged in.
      */
@@ -70,10 +79,16 @@ const YourEvents = () => {
             GetRoomsByUser({email:userContext.user.email}).then((roomData) => {
                 fuse.current = new Fuse(roomData, defaultFuseConfigs);
                 setData(roomData);
+                console.log(roomData);
                 initialData.current=roomData;
+                setMonth(getMonth(roomData[0].key.time_interval.start))
             });
         }
     }, [userContext.isUserLoaded]);
+
+    const scrollCallback =({ref})=>{
+        console.log(ref.current)
+    };
 
 
     const onChange = (text) => {
@@ -90,6 +105,11 @@ const YourEvents = () => {
     };
 
 
+    const onScroll =()=>{
+        //console.log("he");
+       // console.log(ref.current);
+    };
+
     const listEvents = () =>{
         let seenDates = new Set();
 
@@ -100,7 +120,10 @@ const YourEvents = () => {
         for (let i=0;i<data.length;i++){
             _data = data[i];
             start = _data.key.time_interval.start;
-            eventList.push(<CondensedEvent key={_data.key.roomId} payload={_data.key} hasDate={!(seenDates.has(start))}/>)
+            eventList.push(<CondensedEvent key={_data.key.roomId}
+                                           payload={_data.key}
+                                           hasDate={!(seenDates.has(start))}
+                                           scrollCallback={scrollCallback}/>);
             seenDates.add(start);
         }
         return eventList;
@@ -109,7 +132,7 @@ const YourEvents = () => {
     return (
         <div className="yourevents__container-main">
             <div className="yourevents__container-header-scroll">
-                <div className="yourevents__month"> January</div>
+                <div className="yourevents__month"> {month}</div>
                 <div className="yourevents__searchbar">
                     <ClickAwayListener onClickAway={closeSearchBox}>
                         <ReactSearchBox
@@ -125,7 +148,7 @@ const YourEvents = () => {
             </div>
 
 
-            <div className="yourevents__container-scroll">
+            <div className="yourevents__container-scroll" onScroll={onScroll} ref={ref}>
                     <List component="div" className="yourevents__container-list">
                         {listEvents()}
                     </List>

@@ -1,5 +1,5 @@
 import ListItem from "@material-ui/core/ListItem";
-import React, {Fragment} from "react";
+import React, {Fragment,useRef} from "react";
 import Grid from '@material-ui/core/Grid';
 import CardHeader from "@material-ui/core/CardHeader";
 import Divider from "@material-ui/core/Divider";
@@ -23,6 +23,9 @@ import './CondensedEvent.scss';
 import Button from "@material-ui/core/Button";
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 import SimpleDialog from "./SimpleDialog";
+import Fuse from "fuse.js";
+import PropTypes from "prop-types";
+import useScroll from "./useScroll";
 
 // Hacky way to change button color
 const purpleTheme = createMuiTheme({palette: {primary: {main: "#5243AA"}}});
@@ -53,16 +56,18 @@ const getFirstName =(fullName)=>{
     return fullName.split(' ').slice(0, -1).join(' ');
 };
 
+
+//https://stackoverflow.com/questions/50431891/how-can-i-detect-the-scrolltop-of-an-element-using-vanilla-javascript
+// pass around useScroll calulate everything in here. use
+// add ref to condensed event. 
 /** The event card **/
 const CondensedEvent = ({payload, hasDate}) => {
-    const start = payload.time_interval.start;
-    const end = payload.time_interval.end;
-    const title = payload.meta_data.title;
-    const description = payload.meta_data.description;
-    const roomId = payload.roomId;
-
-
     const [open, setOpen] = React.useState(false);
+    const [dum, setDum] = React.useState('')
+
+
+    useScroll(()=> console.log("scrolling"));
+
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -72,6 +77,11 @@ const CondensedEvent = ({payload, hasDate}) => {
         setOpen(false);
     };
 
+    const start = payload.time_interval.start;
+    const end = payload.time_interval.end;
+    const title = payload.meta_data.title;
+    const description = payload.meta_data.description;
+    const roomId = payload.roomId;
     const startDay = moment(start, DATE_FORMAT).format("ddd, MMM Do");
     const endDay = moment(end, DATE_FORMAT).format("ddd, MMM Do");
     const weekDay = moment(start, DATE_FORMAT).format("ddd").toUpperCase();
@@ -110,10 +120,10 @@ const CondensedEvent = ({payload, hasDate}) => {
 
 
     return (
-        <Fragment>
-            <ListItem component="div">
+        <div >
+            <ListItem component="div" >
 
-                <div >
+                <div>
 
 
                     {/*Day of week right next to card*/}
@@ -123,10 +133,10 @@ const CondensedEvent = ({payload, hasDate}) => {
                         <span >{hasDate?dayOfWeek:''}</span>
                     </div>
 
-                    <Card className="condensedevent__card">
+                    <Card className="condensedevent__card" >
                         {/*Title of the event*/}
                         <CardHeader
-                            title={title}
+                            title={dum}
                             style={{textAlign: "center", color: "black"}}
                         />
                         <Divider component="div"/>
@@ -239,8 +249,14 @@ const CondensedEvent = ({payload, hasDate}) => {
                     </Card>
                 </div>
             </ListItem>
-        </Fragment>
+        </div>
     )
+};
+
+
+CondensedEvent.propTypes = {
+    payload: PropTypes.array.isRequired,
+    hasDate: PropTypes.bool.isRequired,
 };
 
 
