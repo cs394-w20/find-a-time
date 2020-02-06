@@ -49,6 +49,9 @@ const longFormattedTimeZone = moment().tz(timeZone).format('zz');
 
 
 
+const getFirstName =(fullName)=>{
+    return fullName.split(' ').slice(0, -1).join(' ');
+};
 
 /** The event card **/
 const CondensedEvent = ({payload, hasDate}) => {
@@ -84,14 +87,16 @@ const CondensedEvent = ({payload, hasDate}) => {
         let letterLimit = 15;
 
         let names = '';
+        let name ;
         for (i; i< emailList.length && i<3; i++){
             email = emailList[i];
+            name = getFirstName(payload.users[email].name);
             chips.push(<UserChips key={email}
                                           email={email}
                                           picture={payload.users[email].picture}
-                                          name={payload.users[email].name}/>
+                                          name={name}/>
                                           );
-            names+=payload.users[email].name
+            names+=name
         }
 
         if (names.length>letterLimit){
