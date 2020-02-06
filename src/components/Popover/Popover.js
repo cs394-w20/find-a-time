@@ -39,10 +39,24 @@ const Popover = props => {
 
   useEffect(() => {
     if (popOverRef.current && props.target.current) {
+      /*
+      popOverRef is the popover thats disokayed
+      target is whats being clicked to show it
+      */
+
       const popoverBox = popOverRef.current.getBoundingClientRect()
       const targetBox = props.target.current.getBoundingClientRect()
-      const y = props.target.current.y + targetBox.height + POPOVER_MARGIN
-      const x = props.target.current.x - popoverBox.width / 2
+      const y = targetBox.y + targetBox.height + POPOVER_MARGIN
+      let x
+      if (props.position === "center") {
+        x = popoverBox.x - popoverBox.width / 2
+      }
+      if (props.position === "left") {
+        x = popoverBox.x - popoverBox.width + targetBox.width
+      }
+      if (props.position === "right") {
+        x = popoverBox.x
+      }
       setCoords({ x, y })
     }
   }, [props.target])
@@ -68,6 +82,7 @@ const Popover = props => {
       setIsOpen(true)
     }
   }
+
   return (
     <div className="popover__wrapper">
       {props.children({ handlePopoverClick })}
@@ -86,9 +101,14 @@ const Popover = props => {
   )
 }
 
+Popover.defaultProps = {
+  position: "center"
+}
+
 Popover.propTypes = {
   target: PropTypes.object,
-  innerComponent: PropTypes.element
+  innerComponent: PropTypes.element,
+  position: PropTypes.string
 }
 
 export default Popover
