@@ -14,25 +14,6 @@ const clockImg = require("./Images/clock.svg");
 const strollingHumaanImg = require("./Images/strollingHumaan.svg");
 const runningHumaanImg = require("./Images/runningHumaan.svg");
 
-// ReactSearchBox `searches' on value, and the payload is key.
-const sampleData = [
-    {
-        key: sampleRoom2,
-        value: 'CS 394 Meeting',
-    },
-    {
-        key: sampleRoom3,
-        value: 'Chess Club meeting',
-    },
-    {
-        key: sampleRoom4,
-        value: 'Caucusing',
-    },
-    {
-        key: sampleRoom1,
-        value: 'CS 396 Project v3',
-    }
-];
 
 // fuse is a fuzzy search library that ReactSearchBox uses ---these are the parameters.
 const defaultFuseConfigs = {
