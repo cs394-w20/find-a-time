@@ -17,7 +17,7 @@ import AddManualEvents from "../Events/AddManualEvents";
 import moment from "moment";
 import { getRoomIdFromPath } from "../Utility"
 import { UserContext } from "../../context/UserContext"
-import normalEmailToFirebaseEmail  from "../Utility/normalEmailToFirebaseEmail"
+import normalEmailToFirebaseEmail from "../Utility/normalEmailToFirebaseEmail"
 
 var Rainbow = require("rainbowvis.js")
 
@@ -123,7 +123,7 @@ class Calendar extends Component {
      */
     renderCalender = ({ dates, events, startDate, users, type }) => {
         const freeTimes = []
-        
+
         const numUsers = Object.keys(users).length
         let colorSpectrum = new Rainbow()
         colorSpectrum.setNumberRange(0, numUsers)
@@ -200,47 +200,43 @@ class Calendar extends Component {
                     const currUserEmail = "szaslan@gmail_com";//normalEmailToFirebaseEmail(this.props.user.email);
                     while (convertTime(currTime).concat(seconds) !== "24:00") {
                         let i = 0
-              
+
                         while (i < 2) {
-              
-                          strTime = currDay.concat("T", convertTime(currTime).concat(seconds))
-                          let timeStamp = convertTime(currTime).concat(seconds)
-              
-                          // CASE 1: Time slot where everybody is available
-                          if (!Object.keys(events[currDay]).includes(timeStamp)) {
-              
-                          }
-                          // CASE 2: Time slot is not available for everyone
-                          else {
-              
-                            const unavailable = events[currDay][timeStamp]
-              
-                            if (Object.keys(unavailable).includes(currUserEmail)) {
-                              console.log(currUserEmail, " is UNAVAILABLE at the time: ", timeStamp, " on day: ", currDay);
-                              const currEvent = {
-                                id: currId,
-                                text: 'hi',
-                                start: strTime.concat(":00"),
-                                end: addThirtyMin(currDay, currTime, seconds).concat(":00")
-                              }
-                              freeTimes.push(currEvent)
+
+                            strTime = currDay.concat("T", convertTime(currTime).concat(seconds))
+                            console.log('strTime', strTime)
+                            let timeStamp = convertTime(currTime).concat(seconds)
+                            console.log('timeStamp', timeStamp)
+
+                            // CASE 1: Time slot where everybody is available
+                            if (Object.keys(events[currDay]).includes(timeStamp)) {
+                                const unavailable = events[currDay][timeStamp]
+
+                                if (Object.keys(unavailable).includes(currUserEmail)) {
+                                    console.log(currUserEmail, " is UNAVAILABLE at the time: ", timeStamp, " on day: ", currDay);
+                                    const currEvent = {
+                                        id: currId,
+                                        text: 'hi',
+                                        start: strTime.concat(":00"),
+                                        end: addThirtyMin(currDay, currTime, seconds).concat(":00")
+                                    }
+                                    freeTimes.push(currEvent)
+                                }
                             }
-              
-                          }
-              
-                          if (seconds == ":00") {
-                            seconds = ":30"
-                          } else if (seconds == ":30") {
-                            seconds = ":00"
-                          }
-              
-                          currId = currId + 1
-                          i += 1
+
+                            if (seconds == ":00") {
+                                seconds = ":30"
+                            } else if (seconds == ":30") {
+                                seconds = ":00"
+                            }
+
+                            currId = currId + 1
+                            i += 1
                         }
                         currTime = currTime + 1
-                      }
-              
-                      currTime = 0 // Reset currTime for next date
+                    }
+
+                    currTime = 0 // Reset currTime for next date
                 }
 
             }
