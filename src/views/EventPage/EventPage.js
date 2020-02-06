@@ -7,10 +7,7 @@ import { Loading } from "components/Loading"
 import PersonalCalendar from "../../components/PersonalCalendar/PersonalCalendar"
 import { AddUserToRoom } from "components/Db"
 import db from "components/Db/firebaseConnect"
-import {
-  normalEmailToFirebaseEmail,
-  getRoomIdFromPath
-} from "components/Utility"
+import { normalEmailToFirebaseEmail } from "components/Utility"
 import { UserContext } from "context/UserContext"
 import { ToggleCalendar } from "./components"
 
@@ -40,7 +37,6 @@ const EventPage = ({ match }) => {
       await db.ref().off()
     }
   }, [match.params.id])
-
   /**
    * Adds user to room once logged in and on an EventPage by saving the email and profile pic in the roomId
    * Calls ListUpcomingEvents() to populate calender w/ Gcal Events
@@ -48,18 +44,18 @@ const EventPage = ({ match }) => {
   useEffect(() => {
     if (userContext.isUserLoaded) {
       userContext.ListUpcomingEvents({
-        roomId: getRoomIdFromPath(),
+        roomId: match.params.id,
         userName: normalEmailToFirebaseEmail(userContext.user.email)
       })
 
       AddUserToRoom({
-        roomId: getRoomIdFromPath(),
+        roomId: match.params.id,
         email: normalEmailToFirebaseEmail(userContext.user.email),
         userName: userContext.user.name,
         picture: userContext.user.picture
       })
     }
-  }, [userContext.isUserLoaded])
+  }, [userContext, match.params.id])
 
   const onGroupAvailabilityClick = () => {
     setIsPersonalCal(false)
