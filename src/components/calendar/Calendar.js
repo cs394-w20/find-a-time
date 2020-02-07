@@ -18,7 +18,6 @@ import { UserContext } from "../../context/UserContext"
 
 var Rainbow = require("rainbowvis.js")
 
-const dbRef = db.ref()
 // DayPilotCalendar API Reference --> https://api.daypilot.org/daypilot-calendar-viewtype/
 
 /**
@@ -27,10 +26,8 @@ const dbRef = db.ref()
  * @param roomId the room id
  * @return boolean
  */
-const checkIfDataExists =(snap,roomId) =>{
-  return (('rooms' in snap.val())
-      && (ROOM_ID.toString() in snap.val()['rooms'])
-      && 'data' in snap.val()['rooms'][ROOM_ID])
+const checkIfDataExists =(snap) =>{
+  return ('data' in snap.val())
 };
 
 class Calendar extends Component {
@@ -58,7 +55,7 @@ class Calendar extends Component {
               text: modal.result
             })
           )
-         const userName = "h"
+         const userName = this.props.user.name
          const start = args.start;
          const end = args.end
           AddManualEvents({roomId: getRoomIdFromPath(), userName, start, end});
@@ -71,8 +68,6 @@ class Calendar extends Component {
     // callback function for EventInvite
     this.eventInviteOnCloseCallback = this.eventInviteOnCloseCallback.bind(this)
 
-    // get the roomId
-    this.roomId = getRoomIdFromPath();
   }
 
   /**
@@ -87,20 +82,20 @@ class Calendar extends Component {
 
     if ((snap.val())) {
 
-      startDate =snap.val().rooms[this.roomId].time_interval.start;
-      endDate = snap.val().rooms[this.roomId].time_interval.end;
+      startDate =snap.val().time_interval.start;
+      endDate = snap.val().time_interval.end;
 
-      users = snap.val().rooms[this.roomId].users;
+      users = snap.val().users;
       dates = createDayArr(
           startDate,
           endDate
       );
 
 
-      if (checkIfDataExists(snap,this.roomId)){
+      if (checkIfDataExists(snap)){
 
         // add empty date to the  `events` object for all the days with missing days if there is any.
-        events = snap.val().rooms[this.roomId].data;
+        events = snap.val().data;
         let _startDate = moment(startDate, DATE_FORMAT);
         let _endDate = moment( endDate, DATE_FORMAT);
         let date;
@@ -212,14 +207,14 @@ class Calendar extends Component {
   }
 
   componentDidMount() {
-    dbRef.on("value", this.handleDataCallback, error => alert(error))
+    db.ref("/rooms/"+this.props.roomId).on("value", this.handleDataCallback, error => alert(error))
 
     console.log("THIS IS THE LOGGED IN USER: ", this.props.user)
   }
 
   // disconnect the handleDataCallback on unmount
   componentWillUnmount() {
-    dbRef.off("value", this.handleDataCallback)
+    db.ref().off("value", this.handleDataCallback)
   }
 
   /**
