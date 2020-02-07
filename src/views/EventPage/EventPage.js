@@ -57,7 +57,6 @@ const EventPage = ({ match }) => {
   useEffect(() => {
     if ((userContext.isUserLoaded) && dbHasRoom) {
 
-      console.log("ID",match.params.id);
       userContext.ListUpcomingEvents({
         roomId: match.params.id,
         userName: normalEmailToFirebaseEmail(userContext.user.email)
