@@ -119,6 +119,9 @@
 
 @media only screen and (max-width: $mobile-break) {
   .nav-bar__links-container {
+    .nav-bar__active::after {
+      display: none;
+    }
     flex-direction: column;
     // align-items: flex-end;
   }

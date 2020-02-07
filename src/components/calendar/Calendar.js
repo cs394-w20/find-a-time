@@ -6,8 +6,9 @@ import {
 } from "daypilot-pro-react"
 import "./CalendarStyles.css"
 import "firebase/database"
-import { stringToDate, dateToString } from "../../utilities"
-import {DATE_FORMAT, ROOM_ID, HOURS, MINUTES} from "../../constants"
+import { stringToDate, dateToString, convertTime,
+         addThirtyMin, createTimes, createDayArr} from "../../utilities"
+import {DATE_FORMAT, ROOM_ID} from "../../constants"
 import db from "../Db/firebaseConnect"
 import { EventInvites } from "../EventInvites"
 import AddManualEvents from "../Events/AddManualEvents";
@@ -19,9 +20,6 @@ var Rainbow = require("rainbowvis.js")
 
 // DayPilotCalendar API Reference --> https://api.daypilot.org/daypilot-calendar-viewtype/
 
-//password: thirtythree333333***
-const SAMPLE_EMAIL_ADDRESS = ["find.a.time1@gmail.com"];
-
 /**
  * Checks if there is data for the specific room that the calendar can render
  * @param snap value returned from firebased
@@ -32,50 +30,6 @@ const checkIfDataExists =(snap) =>{
   return ('data' in snap.val())
 };
 
-//this creates every possible hour/minute combination
-export const createTimes = () => {
-  return HOURS.map(function(item) {
-    return MINUTES.map(function(item2) {
-      return `${item}:${item2}`
-    })
-  }).flat()
-}
-
-const convertTime = time => {
-  if (time < 10) {
-    return "0" + time.toString()
-  } else {
-    return time.toString()
-  }
-}
-
-const addThirtyMin = (currDay, currTime, seconds) => {
-  if (seconds == ":00") {
-    const endTime = currDay.concat("T", convertTime(currTime).concat(":30"))
-    return endTime
-  } else {
-    const endTime = currDay.concat("T", convertTime(currTime + 1).concat(":00"))
-    return endTime
-  }
-}
-
-const createDayArr = (start, end) => {
-  let startDate = stringToDate(start)
-  let endDate = stringToDate(end)
-
-  let newDate = startDate
-  let dateArr = []
-  while (newDate.getDate() !== endDate.getDate()) {
-    dateArr.push(newDate)
-    let tempDate = new Date(newDate)
-    tempDate.setDate(newDate.getDate() + 1)
-    newDate = tempDate
-  }
-
-  dateArr.push(endDate)
-  return dateArr
-}
-
 class Calendar extends Component {
   constructor(props) {
     super(props)
@@ -85,6 +39,8 @@ class Calendar extends Component {
       viewType: "Days",
       days:"4",
       durationBarVisible: true,
+      eventMoveHandling: "Disabled",
+      eventResizeHandling: "Disabled",
       onTimeRangeSelected: args => {
         let selection = this.calendar
 
@@ -275,7 +231,7 @@ class Calendar extends Component {
     //console.log(this.state.eventClicked)
 
 
-    const emailList = SAMPLE_EMAIL_ADDRESS;
+    const emailList = "SAMPLE_EMAIL_ADDRESS";
     const title = "CS 394 Meeting";
     const description = "Hey everyone! Please fill out this form whenever you\n" +
         "                          can so that we can find a time to meet weekly! Make\n" +

@@ -49,16 +49,6 @@ const NavBar = props => {
     )
   }
 
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-
-  const openDrawer = () => {
-    setIsDrawerOpen(true)
-  }
-
-  const closeDrawer = () => {
-    setIsDrawerOpen(false)
-  }
-
   const LoginButton = () => {
     if (isMobile) {
       return value.isUserLoaded ? (
@@ -69,7 +59,8 @@ const NavBar = props => {
         <Link
           to="/login"
           className={classnames("nav-bar nav-bar__item", {
-            "nav-bar__active": activeLink.indexOf("/login") !== -1
+            "nav-bar__active": activeLink.indexOf("/login") !== -1,
+            "nav-bar__mobile": isMobile
           })}
         >
           Log in
@@ -109,19 +100,24 @@ const NavBar = props => {
         <Link
           to="/create"
           className={classnames(`nav-bar nav-bar__item `, {
-            "nav-bar__active": activeLink.indexOf("/create") !== -1
+            "nav-bar__active": activeLink.indexOf("/create") !== -1,
+            "nav-bar__mobile": isMobile
           })}
         >
           Create an event
         </Link>
-        <Link
-          to="/events"
-          className={classnames("nav-bar nav-bar__item", {
-            "nav-bar__active": "/events" === activeLink
-          })}
-        >
-          Your events
-        </Link>
+
+        {value.isAuthorized && (
+          <Link
+            to="/events"
+            className={classnames("nav-bar nav-bar__item", {
+              "nav-bar__active": "/events" === activeLink,
+              "nav-bar__mobile": isMobile
+            })}
+          >
+            Your events
+          </Link>
+        )}
         <LoginButton />
       </div>
     )

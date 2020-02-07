@@ -81,10 +81,10 @@ const UserContextProvider = ({ children }) => {
     if (isSignedIn) {
       getUserProfileAndEvents()
     }
-    setState({
-      ...state,
-      isLoading: false
-    })
+    // setState({
+    //   ...state,
+    //   isLoading: false
+    // })
   }
   useEffect(() => {
     const handleClientLoad = () => {
