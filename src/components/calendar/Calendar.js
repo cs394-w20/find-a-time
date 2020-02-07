@@ -21,12 +21,6 @@ import normalEmailToFirebaseEmail from "../Utility/normalEmailToFirebaseEmail"
 
 var Rainbow = require("rainbowvis.js")
 
-const EventPage = () => {
-  const userContext = useContext(UserContext)
-  console.log("THE USER CONTEXT: ", userContext);
-}
-
-const dbRef = db.ref()
 // DayPilotCalendar API Reference --> https://api.daypilot.org/daypilot-calendar-viewtype/
 
 /**
@@ -36,14 +30,13 @@ const dbRef = db.ref()
  * @param currUser the current user
  * @return boolean
  */
-const checkIfDataExists = (snap, roomId) => {
-    return (('rooms' in snap.val())
-        && (ROOM_ID.toString() in snap.val()['rooms'])
-        && 'data' in snap.val()['rooms'][ROOM_ID])
+const checkIfDataExists =(snap) =>{
+  return ('data' in snap.val())
 };
 
 
 class Calendar extends Component {
+// <<<<<<< HEAD
     constructor(props) {
         super(props)
 
@@ -54,27 +47,59 @@ class Calendar extends Component {
             durationBarVisible: true,
             eventMoveHandling: "Disabled",
             eventResizeHandling: "Disabled",
-            onTimeRangeSelected: args => {
-                let selection = this.calendar
-
-                DayPilot.Modal.prompt("Add a new event: ", "Event name").then(function (
-                    modal
-                ) {
-                    selection.events.add(
-                        new DayPilot.Event({
-                            start: args.start,
-                            end: args.end,
-                            id: DayPilot.guid(),
-                            text: modal.result
-                        })
-                    )
-                })
-
-                selection.clearSelection()
-            },
             user: this.props.user,
-            email: this.props.email
+            email: this.props.email,
+            onTimeRangeSelected: args => {
+              let selection = this.calendar
+
+              DayPilot.Modal.prompt("Add a new event: ", "Event name").then(function(
+                modal
+              ) {
+                selection.events.add(
+                  new DayPilot.Event({
+                    start: args.start,
+                    end: args.end,
+                    id: DayPilot.guid(),
+                    text: modal.result
+                  })
+                )
+               const userName = this.props.user.name
+               const start = args.start;
+               const end = args.end
+                AddManualEvents({roomId: getRoomIdFromPath(), userName, start, end});
+              })
         }
+=======
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      eventClicked: false,
+      viewType: "Days",
+      days:"4",
+      durationBarVisible: true,
+      eventMoveHandling: "Disabled",
+      eventResizeHandling: "Disabled",
+      onTimeRangeSelected: args => {
+        let selection = this.calendar
+
+        DayPilot.Modal.prompt("Add a new event: ", "Event name").then(function(
+          modal
+        ) {
+          selection.events.add(
+            new DayPilot.Event({
+              start: args.start,
+              end: args.end,
+              id: DayPilot.guid(),
+              text: modal.result
+            })
+          )
+         const userName = this.props.user.name
+         const start = args.start;
+         const end = args.end
+          AddManualEvents({roomId: getRoomIdFromPath(), userName, start, end});
+        })
+>>>>>>> 166231fc6ed9534b2f1716b3a20fd043c88940c8
 
         // callback function for EventInvite
         this.eventInviteOnCloseCallback = this.eventInviteOnCloseCallback.bind(this)
@@ -96,29 +121,29 @@ class Calendar extends Component {
 
         if ((snap.val())) {
 
-            startDate = snap.val().rooms[this.roomId].time_interval.start;
-            endDate = snap.val().rooms[this.roomId].time_interval.end;
+          startDate =snap.val().time_interval.start;
+          endDate = snap.val().time_interval.end;
 
-            users = snap.val().rooms[this.roomId].users;
-            dates = createDayArr(
-                startDate,
-                endDate
-            );
+          users = snap.val().users;
+          dates = createDayArr(
+              startDate,
+              endDate
+          );
+
 
 
             if (checkIfDataExists(snap, this.roomId)) {
-
-                // add empty date to the  `events` object for all the days with missing days if there is any.
-                events = snap.val().rooms[this.roomId].data;
-                let _startDate = moment(startDate, DATE_FORMAT);
-                let _endDate = moment(endDate, DATE_FORMAT);
-                let date;
-                for (let m = _startDate; m.diff(_endDate, 'days') <= 0; m.add(1, 'days')) {
-                    date = m.format(DATE_FORMAT);
-                    if (!(date in events)) {
-                        events[date] = {};
-                    }
+              // add empty date to the  `events` object for all the days with missing days if there is any.
+              events = snap.val().data;
+              let _startDate = moment(startDate, DATE_FORMAT);
+              let _endDate = moment( endDate, DATE_FORMAT);
+              let date;
+              for (let m =_startDate; m.diff(_endDate, 'days') <= 0; m.add(1, 'days')) {
+                date = m.format(DATE_FORMAT);
+                if (!(date in events)){
+                  events[date]={};
                 }
+              }
 
                 this.renderCalender({ events, startDate, dates, users, type: this.props.type, currUser: this.state.user, email: this.state.email })
             } else {
@@ -270,81 +295,74 @@ class Calendar extends Component {
         dbRef.off("value", this.handleDataCallback)
     }
 
-    /**
-     * ToDo: Replace static data. eventData.e.data should contain emails of people available, and need a global
-     * constant w/ the title of the event and description of event. Probably needs to be firebase real time
-     * since these can change. Probably add to the Context variable.
-     * @param eventData
-     */
-    onEventDoubleClick = eventData => {
-        const startSelected = eventData.e.data.start.value;
-        const endSelected = eventData.e.data.end.value;
-        // console.log(eventData.e.data.start.value)
-        // console.log(eventData.e.data.end.value)
-        //console.log(this.state.eventClicked)
+    this.setState({
+      startDate: startDate,
+      events: freeTimes,
+      eventClicked: this.state.eventClicked
+    })
+  }
+
+  componentDidMount() {
+    db.ref("/rooms/"+this.props.roomId).on("value", this.handleDataCallback, error => alert(error))
+
+    console.log("THIS IS THE LOGGED IN USER: ", this.props.user)
+  }
+
+  // disconnect the handleDataCallback on unmount
+  componentWillUnmount() {
+    db.ref().off("value", this.handleDataCallback)
+  }
+
+  /**
+   * ToDo: Replace static data. eventData.e.data should contain emails of people available, and need a global
+   * constant w/ the title of the event and description of event. Probably needs to be firebase real time
+   * since these can change. Probably add to the Context variable.
+   * @param eventData
+   */
+  onEventDoubleClick = eventData => {
+    const startSelected = eventData.e.data.start.value;
+    const endSelected = eventData.e.data.end.value;
+    // console.log(eventData.e.data.start.value)
+    // console.log(eventData.e.data.end.value)
+    //console.log(this.state.eventClicked)
 
 
-        const emailList = "SAMPLE_EMAIL_ADDRESS";
-        const title = "CS 394 Meeting";
-        const description = "Hey everyone! Please fill out this form whenever you\n" +
-            "                          can so that we can find a time to meet weekly! Make\n" +
-            "                          sure to connect your Google calendar so you don’t have\n" +
-            "                          to manually fill in events!";
+    const emailList = "SAMPLE_EMAIL_ADDRESS";
+    const title = "CS 394 Meeting";
+    const description = "Hey everyone! Please fill out this form whenever you\n" +
+        "                          can so that we can find a time to meet weekly! Make\n" +
+        "                          sure to connect your Google calendar so you don’t have\n" +
+        "                          to manually fill in events!";
 
-        this.setState({
-            eventClicked: true,
-            eventData: {
-                startSelected,
-                endSelected,
-                emailList,
-                title,
-                description
-            }
-        })
+    this.setState({
+      eventClicked: true,
+      eventData: {
+        startSelected,
+        endSelected,
+        emailList,
+        title,
+        description
+      }
+    })
 
-    };
+  };
 
-    /**
-     * callback function for EventInvites. Called when the popup window closes
-     * @link EventInvites
-     */
-    eventInviteOnCloseCallback = () => {
-        this.setState({ eventClicked: false })
-    };
+  /**
+   * callback function for EventInvites. Called when the popup window closes
+   * @link EventInvites
+   */
+  eventInviteOnCloseCallback = () => {
+    this.setState({ eventClicked: false })
+  };
 
-    /**
-     * Self explanatory - if user is not logged in it turns off eventClicked
-     */
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevState.eventClicked !== this.state.eventClicked) {
-            if (!(this.props.isUserLoaded)) {
-                this.setState({ eventClicked: false });
-            }
-        }
-    };
-
-    render() {
-
-        return (
-            <div className={"calendar__container"}>
-
-                <DayPilotCalendar
-                    {...this.state}
-                    ref={component => {
-                        this.calendar = component && component.control
-                    }}
-
-                    onEventClick={this.onEventDoubleClick}
-                />
-                {(this.state.eventClicked && this.props.isUserLoaded) && (
-                    <EventInvites
-                        eventData={this.state.eventData}
-                        eventClicked={this.state.eventClicked}
-                        eventInviteOnCloseCallback={this.eventInviteOnCloseCallback}
-                    />
-                )}
-            </div>
-        )
+  /**
+   * Self explanatory - if user is not logged in it turns off eventClicked
+   */
+  componentDidUpdate(prevProps, prevState , snapshot) {
+    if (prevState.eventClicked !== this.state.eventClicked) {
+      if (!(this.props.isUserLoaded)){
+        this.setState({eventClicked: false});
+      }
     }
 }
 

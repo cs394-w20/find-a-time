@@ -10,39 +10,24 @@ import db from "components/Db/firebaseConnect"
 import { normalEmailToFirebaseEmail } from "components/Utility"
 import { UserContext } from "context/UserContext"
 import { ToggleCalendar } from "./components"
+import {hasRoom} from "../../components/Db";
+import Calendar from "components/calendar/Calendar";
 
 const EventPage = ({ match }) => {
   const userContext = useContext(UserContext)
-  const [isPersonalCal, setIsPersonalCal] = useState(false)
+  const [isPersonalCal, setIsPersonalCal] = useState(false);
+  const [eventData, setEventData] = useState(null);
+  const [dbHasRoom, setDbHasRoom] = useState(false);
 
-  const [eventData, setEventData] = useState(null)
-
-  useEffect(() => {
-    const roomId = match.params.id
-    if (!roomId) {
-      return
-      /*
-          Need to handle error gracefully here
-          */
-    }
-
-    const fetchRooms = () => {
-      db.ref("/rooms/" + roomId)
-        .once("value")
-        .then(snapshot => setEventData(snapshot.val()))
-    }
-
-    fetchRooms()
-    return async () => {
-      await db.ref().off()
-    }
-  }, [match.params.id])
   /**
    * Adds user to room once logged in and on an EventPage by saving the email and profile pic in the roomId
    * Calls ListUpcomingEvents() to populate calender w/ Gcal Events
    */
   useEffect(() => {
-    if (userContext.isUserLoaded) {
+    console.log("TWO")
+
+    if ((userContext.isUserLoaded) && dbHasRoom) {
+
       userContext.ListUpcomingEvents({
         roomId: match.params.id,
         userName: normalEmailToFirebaseEmail(userContext.user.email)
@@ -57,6 +42,44 @@ const EventPage = ({ match }) => {
     }
   }, [userContext, match.params.id])
 
+
+  useEffect(() => {
+    const roomId = match.params.id;
+
+    console.log("ONE")
+    //boolean indicates if Db has the room
+    hasRoom({roomId}).then((dbHasRoom)=>{
+
+      if (!roomId) {
+        setDbHasRoom(dbHasRoom);
+        return
+        /*
+            Need to handle error gracefully here
+            */
+      }
+
+
+      if (dbHasRoom){
+        const fetchRooms = () => {
+          db.ref("/rooms/" + roomId)
+              .once("value")
+              .then(snapshot => setEventData(snapshot.val()))
+        };
+
+        fetchRooms()
+      }
+
+      setDbHasRoom(dbHasRoom);
+    }
+  );
+
+    return async () => {
+      await db.ref().off()
+    }
+  }, [match.params.id])
+
+
+
   const onGroupAvailabilityClick = () => {
     setIsPersonalCal(false)
   }
@@ -65,7 +88,7 @@ const EventPage = ({ match }) => {
     setIsPersonalCal(true)
   }
 
-  return eventData && userContext.user && userContext.user.email ? (
+  return eventData && userContext.user && userContext.user.email && dbHasRoom ? (
     <div>
       <div className="event-auth__container">
         <ShareBanner />
@@ -92,18 +115,17 @@ const EventPage = ({ match }) => {
         <PersonalCalendar
           isUserLoaded={userContext.isUserLoaded}
           user={userContext.user}
-          email = {userContext.user.email}
+          roomId = {match.params.id}
         />
       ) : (
-        <GroupCalendar
-          isUserLoaded={userContext.isUserLoaded}
-          user={userContext}
-          email={userContext.user.email} />
+        <Calendar isUserLoaded={userContext.isUserLoaded}
+                  user={userContext.user}
+                  email={userContext.user.email}
+                  roomId = {match.params.id}
+        />
       )}
     </div>
-  ) : (
-    <Loading />
-  )
-}
+  ) : (dbHasRoom? <Loading />: <div> Event does not exist</div>)
+};
 
 export default EventPage
