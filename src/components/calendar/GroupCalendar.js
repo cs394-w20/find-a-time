@@ -18,12 +18,15 @@ import moment from "moment";
 import { getRoomIdFromPath } from "../Utility"
 import Calendar from "./Calendar"
 import { UserContext } from "../../context/UserContext"
+import { Loading } from "components/Loading"
 
 
 
-const GroupCalendar = ({isUserLoaded, user}) => {
-  return (
-    <Calendar isUserLoaded={isUserLoaded} type={'GROUP'} user={user.user}/>
+const GroupCalendar = ({isUserLoaded, user, email}) => {
+  return user ? (
+    <Calendar isUserLoaded={isUserLoaded} type={'GROUP'} user={user} email={email}/>
+  ) : (
+    <Loading />
   )
 };
 

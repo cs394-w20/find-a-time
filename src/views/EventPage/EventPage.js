@@ -65,7 +65,7 @@ const EventPage = ({ match }) => {
     setIsPersonalCal(true)
   }
 
-  return eventData && userContext.user ? (
+  return eventData && userContext.user && userContext.user.email ? (
     <div>
       <div className="event-auth__container">
         <ShareBanner />
@@ -88,13 +88,17 @@ const EventPage = ({ match }) => {
         isUserLoaded={!(userContext.isUserLoaded == null)}
       />
 
-      {userContext.user && isPersonalCal ? (
+      {userContext.user && isPersonalCal && userContext.user.email? (
         <PersonalCalendar
           isUserLoaded={userContext.isUserLoaded}
           user={userContext.user}
+          email = {userContext.user.email}
         />
       ) : (
-        <GroupCalendar isUserLoaded={userContext.isUserLoaded} user={userContext.user} />
+        <GroupCalendar
+          isUserLoaded={userContext.isUserLoaded}
+          user={userContext}
+          email={userContext.user.email} />
       )}
     </div>
   ) : (

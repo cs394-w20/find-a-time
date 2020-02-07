@@ -21,6 +21,11 @@ import normalEmailToFirebaseEmail from "../Utility/normalEmailToFirebaseEmail"
 
 var Rainbow = require("rainbowvis.js")
 
+const EventPage = () => {
+  const userContext = useContext(UserContext)
+  console.log("THE USER CONTEXT: ", userContext);
+}
+
 const dbRef = db.ref()
 // DayPilotCalendar API Reference --> https://api.daypilot.org/daypilot-calendar-viewtype/
 
@@ -28,6 +33,7 @@ const dbRef = db.ref()
  * Checks if there is data for the specific room that the calendar can render
  * @param snap value returned from firebased
  * @param roomId the room id
+ * @param currUser the current user
  * @return boolean
  */
 const checkIfDataExists = (snap, roomId) => {
@@ -35,6 +41,7 @@ const checkIfDataExists = (snap, roomId) => {
         && (ROOM_ID.toString() in snap.val()['rooms'])
         && 'data' in snap.val()['rooms'][ROOM_ID])
 };
+
 
 class Calendar extends Component {
     constructor(props) {
@@ -64,16 +71,17 @@ class Calendar extends Component {
                 })
 
                 selection.clearSelection()
-            }
+            },
+            user: this.props.user,
+            email: this.props.email
         }
-
-        console.log("CURRENT USER: ", this.props.user)
 
         // callback function for EventInvite
         this.eventInviteOnCloseCallback = this.eventInviteOnCloseCallback.bind(this)
 
         // get the roomId
         this.roomId = getRoomIdFromPath();
+        this.currUser = this.props.user;
     }
 
     /**
@@ -112,10 +120,10 @@ class Calendar extends Component {
                     }
                 }
 
-                this.renderCalender({ events, startDate, dates, users, type: this.props.type })
+                this.renderCalender({ events, startDate, dates, users, type: this.props.type, currUser: this.state.user, email: this.state.email })
             } else {
                 events = null;
-                this.renderCalender({ events, startDate, dates, users, type: this.props.type })
+                this.renderCalender({ events, startDate, dates, users, type: this.props.type, currUser: this.state.user, email: this.state.email})
             }
         }
     };
@@ -123,9 +131,8 @@ class Calendar extends Component {
     /**
      * Code to render the calendar
      */
-    renderCalender = ({ dates, events, startDate, users, type, currUser }) => {
+    renderCalender = ({ dates, events, startDate, users, type, currUser, email }) => {
         const freeTimes = []
-        console.log("Current user: ", currUser);
 
         const numUsers = Object.keys(users).length
         let colorSpectrum = new Rainbow()
@@ -200,8 +207,8 @@ class Calendar extends Component {
                     currTime = 0 // Reset currTime for next date
                 }
                 if (type === "PERSONAL") {
-                  console.log("THIS IS THE LOGGED IN USER: ", this.props.user)
-                    const currUserEmail = "szaslan@gmail_com";//normalEmailToFirebaseEmail(this.props.user.email);
+                  // console.log("The logged in user's email: ", email)
+                    const currUserEmail = normalEmailToFirebaseEmail(email);
                     while (convertTime(currTime).concat(seconds) !== "24:00") {
                         let i = 0
 

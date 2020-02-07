@@ -66,8 +66,8 @@ const UpdateDb = ({userName, roomId, intervalData, updateType}) => {
     let i, j, busyIntervalSet, date, interval;
     for (i = 0; i < dateList.length; i++) {
         date = dateList[i];
-        console.log(date)
-        console.log(intervalData)
+        // console.log(date)
+        // console.log(intervalData)
 
         if (!(isEmpty(intervalData[date]))) {
             busyIntervalSet = new Set(Object.keys(intervalData[date]));
@@ -105,5 +105,3 @@ const UpdateDb = ({userName, roomId, intervalData, updateType}) => {
 
 
 export default UpdateDb;
-
-
