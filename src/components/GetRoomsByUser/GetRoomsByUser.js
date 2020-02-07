@@ -51,8 +51,8 @@ const sampleRoom2 = {
     }
   },
   time_interval: {
-    start: "2020-01-10",
-    end: "2020-01-12"
+    start: "2020-02-10",
+    end: "2020-02-12"
   },
   meta_data: {
     title: "CS 394 Meeting",
@@ -72,13 +72,34 @@ const sampleRoom3 = {
     }
   },
   time_interval: {
-    start: "2020-02-10",
-    end: "2020-02-12"
+    start: "2020-03-10",
+    end: "2020-03-12"
   },
   meta_data: {
     title: "Chess Club meeting",
     description:
       "Make sure you fill out this form so we can find a time to meet weekly!",
+    room_owner: "suzy@northwestern_edu"
+  }
+}
+
+const sampleRoom4 = {
+  roomId: 77,
+  users: {
+    "suzy@northwestern_edu": {
+      name: "Suzy",
+      picture:
+          "https://i.pinimg.com/originals/f0/03/44/f00344d904062ce92b4b3b146060d874.png"
+    }
+  },
+  time_interval: {
+    start: "2020-03-11",
+    end: "2020-03-12"
+  },
+  meta_data: {
+    title: "Cheeese",
+    description:
+        "Make sure you fill out this form so we can find a time to meet weekly!",
     room_owner: "suzy@northwestern_edu"
   }
 }
@@ -96,6 +117,10 @@ const sampleData = [
   {
     key: sampleRoom3,
     value: "Chess Club meeting"
+  },
+  {
+    key: sampleRoom4,
+    value: "Cheeese"
   }
 ]
 
@@ -193,6 +218,6 @@ const GetRoomsByUser = async ({ email }) => {
 
   // sort rooms by Start Date
   let sortedresult = sortTime(result)
-  return sortedresult
+  return sampleData
 }
 export default GetRoomsByUser

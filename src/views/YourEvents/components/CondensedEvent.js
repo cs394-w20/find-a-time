@@ -1,5 +1,5 @@
 import ListItem from "@material-ui/core/ListItem";
-import React, {Fragment,useRef} from "react";
+import React, {Fragment,useRef,useEffect} from "react";
 import Grid from '@material-ui/core/Grid';
 import CardHeader from "@material-ui/core/CardHeader";
 import Divider from "@material-ui/core/Divider";
@@ -61,12 +61,18 @@ const getFirstName =(fullName)=>{
 // pass around useScroll calulate everything in here. use
 // add ref to condensed event. 
 /** The event card **/
-const CondensedEvent = ({payload, hasDate}) => {
+const CondensedEvent = ({payload, hasDate,scrollState}) => {
     const [open, setOpen] = React.useState(false);
-    const [dum, setDum] = React.useState('')
+    const [dum, setDum] = React.useState('');
+    const ref = useRef();
+    const roomId = payload.roomId;
 
 
-    useScroll(()=> console.log("scrolling"));
+    useEffect(()=>{
+
+        scrollState.addRef({roomId,ref,title,start});
+
+        },[]);
 
 
     const handleClickOpen = () => {
@@ -81,7 +87,6 @@ const CondensedEvent = ({payload, hasDate}) => {
     const end = payload.time_interval.end;
     const title = payload.meta_data.title;
     const description = payload.meta_data.description;
-    const roomId = payload.roomId;
     const startDay = moment(start, DATE_FORMAT).format("ddd, MMM Do");
     const endDay = moment(end, DATE_FORMAT).format("ddd, MMM Do");
     const weekDay = moment(start, DATE_FORMAT).format("ddd").toUpperCase();
@@ -120,10 +125,10 @@ const CondensedEvent = ({payload, hasDate}) => {
 
 
     return (
-        <div >
+        <div  >
             <ListItem component="div" >
 
-                <div>
+                <div >
 
 
                     {/*Day of week right next to card*/}
@@ -133,10 +138,10 @@ const CondensedEvent = ({payload, hasDate}) => {
                         <span >{hasDate?dayOfWeek:''}</span>
                     </div>
 
-                    <Card className="condensedevent__card" >
+                    <Card className="condensedevent__card" component='div' ref={ref}>
                         {/*Title of the event*/}
                         <CardHeader
-                            title={dum}
+                            title={title}
                             style={{textAlign: "center", color: "black"}}
                         />
                         <Divider component="div"/>
@@ -253,11 +258,11 @@ const CondensedEvent = ({payload, hasDate}) => {
     )
 };
 
-
+/*
 CondensedEvent.propTypes = {
     payload: PropTypes.array.isRequired,
     hasDate: PropTypes.bool.isRequired,
-};
+};*/
 
 
 export default CondensedEvent;

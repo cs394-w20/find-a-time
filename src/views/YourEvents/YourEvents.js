@@ -10,7 +10,7 @@ import {GetRoomsByUser} from "../../components/GetRoomsByUser";
 import {normalEmailToFirebaseEmail} from "../../components/Utility";
 import moment from "moment-timezone";
 import {DATE_FORMAT} from "../../constants";
-
+import useScroll from "./components/useScroll";
 const circleImg = require("./Images/circle.svg");
 const clockImg = require("./Images/clock.svg");
 const strollingHumaanImg = require("./Images/strollingHumaan.svg");
@@ -57,11 +57,15 @@ const getMonth = (date) =>{
     return moment(date, DATE_FORMAT).format("MMMM");
 };
 
+
 const YourEvents = () => {
     //handy for keeping any mutable value around similar to how you’d use instance fields in classes.
     const fuse = useRef(new Fuse([], defaultFuseConfigs));
     const initialData = useRef([]);
-    const ref = useRef();
+    const baseRef = useRef();
+
+    //handles month changes on scroll
+    const scrollState = useScroll({baseRef});
 
     // gets user data
     const userContext = useContext(UserContext);
@@ -70,7 +74,7 @@ const YourEvents = () => {
     const [textValue, setTextValue] = useState('');
     const [month, setMonth] = useState('');
 
-    //const dayOfWeek = moment(start, DATE_FORMAT).format("DD");
+
     /**
      * Sets the data and the fuzzy searcher for the room list once the user is logged in.
      */
@@ -86,14 +90,24 @@ const YourEvents = () => {
         }
     }, [userContext.isUserLoaded]);
 
-    const scrollCallback =({ref})=>{
-        console.log(ref.current)
-    };
 
 
     const onChange = (text) => {
+        let searchData;
         if (text !== '') {
-            setData(fuse.current.search(text));
+            searchData = fuse.current.search(text);
+
+            // remove ref of objects not in search results so that month can update
+            let obj;
+            for (let i=0; i< initialData.current.length; i++){
+                obj = initialData.current[i];
+                if (!(searchData.includes(obj))){
+                    console.log(obj)
+                    scrollState.removeRef({roomId:obj.key.roomId })
+                }
+            }
+
+            setData(searchData);
         } else {
             setData(initialData.current);
         }
@@ -105,10 +119,6 @@ const YourEvents = () => {
     };
 
 
-    const onScroll =()=>{
-        //console.log("he");
-       // console.log(ref.current);
-    };
 
     const listEvents = () =>{
         let seenDates = new Set();
@@ -123,7 +133,7 @@ const YourEvents = () => {
             eventList.push(<CondensedEvent key={_data.key.roomId}
                                            payload={_data.key}
                                            hasDate={!(seenDates.has(start))}
-                                           scrollCallback={scrollCallback}/>);
+                                           scrollState={scrollState}/>);
             seenDates.add(start);
         }
         return eventList;
@@ -132,7 +142,7 @@ const YourEvents = () => {
     return (
         <div className="yourevents__container-main">
             <div className="yourevents__container-header-scroll">
-                <div className="yourevents__month"> {month}</div>
+                <div className="yourevents__month"> {scrollState.month? scrollState.month: month}</div>
                 <div className="yourevents__searchbar">
                     <ClickAwayListener onClickAway={closeSearchBox}>
                         <ReactSearchBox
@@ -148,8 +158,8 @@ const YourEvents = () => {
             </div>
 
 
-            <div className="yourevents__container-scroll" onScroll={onScroll} ref={ref}>
-                    <List component="div" className="yourevents__container-list">
+            <div className="yourevents__container-scroll" ref={baseRef}>
+                    <List component="div" className="yourevents__container-list"  >
                         {listEvents()}
                     </List>
             </div>
