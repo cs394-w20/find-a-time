@@ -21,9 +21,9 @@ import { UserContext } from "../../context/UserContext"
 
 
 
-const GroupCalendar = ({isUserLoaded}) => {
+const GroupCalendar = ({isUserLoaded, user}) => {
   return (
-    <Calendar isUserLoaded={isUserLoaded} type={'GROUP'} />
+    <Calendar isUserLoaded={isUserLoaded} type={'GROUP'} user={user.user}/>
   )
 };
 

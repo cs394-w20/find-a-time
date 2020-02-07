@@ -67,6 +67,8 @@ class Calendar extends Component {
             }
         }
 
+        console.log("CURRENT USER: ", this.props.user)
+
         // callback function for EventInvite
         this.eventInviteOnCloseCallback = this.eventInviteOnCloseCallback.bind(this)
 
@@ -121,8 +123,9 @@ class Calendar extends Component {
     /**
      * Code to render the calendar
      */
-    renderCalender = ({ dates, events, startDate, users, type }) => {
+    renderCalender = ({ dates, events, startDate, users, type, currUser }) => {
         const freeTimes = []
+        console.log("Current user: ", currUser);
 
         const numUsers = Object.keys(users).length
         let colorSpectrum = new Rainbow()
@@ -197,6 +200,7 @@ class Calendar extends Component {
                     currTime = 0 // Reset currTime for next date
                 }
                 if (type === "PERSONAL") {
+                  console.log("THIS IS THE LOGGED IN USER: ", this.props.user)
                     const currUserEmail = "szaslan@gmail_com";//normalEmailToFirebaseEmail(this.props.user.email);
                     while (convertTime(currTime).concat(seconds) !== "24:00") {
                         let i = 0
@@ -204,9 +208,7 @@ class Calendar extends Component {
                         while (i < 2) {
 
                             strTime = currDay.concat("T", convertTime(currTime).concat(seconds))
-                            console.log('strTime', strTime)
                             let timeStamp = convertTime(currTime).concat(seconds)
-                            console.log('timeStamp', timeStamp)
 
                             // CASE 1: Time slot where everybody is available
                             if (Object.keys(events[currDay]).includes(timeStamp)) {
