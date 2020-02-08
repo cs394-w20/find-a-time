@@ -8,12 +8,17 @@ import Fuse from 'fuse.js'
 import {CondensedEvent} from "./components";
 import {GetRoomsByUser} from "../../components/GetRoomsByUser";
 import {normalEmailToFirebaseEmail} from "../../components/Utility";
+import moment from "moment-timezone";
+import {DATE_FORMAT} from "../../constants";
+import useScroll from "./components/useScroll";
+import { Loading} from "../../components/Loading";
+
+
 
 const circleImg = require("./Images/circle.svg");
 const clockImg = require("./Images/clock.svg");
 const strollingHumaanImg = require("./Images/strollingHumaan.svg");
 const runningHumaanImg = require("./Images/runningHumaan.svg");
-
 
 // fuse is a fuzzy search library that ReactSearchBox uses ---these are the parameters.
 const defaultFuseConfigs = {
@@ -50,15 +55,19 @@ const defaultFuseConfigs = {
     keys: ['value'],
 };
 
-
 const YourEvents = () => {
     //handy for keeping any mutable value around similar to how you’d use instance fields in classes.
     const fuse = useRef(new Fuse([], defaultFuseConfigs));
     const initialData = useRef([]);
+    const baseRef = useRef();
+
+    //handles month changes on scroll
+    const scrollState = useScroll({baseRef});
 
     // gets user data
     const userContext = useContext(UserContext);
 
+    // state variables
     const [data, setData] = useState([]);
     const [textValue, setTextValue] = useState('');
 
@@ -76,20 +85,34 @@ const YourEvents = () => {
     }, [userContext.isUserLoaded]);
 
 
+
     const onChange = (text) => {
+        let searchData;
         if (text !== '') {
-            setData(fuse.current.search(text));
+            searchData = fuse.current.search(text);
+
+            // remove ref of objects not in search results so that month can update
+            let obj;
+            for (let i=0; i< initialData.current.length; i++){
+                obj = initialData.current[i];
+                if (!(searchData.includes(obj))){
+                    scrollState.removeRef({roomId:obj.key.roomId })
+                }
+            }
+
+            setData(searchData);
         } else {
             setData(initialData.current);
         }
         setTextValue(text);
     };
 
+    // doesn't really work in fact ReactSearchBox is pretty garbage.
     const closeSearchBox = () => {
         setTextValue('');
     };
 
-
+    // List the condensed events
     const listEvents = () =>{
         let seenDates = new Set();
 
@@ -100,16 +123,21 @@ const YourEvents = () => {
         for (let i=0;i<data.length;i++){
             _data = data[i];
             start = _data.key.time_interval.start;
-            eventList.push(<CondensedEvent key={_data.key.roomId} payload={_data.key} hasDate={!(seenDates.has(start))}/>)
+            eventList.push(<CondensedEvent key={_data.key.roomId}
+                                           payload={_data.key}
+                                           hasDate={!(seenDates.has(start))}
+                                           scrollState={scrollState}/>);
             seenDates.add(start);
         }
         return eventList;
     };
 
     return (
+
         <div className="yourevents__container-main">
             <div className="yourevents__container-header-scroll">
-                <div className="yourevents__month"> January</div>
+                <div className="yourevents__month">
+                    <span>{scrollState.month==="Invalid date"? '': scrollState.month}</span></div>
                 <div className="yourevents__searchbar">
                     <ClickAwayListener onClickAway={closeSearchBox}>
                         <ReactSearchBox
@@ -125,8 +153,8 @@ const YourEvents = () => {
             </div>
 
 
-            <div className="yourevents__container-scroll">
-                    <List component="div" className="yourevents__container-list">
+            <div className="yourevents__container-scroll" ref={baseRef}>
+                    <List component="div" className="yourevents__container-list"  >
                         {listEvents()}
                     </List>
             </div>
@@ -155,7 +183,6 @@ const YourEvents = () => {
                 alt="Running Human"
                 className="yourevents_img-runningHumaan"
             />
-
         </div>
     )
 };
