@@ -2,15 +2,16 @@ import React, { useContext, useEffect, useState } from "react"
 import { AuthButton } from "components/AuthButton"
 import { Event } from "components/Event"
 import { ShareBanner } from "components/ShareBanner"
-import Calendar from "../../components/calendar/Calendar"
+import GroupCalendar from "../../components/calendar/GroupCalendar"
 import { Loading } from "components/Loading"
-import PersonalCalendar from "../../components/PersonalCalendar/PersonalCalendar"
+import PersonalCalendar from "../../components/calendar/PersonalCalendar"
 import { AddUserToRoom } from "components/Db"
 import db from "components/Db/firebaseConnect"
 import { normalEmailToFirebaseEmail } from "components/Utility"
 import { UserContext } from "context/UserContext"
 import { ToggleCalendar } from "./components"
 import {hasRoom} from "../../components/Db";
+import Calendar from "components/calendar/Calendar";
 
 const EventPage = ({ match }) => {
   const userContext = useContext(UserContext)
@@ -87,7 +88,7 @@ const EventPage = ({ match }) => {
     setIsPersonalCal(true)
   }
 
-  return (eventData && dbHasRoom && userContext.isUserLoaded)?(
+  return eventData && userContext.user && userContext.user.email && dbHasRoom ? (
     <div>
       <div className="event-auth__container">
         <ShareBanner />
@@ -110,7 +111,7 @@ const EventPage = ({ match }) => {
         isUserLoaded={!(userContext.isUserLoaded == null)}
       />
 
-      {userContext.user && isPersonalCal ? (
+      {userContext.user && isPersonalCal && userContext.user.email? (
         <PersonalCalendar
           isUserLoaded={userContext.isUserLoaded}
           user={userContext.user}
@@ -119,6 +120,7 @@ const EventPage = ({ match }) => {
       ) : (
         <Calendar isUserLoaded={userContext.isUserLoaded}
                   user={userContext.user}
+                  email={userContext.user.email}
                   roomId = {match.params.id}
         />
       )}
