@@ -3,47 +3,68 @@ import moment from "moment-timezone";
 import {DATE_FORMAT} from "../../../constants";
 
 // Returns the month given a text date
-const getMonth = (date) =>{
+const getMonth = (date) => {
     return moment(date, DATE_FORMAT).format("MMMM");
 };
 
 
-// scroll listener.
-const useScroll = ({ baseRef}) =>{
-    const [cardRefs, setCardRefs] = useState({});
+/**
+ * useScroll has a scroll listener that fires off anytime the user scroll,
+ * it then compares the y-position of all the elements in the scroll box and then
+ * finds the element closest to the top of the scroll box. With this information
+ * it gets the month for this element and it returns it. This way the month updates
+ * as the user scrolls.
+ * @param baseRef - the ref of the scroll box (the thing that contains the scroll objects)
+ */
+const useScroll = ({baseRef}) => {
+    const [cardRefs, setCardRefs] = useState({theRefs: {}});
     const [month, setMonth] = useState();
 
-    const addRef = ({ref, roomId, title,start}) =>{
-        cardRefs[roomId]={ref,title,start};
-        setCardRefs(cardRefs);
+    /**
+     * Adds the ref of a room s.t useScroll can watch the position of the ref in the scroll container
+     */
+    const addRef = ({ref, roomId, start}) => {
+        const _refs = Object.assign({}, cardRefs);
+        _refs.theRefs[roomId] = {ref, start};
+        setCardRefs(_refs);
     };
 
-    const removeRef = ({roomId}) =>{
-        console.log(roomId)
-        delete cardRefs[roomId];
-        console.log(cardRefs)
-        setCardRefs(cardRefs)
-
+    /**
+     * Removes a ref that useScroll is watching
+     */
+    const removeRef = ({roomId}) => {
+        const _refs = Object.assign({}, cardRefs);
+        delete _refs.theRefs[roomId];
+        setCardRefs(_refs)
     };
 
+    useEffect(() => {
+        if (Object.keys(cardRefs.theRefs).length !== 0) {
+            updateMonth();
+        } else {
+            setMonth('');
+        }
+    }, [cardRefs]);
 
-    useEffect(()=>{
-        console.log("ffff")
-    },[cardRefs]);
+    /**
+     * This is the main method for useScroll it compares all the children elements
+     * position in the scrollbox and updates the month to correspond to the children
+     * closest to the top of the scrollbox
+     */
+    const updateMonth = () => {
 
-
-    const scrollCallBack = () =>{
         let obj;
         let yValue;
         let dist;
 
-        let keys = Object.keys(cardRefs);
+        const domRefs = cardRefs.theRefs;
+        let keys = Object.keys(cardRefs.theRefs);
         let baseRefY = baseRef.current.getBoundingClientRect().y;
         let closest = {roomId:null, dist: Infinity};
 
         // finds the ref that is at the top of the scrollbox
         for (let i in keys){
-            obj = cardRefs[keys[i]];
+            obj = domRefs[keys[i]];
             yValue = obj.ref.current.getBoundingClientRect().y;
 
             dist = Math.abs(yValue-baseRefY);
@@ -53,16 +74,20 @@ const useScroll = ({ baseRef}) =>{
         }
 
         // sets the currMonth to the month in the ref at the top of the scrollbox
-        let currMonth = getMonth(cardRefs[closest["roomId"]].start);
+        const roomIdOfClosestEle =closest["roomId"];
+        const closestEle = {...domRefs[roomIdOfClosestEle]};
+
+        let currMonth = getMonth(closestEle.start);
+        console.log(closestEle.start,currMonth);
         if (month !==currMonth){
             setMonth(currMonth)
         }
-
     };
 
+    // Sets the onScroll listener to the scroll box
     useEffect(() => {
-        baseRef.current.addEventListener('scroll', scrollCallBack);
-        return () => window.removeEventListener('scroll', scrollCallBack);
+        baseRef.current.addEventListener('scroll', updateMonth);
+        return () => window.removeEventListener('scroll', updateMonth);
     }, [baseRef]);
 
     return {

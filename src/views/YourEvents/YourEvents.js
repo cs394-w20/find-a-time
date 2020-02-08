@@ -11,11 +11,14 @@ import {normalEmailToFirebaseEmail} from "../../components/Utility";
 import moment from "moment-timezone";
 import {DATE_FORMAT} from "../../constants";
 import useScroll from "./components/useScroll";
+import { Loading} from "../../components/Loading";
+
+
+
 const circleImg = require("./Images/circle.svg");
 const clockImg = require("./Images/clock.svg");
 const strollingHumaanImg = require("./Images/strollingHumaan.svg");
 const runningHumaanImg = require("./Images/runningHumaan.svg");
-
 
 // fuse is a fuzzy search library that ReactSearchBox uses ---these are the parameters.
 const defaultFuseConfigs = {
@@ -52,12 +55,6 @@ const defaultFuseConfigs = {
     keys: ['value'],
 };
 
-// Returns the month given a text date
-const getMonth = (date) =>{
-    return moment(date, DATE_FORMAT).format("MMMM");
-};
-
-
 const YourEvents = () => {
     //handy for keeping any mutable value around similar to how you’d use instance fields in classes.
     const fuse = useRef(new Fuse([], defaultFuseConfigs));
@@ -70,10 +67,9 @@ const YourEvents = () => {
     // gets user data
     const userContext = useContext(UserContext);
 
+    // state variables
     const [data, setData] = useState([]);
     const [textValue, setTextValue] = useState('');
-    const [month, setMonth] = useState('');
-
 
     /**
      * Sets the data and the fuzzy searcher for the room list once the user is logged in.
@@ -83,9 +79,7 @@ const YourEvents = () => {
             GetRoomsByUser({email:userContext.user.email}).then((roomData) => {
                 fuse.current = new Fuse(roomData, defaultFuseConfigs);
                 setData(roomData);
-                console.log(roomData);
                 initialData.current=roomData;
-                setMonth(getMonth(roomData[0].key.time_interval.start))
             });
         }
     }, [userContext.isUserLoaded]);
@@ -102,7 +96,6 @@ const YourEvents = () => {
             for (let i=0; i< initialData.current.length; i++){
                 obj = initialData.current[i];
                 if (!(searchData.includes(obj))){
-                    console.log(obj)
                     scrollState.removeRef({roomId:obj.key.roomId })
                 }
             }
@@ -114,12 +107,12 @@ const YourEvents = () => {
         setTextValue(text);
     };
 
+    // doesn't really work in fact ReactSearchBox is pretty garbage.
     const closeSearchBox = () => {
         setTextValue('');
     };
 
-
-
+    // List the condensed events
     const listEvents = () =>{
         let seenDates = new Set();
 
@@ -140,9 +133,11 @@ const YourEvents = () => {
     };
 
     return (
+
         <div className="yourevents__container-main">
             <div className="yourevents__container-header-scroll">
-                <div className="yourevents__month"> {scrollState.month? scrollState.month: month}</div>
+                <div className="yourevents__month">
+                    <span>{scrollState.month==="Invalid date"? '': scrollState.month}</span></div>
                 <div className="yourevents__searchbar">
                     <ClickAwayListener onClickAway={closeSearchBox}>
                         <ReactSearchBox
@@ -188,7 +183,6 @@ const YourEvents = () => {
                 alt="Running Human"
                 className="yourevents_img-runningHumaan"
             />
-
         </div>
     )
 };

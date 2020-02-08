@@ -14,7 +14,7 @@ const sampleRoom1 = {
   roomId: 1,
   users: {
     "suzy@northwestern_edu": {
-      name: "Suzy",
+      name: "Suzy Linter",
       picture:
         "https://i.pinimg.com/originals/f0/03/44/f00344d904062ce92b4b3b146060d874.png"
     },
@@ -39,7 +39,7 @@ const sampleRoom1 = {
       "Make sure you fill out this form so we can find a time to meet weekly!",
     room_owner: "suzy@northwestern_edu"
   }
-}
+};
 
 const sampleRoom2 = {
   roomId: 19,
@@ -60,7 +60,7 @@ const sampleRoom2 = {
       "Make sure you fill out this form so we can find a time to meet weekly!",
     room_owner: "suzy@northwestern_edu"
   }
-}
+};
 
 const sampleRoom3 = {
   roomId: 20,
@@ -81,7 +81,7 @@ const sampleRoom3 = {
       "Make sure you fill out this form so we can find a time to meet weekly!",
     room_owner: "suzy@northwestern_edu"
   }
-}
+};
 
 const sampleRoom4 = {
   roomId: 77,
@@ -102,7 +102,7 @@ const sampleRoom4 = {
         "Make sure you fill out this form so we can find a time to meet weekly!",
     room_owner: "suzy@northwestern_edu"
   }
-}
+};
 
 // ReactSearchBox `searches' on value, and the payload is key.
 const sampleData = [
@@ -122,7 +122,7 @@ const sampleData = [
     key: sampleRoom4,
     value: "Cheeese"
   }
-]
+];
 
 /**
  * Gets the room given a roomId
@@ -130,7 +130,7 @@ const sampleData = [
 const getRoom = async ({ roomId }) => {
   let snapval = await db.ref("rooms/" + roomId).once("value")
   return snapval.val() || {}
-}
+};
 
 /**
  * Gets the roomId given a user's email
@@ -141,74 +141,73 @@ const getUserRoomIds = async ({ email }) => {
     .ref("users/" + normalEmailToFirebaseEmail(email) + "/active_rooms")
     .once("value")
   return snapval.val() || {}
-}
+};
 
 /**
  * Gets the rooms given a list of roomIds
  * @return {Promise<[]>} - a list of rooms wrapped in a promise
  */
 const getRoomsFromRoomIds = async ({ roomIds }) => {
-  let rooms = []
-  let room
-  let roomId
+  let rooms = [];
+  let room;
+  let roomId;
   for (let i = 0; i < roomIds.length; i++) {
-    roomId = roomIds[i]
-    room = await getRoom({ roomId })
-    room["roomId"] = roomIds[i]
+    roomId = roomIds[i];
+    room = await getRoom({ roomId });
+    room["roomId"] = roomIds[i];
     rooms.push(room)
   }
 
   return rooms
-}
+};
 
 // Sorts an array of rooms by Start Date
 let sortTime = arr => {
-  let time1 = moment()
-  let time2 = moment()
-  let len = arr.length
+  let time1 = moment();
+  let time2 = moment();
+  let len = arr.length;
   for (let i = 0; i < len; i++) {
-    let min = i
+    let min = i;
     for (let j = i + 1; j < len; j++) {
-      time1 = moment(arr[min].key.time_interval.start, DATE_FORMAT)
-      time2 = moment(arr[j].key.time_interval.start, DATE_FORMAT)
+      time1 = moment(arr[min].key.time_interval.start, DATE_FORMAT);
+      time2 = moment(arr[j].key.time_interval.start, DATE_FORMAT);
       if (time1.isAfter(time2)) {
         min = j
       }
     }
     if (min !== i) {
-      let tmp = arr[i]
-      arr[i] = arr[min]
+      let tmp = arr[i];
+      arr[i] = arr[min];
       arr[min] = tmp
     }
   }
   return arr
-}
+};
 
 const GetRoomsByUser = async ({ email }) => {
   // get the list of roomIds for the user
-  let roomIds = await getUserRoomIds({ email })
-  console.log(roomIds)
-  roomIds = Object.keys(roomIds)
+  let roomIds = await getUserRoomIds({ email });
+  roomIds = Object.keys(roomIds);
 
   // get the rooms by using the list of roomIds
-  let rooms = await getRoomsFromRoomIds({ roomIds })
+  let rooms = await getRoomsFromRoomIds({ roomIds });
 
   // filter the old rooms from the current rooms
-  let currentRooms = FilterOldRooms({ email, rooms })
+  let currentRooms = FilterOldRooms({ email, rooms });
 
   // change emails to normal emails
   let userlist = 0
   for (let i = 0; i < currentRooms.length; i++) {
-    userlist = Object.keys(currentRooms[i].users)
+    userlist = Object.keys(currentRooms[i].users);
     for (let j = 0; j < userlist.length; j++) {
       currentRooms[i].users[firebaseEmailToNormalEmail(userlist[j])] =
-        currentRooms[i].users[userlist[j]]
+        currentRooms[i].users[userlist[j]];
       delete currentRooms[i].users[userlist[j]]
     }
   }
 
   // put rooms into format for YourEvents
-  let result = []
+  let result = [];
   for (let i = 0; i < currentRooms.length; i++) {
     result.push({
       key: currentRooms[i],
@@ -217,7 +216,8 @@ const GetRoomsByUser = async ({ email }) => {
   }
 
   // sort rooms by Start Date
-  let sortedresult = sortTime(result)
-  return sampleData
-}
+  let sortedresult = sortTime(result);
+  return sortedresult
+};
+
 export default GetRoomsByUser

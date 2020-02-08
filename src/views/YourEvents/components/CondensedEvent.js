@@ -23,9 +23,8 @@ import './CondensedEvent.scss';
 import Button from "@material-ui/core/Button";
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 import SimpleDialog from "./SimpleDialog";
-import Fuse from "fuse.js";
-import PropTypes from "prop-types";
-import useScroll from "./useScroll";
+import {getFirstName} from "./Utility"
+
 
 // Hacky way to change button color
 const purpleTheme = createMuiTheme({palette: {primary: {main: "#5243AA"}}});
@@ -51,38 +50,11 @@ const timeZone = jstz.determine().name();
 const longFormattedTimeZone = moment().tz(timeZone).format('zz');
 
 
-
-const getFirstName =(fullName)=>{
-    return fullName.split(' ').slice(0, -1).join(' ');
-};
-
-
-//https://stackoverflow.com/questions/50431891/how-can-i-detect-the-scrolltop-of-an-element-using-vanilla-javascript
-// pass around useScroll calulate everything in here. use
-// add ref to condensed event. 
 /** The event card **/
 const CondensedEvent = ({payload, hasDate,scrollState}) => {
     const [open, setOpen] = React.useState(false);
-    const [dum, setDum] = React.useState('');
     const ref = useRef();
     const roomId = payload.roomId;
-
-
-    useEffect(()=>{
-
-        scrollState.addRef({roomId,ref,title,start});
-
-        },[]);
-
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = value => {
-        setOpen(false);
-    };
-
     const start = payload.time_interval.start;
     const end = payload.time_interval.end;
     const title = payload.meta_data.title;
@@ -92,8 +64,20 @@ const CondensedEvent = ({payload, hasDate,scrollState}) => {
     const weekDay = moment(start, DATE_FORMAT).format("ddd").toUpperCase();
     const dayOfWeek = moment(start, DATE_FORMAT).format("DD");
 
+    // add the ref to scrollState so that it can monitor position of this element relative to scroll box
+    useEffect(()=>{
+        scrollState.addRef({roomId,ref,start});
+        },[]);
 
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
 
+    const handleClose = value => {
+        setOpen(false);
+    };
+
+    // Usually only 3 chips can fit
     const getFirstThreeChips = ({payload}) =>{
         let chips = [];
         let emailList = Object.keys(payload.users);
@@ -109,7 +93,7 @@ const CondensedEvent = ({payload, hasDate,scrollState}) => {
             chips.push(<UserChips key={email}
                                           email={email}
                                           picture={payload.users[email].picture}
-                                          name={name}/>
+                                          name={payload.users[email].name}/>
                                           );
             names+=name
         }
@@ -118,10 +102,8 @@ const CondensedEvent = ({payload, hasDate,scrollState}) => {
             chips.pop();
         }
 
-
         return chips;
     };
-
 
 
     return (
