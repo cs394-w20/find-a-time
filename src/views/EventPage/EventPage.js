@@ -115,12 +115,14 @@ const EventPage = ({ match }) => {
           isUserLoaded={userContext.isUserLoaded}
           user={userContext.user}
           email={userContext.user.email}
+          roomId = {match.params.id}
         />
       ) : (
           <GroupCalendar
             isUserLoaded={userContext.isUserLoaded}
             user={userContext}
-            email={userContext.user.email} />
+            email={userContext.user.email}
+            roomId = {match.params.id} />
         )}
     </div>
   ) : (dbHasRoom ? <Loading /> : <div> Event does not exist</div>)
