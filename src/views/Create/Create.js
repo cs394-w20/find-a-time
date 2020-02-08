@@ -8,6 +8,9 @@ import GroupDialog from "./GroupDialog"
 import "./create.scss"
 import normalEmailToFirebaseEmail from "components/Utility/normalEmailToFirebaseEmail"
 
+const MAX_DESC_CHARS = 140
+const MAX_TITLE_CHARS = 40
+
 const date_types = {
   START: "start",
   END: "end"
@@ -62,6 +65,9 @@ const Create = ({ history }) => {
     roomId: ""
   })
 
+  const [descChars, setDescChars] = useState(0)
+  const [titleChars, setTitleChars] = useState(0)
+
   const handleDateChange = (e, start_or_end) => {
     const value = moment(e.target.value)
     if (value.isBefore(today) && start_or_end === date_types.START) {
@@ -99,7 +105,9 @@ const Create = ({ history }) => {
         ...eventFields.meta_data,
         description: e.target.value
       }
-    })
+    });
+
+    setDescChars(e.target.value.length);
   }
 
   const handleTitleChange = e => {
@@ -109,7 +117,9 @@ const Create = ({ history }) => {
         ...eventFields.meta_data,
         title: e.target.value
       }
-    })
+    });
+
+    setTitleChars(e.target.value.length);
   }
 
   const handleSubmit = async () => {
@@ -178,6 +188,8 @@ const Create = ({ history }) => {
           label="Event Title"
           onChange={handleTitleChange}
           style={{ margin: 8 }}
+          inputProps={{maxLength: MAX_TITLE_CHARS}}
+          helperText={(MAX_TITLE_CHARS - titleChars) + " characters left"}
         />
         <TextField
           type="text"
@@ -186,6 +198,8 @@ const Create = ({ history }) => {
           label="Event Description"
           onChange={handleDescriptionChange}
           style={{ margin: 8 }}
+          inputProps={{ maxLength: MAX_DESC_CHARS }}
+          helperText={(MAX_DESC_CHARS - descChars) + " characters left"}
         />
       </div>
 
@@ -220,7 +234,7 @@ const Create = ({ history }) => {
       </div>
       <div className="create-event__group-container">
         <h3 className="create-event__group-title">
-          What time could the meeting be between?
+          What time could the event be between?
         </h3>
         <TextField
           id="startTime"
