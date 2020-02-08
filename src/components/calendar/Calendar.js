@@ -22,8 +22,8 @@ import normalEmailToFirebaseEmail from "../Utility/normalEmailToFirebaseEmail"
 var Rainbow = require("rainbowvis.js")
 
 const EventPage = () => {
-  const userContext = useContext(UserContext)
-  console.log("THE USER CONTEXT: ", userContext);
+    const userContext = useContext(UserContext)
+    console.log("THE USER CONTEXT: ", userContext);
 }
 
 const dbRef = db.ref()
@@ -36,10 +36,8 @@ const dbRef = db.ref()
  * @param currUser the current user
  * @return boolean
  */
-const checkIfDataExists = (snap, roomId) => {
-    return (('rooms' in snap.val())
-        && (ROOM_ID.toString() in snap.val()['rooms'])
-        && 'data' in snap.val()['rooms'][ROOM_ID])
+const checkIfDataExists = (snap) => {
+    return ('data' in snap.val())
 };
 
 
@@ -69,7 +67,8 @@ class Calendar extends Component {
                         })
                     )
                 })
-
+                //const currUserEmail = normalEmailToFirebaseEmail(props.user.email);
+                //AddManualEvents({roomId: getRoomIdFromPath(), userName: currUserEmail, start: args.start, end: args.end});
                 selection.clearSelection()
             },
             user: this.props.user,
@@ -96,20 +95,20 @@ class Calendar extends Component {
 
         if ((snap.val())) {
 
-            startDate = snap.val().rooms[this.roomId].time_interval.start;
-            endDate = snap.val().rooms[this.roomId].time_interval.end;
+            startDate = snap.val().time_interval.start;
+            endDate = snap.val().time_interval.end;
 
-            users = snap.val().rooms[this.roomId].users;
+            users = snap.val().users;
             dates = createDayArr(
                 startDate,
                 endDate
             );
 
 
-            if (checkIfDataExists(snap, this.roomId)) {
+            if (checkIfDataExists(snap)) {
 
                 // add empty date to the  `events` object for all the days with missing days if there is any.
-                events = snap.val().rooms[this.roomId].data;
+                events = snap.val().data;
                 let _startDate = moment(startDate, DATE_FORMAT);
                 let _endDate = moment(endDate, DATE_FORMAT);
                 let date;
@@ -123,7 +122,7 @@ class Calendar extends Component {
                 this.renderCalender({ events, startDate, dates, users, type: this.props.type, currUser: this.state.user, email: this.state.email })
             } else {
                 events = null;
-                this.renderCalender({ events, startDate, dates, users, type: this.props.type, currUser: this.state.user, email: this.state.email})
+                this.renderCalender({ events, startDate, dates, users, type: this.props.type, currUser: this.state.user, email: this.state.email })
             }
         }
     };
@@ -207,7 +206,7 @@ class Calendar extends Component {
                     currTime = 0 // Reset currTime for next date
                 }
                 if (type === "PERSONAL") {
-                  // console.log("The logged in user's email: ", email)
+                    // console.log("The logged in user's email: ", email)
                     const currUserEmail = normalEmailToFirebaseEmail(email);
                     while (convertTime(currTime).concat(seconds) !== "24:00") {
                         let i = 0
@@ -260,14 +259,12 @@ class Calendar extends Component {
     }
 
     componentDidMount() {
-        dbRef.on("value", this.handleDataCallback, error => alert(error))
-
-        console.log("THIS IS THE LOGGED IN USER: ", this.props.user)
+        db.ref("/rooms/" + this.props.roomId).on("value", this.handleDataCallback, error => alert(error))
     }
 
     // disconnect the handleDataCallback on unmount
     componentWillUnmount() {
-        dbRef.off("value", this.handleDataCallback)
+        db.ref().off("value", this.handleDataCallback)
     }
 
     /**
