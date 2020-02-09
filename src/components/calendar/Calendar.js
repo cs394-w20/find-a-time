@@ -8,7 +8,7 @@ import "./CalendarStyles.css"
 import "firebase/database"
 import {
     stringToDate, dateToString, convertTime,
-    addThirtyMin, createTimes, createDayArr
+    addThirtyMin, maddThirtyMin, createTimes, createDayArr
 } from "../../utilities"
 import { DATE_FORMAT, ROOM_ID } from "../../constants"
 import db from "../Db/firebaseConnect"
@@ -20,6 +20,7 @@ import { UserContext } from "../../context/UserContext"
 import normalEmailToFirebaseEmail from "../Utility/normalEmailToFirebaseEmail"
 
 var Rainbow = require("rainbowvis.js")
+
 
 const EventPage = () => {
     const userContext = useContext(UserContext)
@@ -212,13 +213,19 @@ class Calendar extends Component {
                 if (type === "PERSONAL") {
                     // console.log("The logged in user's email: ", email)
                     const currUserEmail = normalEmailToFirebaseEmail(email);
-                    while (convertTime(currTime).concat(seconds) !== "24:00") {
+                    var mtime = moment(currDay);
+                    mtime.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+                    console.log('compare', currDay, currTime, mtime)
+                    while (currDay == mtime.format('YYYY-MM-DD')){//(convertTime(currTime).concat(seconds) !== "24:00") {
+                        var test = (currDay == mtime.format('YYYY-MM-DD'))
+                        console.log("dates", currDay, mtime.format('YYYY-MM-DD'), currDay == mtime.format('YYYY-MM-DD'), test)
                         let i = 0
-
                         while (i < 2) {
-
-                            strTime = currDay.concat("T", convertTime(currTime).concat(seconds))
-                            let timeStamp = convertTime(currTime).concat(seconds)
+                            console.log('compare', currDay, currTime, mtime,mtime.format('HH:mm'))
+                            //strTime = currDay.concat("T", convertTime(currTime).concat(seconds))
+                            var mstrTime = currDay.concat("T",mtime.format('HH:mm'));
+                            let timeStamp = mtime.format('HH:mm');//convertTime(currTime).concat(seconds)
+                            //console.log('comparestr', strTime, mstrTime)
 
                             // CASE 1: Time slot where everybody is available
                             if (Object.keys(events[currDay]).includes(timeStamp)) {
@@ -229,12 +236,13 @@ class Calendar extends Component {
                                     const currEvent = {
                                         id: currId,
                                         text: 'hi',
-                                        start: strTime.concat(":00"),
-                                        end: addThirtyMin(currDay, currTime, seconds).concat(":00")
+                                        start: mstrTime.concat(":00"),
+                                        end: maddThirtyMin(currDay, mtime.clone()).concat(":00")//addThirtyMin(currDay, currTime, seconds).concat(":00")
                                     }
                                     freeTimes.push(currEvent)
                                 }
                             }
+                            mtime.add(30, 'm');
 
                             if (seconds == ":00") {
                                 seconds = ":30"
