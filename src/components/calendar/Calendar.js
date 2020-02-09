@@ -337,7 +337,7 @@ class Calendar extends Component {
 
                     onEventClick={this.onEventDoubleClick}
                 />
-                {(this.state.eventClicked && this.props.isUserLoaded) && (
+                {(this.state.eventClicked && this.props.isUserLoaded && this.props.type == "GROUP") && (
                     <EventInvites
                         eventData={this.state.eventData}
                         eventClicked={this.state.eventClicked}
