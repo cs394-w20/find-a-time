@@ -22,9 +22,9 @@ import { Loading } from "components/Loading"
 
 
 
-const GroupCalendar = ({isUserLoaded, user, email}) => {
+const GroupCalendar = ({isUserLoaded, user, email, roomId}) => {
   return user ? (
-    <Calendar isUserLoaded={isUserLoaded} type={'GROUP'} user={user} email={email}/>
+    <Calendar isUserLoaded={isUserLoaded} roomId = {roomId} type={'GROUP'} user={user} email={email}/>
   ) : (
     <Loading />
   )
