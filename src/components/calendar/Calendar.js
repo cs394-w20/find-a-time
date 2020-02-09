@@ -215,48 +215,27 @@ class Calendar extends Component {
                     const currUserEmail = normalEmailToFirebaseEmail(email);
                     var mtime = moment(currDay);
                     mtime.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-                    console.log('compare', currDay, currTime, mtime)
-                    while (currDay == mtime.format('YYYY-MM-DD')){//(convertTime(currTime).concat(seconds) !== "24:00") {
-                        var test = (currDay == mtime.format('YYYY-MM-DD'))
-                        console.log("dates", currDay, mtime.format('YYYY-MM-DD'), currDay == mtime.format('YYYY-MM-DD'), test)
-                        let i = 0
-                        while (i < 2) {
-                            console.log('compare', currDay, currTime, mtime,mtime.format('HH:mm'))
-                            //strTime = currDay.concat("T", convertTime(currTime).concat(seconds))
-                            var mstrTime = currDay.concat("T",mtime.format('HH:mm'));
-                            let timeStamp = mtime.format('HH:mm');//convertTime(currTime).concat(seconds)
-                            //console.log('comparestr', strTime, mstrTime)
+                    while (currDay == mtime.format('YYYY-MM-DD')) {
+                        var mstrTime = currDay.concat("T", mtime.format('HH:mm'));
+                        let timeStamp = mtime.format('HH:mm');
+                        if (Object.keys(events[currDay]).includes(timeStamp)) {
+                            //const unavailable = events[currDay][timeStamp]
 
-                            // CASE 1: Time slot where everybody is available
-                            if (Object.keys(events[currDay]).includes(timeStamp)) {
-                                const unavailable = events[currDay][timeStamp]
-
-                                if (Object.keys(unavailable).includes(currUserEmail)) {
-                                    console.log(currUserEmail, " is UNAVAILABLE at the time: ", timeStamp, " on day: ", currDay);
-                                    const currEvent = {
-                                        id: currId,
-                                        text: 'hi',
-                                        start: mstrTime.concat(":00"),
-                                        end: maddThirtyMin(currDay, mtime.clone()).concat(":00")//addThirtyMin(currDay, currTime, seconds).concat(":00")
-                                    }
-                                    freeTimes.push(currEvent)
+                            if (Object.keys(events[currDay][timeStamp]).includes(currUserEmail)) {
+                                console.log(currUserEmail, " is UNAVAILABLE at the time: ", timeStamp, " on day: ", currDay);
+                                const currEvent = {
+                                    id: currId,
+                                    start: mstrTime.concat(":00"),
+                                    text: " ",
+                                    end: maddThirtyMin(currDay, mtime.clone()).concat(":00")
                                 }
+                                freeTimes.push(currEvent)
                             }
-                            mtime.add(30, 'm');
-
-                            if (seconds == ":00") {
-                                seconds = ":30"
-                            } else if (seconds == ":30") {
-                                seconds = ":00"
-                            }
-
-                            currId = currId + 1
-                            i += 1
                         }
-                        currTime = currTime + 1
-                    }
+                        mtime.add(30, 'm');
+                        currId = currId + 1
 
-                    currTime = 0 // Reset currTime for next date
+                    }
                 }
 
             }

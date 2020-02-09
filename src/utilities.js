@@ -12,6 +12,10 @@ export function addThirtyMin(currDay, currTime, seconds) {
 }
 
 export function maddThirtyMin(currDay, mtime) {
+  if (mtime.format('HH:mm') == "23:30"){
+    const endTime = currDay.concat("T", "24:00");
+    return endTime;
+  }
   mtime.add(30, 'm');
   const endTime = currDay.concat("T",mtime.format('HH:mm'));
   return endTime
