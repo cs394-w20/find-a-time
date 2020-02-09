@@ -18,6 +18,7 @@ import moment from "moment";
 import { getRoomIdFromPath } from "../Utility"
 import { UserContext } from "../../context/UserContext"
 import normalEmailToFirebaseEmail from "../Utility/normalEmailToFirebaseEmail"
+import ManualEvents from "../Db/ManualEvents"
 
 var Rainbow = require("rainbowvis.js")
 
@@ -58,7 +59,8 @@ class Calendar extends Component {
                 let selection = this.calendar
                 if (this.props.type == "PERSONAL") {
                     const currUserEmail = normalEmailToFirebaseEmail(this.props.email);
-                    AddManualEvents({ roomId: getRoomIdFromPath(), userName: currUserEmail, start: args.start, end: args.end });
+                    ManualEvents({ roomId: getRoomIdFromPath(), userName: currUserEmail, start: args.start, end: args.end })
+                    //AddManualEvents({ roomId: getRoomIdFromPath(), userName: currUserEmail, start: args.start, end: args.end });
                 }
                 selection.clearSelection()
             },
