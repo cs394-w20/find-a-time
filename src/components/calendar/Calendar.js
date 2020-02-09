@@ -149,29 +149,23 @@ class Calendar extends Component {
             dates.forEach(function (key, dayIndex) {
                 let currId = 0
                 let currDay = dateToString(key)
-                let seconds = ":00"
 
                 if (!Object.keys(events).includes(currDay)) {
                     console.log("Date not included in firebase")
                 }
 
-                let strTime = currDay.concat("T", convertTime(currTime).concat(seconds))
-
                 if (type === "GROUP") {
-                    while (convertTime(currTime).concat(seconds) !== "24:00") {
-                        let i = 0
+                    var mtime = moment(currDay);
+                    mtime.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+                    while (currDay == mtime.format('YYYY-MM-DD')) {
+                        
+                            var mstrTime = currDay.concat("T", mtime.format('HH:mm'));
+                            let timeStamp = mtime.format('HH:mm');
 
-                        while (i < 2) {
-                            strTime = currDay.concat("T", convertTime(currTime).concat(seconds))
-                            let timeStamp = convertTime(currTime).concat(seconds)
-
-                            // CASE 1: Time slot where everybody is available
                             if (Object.keys(events[currDay]).includes(timeStamp)) {
                                 
                                 const unavailable = events[currDay][timeStamp]
                                 const numUnavailable = Object.keys(unavailable).length
-                                //const eventText = (numUsers - numUnavailable).toString() +
-                                //    " / " + numUsers.toString() + " available"
                                 const eventText = (numUnavailable === 0) ? "ALL available" :
                                     (numUsers - numUnavailable).toString() +
                                     " / " + numUsers.toString() + " available"
@@ -179,29 +173,17 @@ class Calendar extends Component {
                                 const currEvent = {
                                     id: currId,
                                     text: eventText,
-                                    start: strTime.concat(":00"),
-                                    end: addThirtyMin(currDay, currTime, seconds).concat(":00"),
+                                    start: mstrTime.concat(":00"),
+                                    end: maddThirtyMin(currDay, mtime.clone()).concat(":00"),
                                     backColor: "#" + colorSpectrum.colourAt(numUnavailable)
                                 }
 
                                 freeTimes.push(currEvent)
                             }
-
-                            //elif (prop)
-
-                            if (seconds == ":00") {
-                                seconds = ":30"
-                            } else if (seconds == ":30") {
-                                seconds = ":00"
-                            }
-
-                            currId = currId + 1
-                            i += 1
-                        }
-                        currTime = currTime + 1
+                            mtime.add(30, 'm');
+                            currId = currId + 1;                        
                     }
 
-                    currTime = 0 // Reset currTime for next date
                 }
                 if (type === "PERSONAL") {
                     const currUserEmail = normalEmailToFirebaseEmail(email);
