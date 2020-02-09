@@ -7,6 +7,7 @@ import { QueryBuilder, endpoints, methods } from "api"
 import GroupDialog from "./GroupDialog"
 import "./create.scss"
 import normalEmailToFirebaseEmail from "components/Utility/normalEmailToFirebaseEmail"
+import {addRoomToUser} from "../../components/Db/AddUserToRoom";
 
 const date_types = {
   START: "start",
@@ -163,6 +164,9 @@ const Create = ({ history }) => {
 
     await q.runQuery()
     // await db.ref("/rooms/" + newRoom.key).set()
+
+    // add room to a users room
+    await addRoomToUser({email:email, roomId:newRoom.key});
 
     history.push(`/events/${newRoom.key}`)
   }
