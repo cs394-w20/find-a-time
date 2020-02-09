@@ -25,14 +25,13 @@
 
 @media only screen and (max-width: $mobile-break) {
   .condensedevent__card {
-    width: 90%;
+    width: 282px;
   }
 
   .condensedevent__container-date{
     margin-right: 10px;
     font-size: .9rem;
     margin-left: -12px;
-    width: 9%;
   }
   .condensedevent__container-dateInterval{
     width: 220px;
