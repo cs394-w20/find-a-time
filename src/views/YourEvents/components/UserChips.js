@@ -4,7 +4,10 @@ import Avatar from "@material-ui/core/Avatar";
 import Tooltip from "@material-ui/core/Tooltip";
 import "./UserChips.scss"
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
-import Button from "@material-ui/core/Button";
+import {getFirstName} from "./Utility"
+
+
+
 /**
  * Render's the little chips that have the user name and avatar.
  */
@@ -32,7 +35,7 @@ const UserChips = ({name, email, picture}) => {
                         style={{color:'#303030',background:'#FAFBFC',cursor:'pointer'}}
                         avatar={<Avatar alt={name} src={picture} />}
                         variant="outlined"
-                        label={name}
+                        label={getFirstName(name)}
                         tile = {email}
                         className="userchip__chip"
                         onClick={handleTooltipOpen}
