@@ -1,4 +1,5 @@
 import {DATE_FORMAT, HOURS, MINUTES} from "./constants"
+import moment from "moment";
 
 export function addThirtyMin(currDay, currTime, seconds) {
   if (seconds == ":00") {
@@ -8,6 +9,16 @@ export function addThirtyMin(currDay, currTime, seconds) {
     const endTime = currDay.concat("T", convertTime(currTime + 1).concat(":00"))
     return endTime
   }
+}
+
+export function maddThirtyMin(currDay, mtime) {
+  if (mtime.format('HH:mm') == "23:30"){
+    const endTime = currDay.concat("T", "24:00");
+    return endTime;
+  }
+  mtime.add(30, 'm');
+  const endTime = currDay.concat("T",mtime.format('HH:mm'));
+  return endTime
 }
 
 export function stringToDate(str) {

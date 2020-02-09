@@ -8,7 +8,7 @@ import "./CalendarStyles.css"
 import "firebase/database"
 import {
     stringToDate, dateToString, convertTime,
-    addThirtyMin, createTimes, createDayArr
+    addThirtyMin, maddThirtyMin, createTimes, createDayArr
 } from "../../utilities"
 import { DATE_FORMAT, ROOM_ID } from "../../constants"
 import db from "../Db/firebaseConnect"
@@ -20,6 +20,7 @@ import { UserContext } from "../../context/UserContext"
 import normalEmailToFirebaseEmail from "../Utility/normalEmailToFirebaseEmail"
 
 var Rainbow = require("rainbowvis.js")
+
 
 const EventPage = () => {
     const userContext = useContext(UserContext)
@@ -142,115 +143,54 @@ class Calendar extends Component {
         colorSpectrum.setNumberRange(0, numUsers)
         colorSpectrum.setSpectrum("green", "red")
 
-        let currTime = 0
-
         if (events !== null) {
             dates.forEach(function (key, dayIndex) {
                 let currId = 0
                 let currDay = dateToString(key)
-                let seconds = ":00"
 
                 if (!Object.keys(events).includes(currDay)) {
                     console.log("Date not included in firebase")
                 }
+                const currUserEmail = normalEmailToFirebaseEmail(email);
+                var mtime = moment(currDay);
+                mtime.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+                while (currDay == mtime.format('YYYY-MM-DD')) {
+                    var mstrTime = currDay.concat("T", mtime.format('HH:mm'));
+                    let timeStamp = mtime.format('HH:mm');
+                    if (Object.keys(events[currDay]).includes(timeStamp)) {
+                        if (type === "GROUP") {
+                            const unavailable = events[currDay][timeStamp]
+                            const numUnavailable = Object.keys(unavailable).length
+                            const eventText = (numUnavailable === 0) ? "ALL available" :
+                                (numUsers - numUnavailable).toString() +
+                                " / " + numUsers.toString() + " available"
 
-                let strTime = currDay.concat("T", convertTime(currTime).concat(seconds))
-
-                if (type === "GROUP") {
-                    while (convertTime(currTime).concat(seconds) !== "24:00") {
-                        let i = 0
-
-                        while (i < 2) {
-                            strTime = currDay.concat("T", convertTime(currTime).concat(seconds))
-                            let timeStamp = convertTime(currTime).concat(seconds)
-
-                            // CASE 1: Time slot where everybody is available
-                            if (!Object.keys(events[currDay]).includes(timeStamp)) {
+                            const currEvent = {
+                                id: currId,
+                                text: eventText,
+                                start: mstrTime.concat(":00"),
+                                end: maddThirtyMin(currDay, mtime.clone()).concat(":00"),
+                                backColor: "#" + colorSpectrum.colourAt(numUnavailable)
+                            }
+                            freeTimes.push(currEvent)
+                        }
+                        if (type === "PERSONAL") {
+                            if (Object.keys(events[currDay][timeStamp]).includes(currUserEmail)) {
+                                console.log(currUserEmail, " is UNAVAILABLE at the time: ", timeStamp, " on day: ", currDay);
                                 const currEvent = {
                                     id: currId,
-                                    text: "ALL available",
-                                    start: strTime.concat(":00"),
-                                    end: addThirtyMin(currDay, currTime, seconds).concat(":00"),
-                                    backColor: "#" + colorSpectrum.colourAt(0)
+                                    start: mstrTime.concat(":00"),
+                                    text: " ",
+                                    end: maddThirtyMin(currDay, mtime.clone()).concat(":00")
                                 }
                                 freeTimes.push(currEvent)
                             }
-                            // CASE 2: Time slot is not available for everyone
-                            else {
-                                const unavailable = events[currDay][timeStamp]
-                                const numUnavailable = Object.keys(unavailable).length
-                                const eventText = (numUsers - numUnavailable).toString() +
-                                    " / " + numUsers.toString() + " available"
-
-                                const currEvent = {
-                                    id: currId,
-                                    text: eventText,
-                                    start: strTime.concat(":00"),
-                                    end: addThirtyMin(currDay, currTime, seconds).concat(":00"),
-                                    backColor: "#" + colorSpectrum.colourAt(numUnavailable)
-                                }
-
-                                freeTimes.push(currEvent)
-                            }
-
-                            //elif (prop)
-
-                            if (seconds == ":00") {
-                                seconds = ":30"
-                            } else if (seconds == ":30") {
-                                seconds = ":00"
-                            }
-
-                            currId = currId + 1
-                            i += 1
                         }
-                        currTime = currTime + 1
                     }
+                    mtime.add(30, 'm');
+                    currId = currId + 1
 
-                    currTime = 0 // Reset currTime for next date
                 }
-                if (type === "PERSONAL") {
-                    // console.log("The logged in user's email: ", email)
-                    const currUserEmail = normalEmailToFirebaseEmail(email);
-                    while (convertTime(currTime).concat(seconds) !== "24:00") {
-                        let i = 0
-
-                        while (i < 2) {
-
-                            strTime = currDay.concat("T", convertTime(currTime).concat(seconds))
-                            let timeStamp = convertTime(currTime).concat(seconds)
-
-                            // CASE 1: Time slot where everybody is available
-                            if (Object.keys(events[currDay]).includes(timeStamp)) {
-                                const unavailable = events[currDay][timeStamp]
-
-                                if (Object.keys(unavailable).includes(currUserEmail)) {
-                                    console.log(currUserEmail, " is UNAVAILABLE at the time: ", timeStamp, " on day: ", currDay);
-                                    const currEvent = {
-                                        id: currId,
-                                        text: 'hi',
-                                        start: strTime.concat(":00"),
-                                        end: addThirtyMin(currDay, currTime, seconds).concat(":00")
-                                    }
-                                    freeTimes.push(currEvent)
-                                }
-                            }
-
-                            if (seconds == ":00") {
-                                seconds = ":30"
-                            } else if (seconds == ":30") {
-                                seconds = ":00"
-                            }
-
-                            currId = currId + 1
-                            i += 1
-                        }
-                        currTime = currTime + 1
-                    }
-
-                    currTime = 0 // Reset currTime for next date
-                }
-
             }
             )
         }
