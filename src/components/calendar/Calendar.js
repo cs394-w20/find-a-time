@@ -143,8 +143,6 @@ class Calendar extends Component {
         colorSpectrum.setNumberRange(0, numUsers)
         colorSpectrum.setSpectrum("green", "red")
 
-        let currTime = 0
-
         if (events !== null) {
             dates.forEach(function (key, dayIndex) {
                 let currId = 0
@@ -153,46 +151,30 @@ class Calendar extends Component {
                 if (!Object.keys(events).includes(currDay)) {
                     console.log("Date not included in firebase")
                 }
+                const currUserEmail = normalEmailToFirebaseEmail(email);
+                var mtime = moment(currDay);
+                mtime.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+                while (currDay == mtime.format('YYYY-MM-DD')) {
+                    var mstrTime = currDay.concat("T", mtime.format('HH:mm'));
+                    let timeStamp = mtime.format('HH:mm');
+                    if (Object.keys(events[currDay]).includes(timeStamp)) {
+                        if (type === "GROUP") {
+                            const unavailable = events[currDay][timeStamp]
+                            const numUnavailable = Object.keys(unavailable).length
+                            const eventText = (numUnavailable === 0) ? "ALL available" :
+                                (numUsers - numUnavailable).toString() +
+                                " / " + numUsers.toString() + " available"
 
-                if (type === "GROUP") {
-                    var mtime = moment(currDay);
-                    mtime.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-                    while (currDay == mtime.format('YYYY-MM-DD')) {
-                        
-                            var mstrTime = currDay.concat("T", mtime.format('HH:mm'));
-                            let timeStamp = mtime.format('HH:mm');
-
-                            if (Object.keys(events[currDay]).includes(timeStamp)) {
-                                
-                                const unavailable = events[currDay][timeStamp]
-                                const numUnavailable = Object.keys(unavailable).length
-                                const eventText = (numUnavailable === 0) ? "ALL available" :
-                                    (numUsers - numUnavailable).toString() +
-                                    " / " + numUsers.toString() + " available"
-
-                                const currEvent = {
-                                    id: currId,
-                                    text: eventText,
-                                    start: mstrTime.concat(":00"),
-                                    end: maddThirtyMin(currDay, mtime.clone()).concat(":00"),
-                                    backColor: "#" + colorSpectrum.colourAt(numUnavailable)
-                                }
-
-                                freeTimes.push(currEvent)
+                            const currEvent = {
+                                id: currId,
+                                text: eventText,
+                                start: mstrTime.concat(":00"),
+                                end: maddThirtyMin(currDay, mtime.clone()).concat(":00"),
+                                backColor: "#" + colorSpectrum.colourAt(numUnavailable)
                             }
-                            mtime.add(30, 'm');
-                            currId = currId + 1;                        
-                    }
-
-                }
-                if (type === "PERSONAL") {
-                    const currUserEmail = normalEmailToFirebaseEmail(email);
-                    var mtime = moment(currDay);
-                    mtime.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-                    while (currDay == mtime.format('YYYY-MM-DD')) {
-                        var mstrTime = currDay.concat("T", mtime.format('HH:mm'));
-                        let timeStamp = mtime.format('HH:mm');
-                        if (Object.keys(events[currDay]).includes(timeStamp)) {
+                            freeTimes.push(currEvent)
+                        }
+                        if (type === "PERSONAL") {
                             if (Object.keys(events[currDay][timeStamp]).includes(currUserEmail)) {
                                 console.log(currUserEmail, " is UNAVAILABLE at the time: ", timeStamp, " on day: ", currDay);
                                 const currEvent = {
@@ -204,9 +186,10 @@ class Calendar extends Component {
                                 freeTimes.push(currEvent)
                             }
                         }
-                        mtime.add(30, 'm');
-                        currId = currId + 1
                     }
+                    mtime.add(30, 'm');
+                    currId = currId + 1
+
                 }
             }
             )
