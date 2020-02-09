@@ -52,25 +52,29 @@ class Calendar extends Component {
             durationBarVisible: true,
             eventMoveHandling: "Disabled",
             eventResizeHandling: "Disabled",
+
             onTimeRangeSelected: args => {
                 let selection = this.calendar
+                if (this.props.type == "PERSONAL") {
+                    DayPilot.Modal.prompt("Add a new event: ", "Event name").then(function (
+                        modal
+                    ) {
+                        selection.events.add(
+                            new DayPilot.Event({
+                                start: args.start,
+                                end: args.end,
+                                id: DayPilot.guid(),
+                                text: modal.result
+                            })
+                        )
+                    })
+                    const currUserEmail = normalEmailToFirebaseEmail(this.props.email);
 
-                DayPilot.Modal.prompt("Add a new event: ", "Event name").then(function (
-                    modal
-                ) {
-                    selection.events.add(
-                        new DayPilot.Event({
-                            start: args.start,
-                            end: args.end,
-                            id: DayPilot.guid(),
-                            text: modal.result
-                        })
-                    )
-                })
-                //const currUserEmail = normalEmailToFirebaseEmail(props.user.email);
-                //AddManualEvents({roomId: getRoomIdFromPath(), userName: currUserEmail, start: args.start, end: args.end});
+                    AddManualEvents({ roomId: getRoomIdFromPath(), userName: currUserEmail, start: args.start, end: args.end });
+                }
                 selection.clearSelection()
             },
+
             user: this.props.user,
             email: this.props.email
         }
