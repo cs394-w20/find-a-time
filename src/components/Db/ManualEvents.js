@@ -13,14 +13,25 @@ const createTimes = () => {
     }).flat()
 };
 
+const inBusyList = async ({ path }) => {
+    let snapshot = await db.ref(path).once("value", snapshot => {
+        if (snapshot.exists()) {
+            console.log("exists!");
+            // TODO: Handle that users do exist
+            return true;
+        }
+        return false;
+    });
+}
+
 const HOURS_AND_MINUTES = createTimes();
 
-const addFreeInterval = ({roomId, date, interval, userName}) => {
+const addFreeInterval = ({ roomId, date, interval, userName }) => {
     db.ref('rooms/' + roomId + "/data/" + date + "/" + interval + "/" + userName)
         .remove().then(() => {
-        console.log("Remove succeeded.")
-    })
-        .catch((error) =>{
+            console.log("Remove succeeded.")
+        })
+        .catch((error) => {
             console.log("Remove failed: " + error.message)
         });
 };
@@ -44,11 +55,13 @@ const ManualEvents = ({ roomId, userName, start, end }) => {
             for (j = 0; j < HOURS_AND_MINUTES.length; j++) {
                 interval = HOURS_AND_MINUTES[j];
                 if (busyIntervalSet.has(interval)) {
-                    if ((db.ref('rooms/' + roomId + "/data/" + date + "/" + interval + "/")).hasChild(userName)) {
+                    var path = 'rooms/' + roomId + "/data/" + date + "/" + interval + "/" + userName;
+                    if (inBusyList({ path })) {//((db.ref('rooms/' + roomId + "/data/" + date + "/" + interval + "/")).hasChild(userName)) {
                         console.log('hi')
                         addFreeInterval(roomId, date, interval, userName)
                     }
                     else {
+                        console.log('add')
                         db.ref('rooms/' + roomId + "/data/" + date + "/" + interval)
                             .child(userName)
                             .set("MANUAL")
