@@ -281,7 +281,7 @@ class Calendar extends Component {
         //console.log(this.state.eventClicked)
 
 
-        const emailList = "SAMPLE_EMAIL_ADDRESS";
+        const emailList = ["find.a.time1@gmail.com"]; // password: thirtythree333333***
         const title = "CS 394 Meeting";
         const description = "Hey everyone! Please fill out this form whenever you\n" +
             "                          can so that we can find a time to meet weekly! Make\n" +
