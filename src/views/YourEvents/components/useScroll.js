@@ -78,7 +78,6 @@ const useScroll = ({baseRef}) => {
         const closestEle = {...domRefs[roomIdOfClosestEle]};
 
         let currMonth = getMonth(closestEle.start);
-        console.log(closestEle.start,currMonth);
         if (month !==currMonth){
             setMonth(currMonth)
         }

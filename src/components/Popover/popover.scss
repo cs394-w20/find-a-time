@@ -2,6 +2,7 @@
   & > *:first-child:hover {
     cursor: pointer;
   }
+  z-index: 10;
 }
 
 .popover__container {

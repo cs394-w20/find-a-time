@@ -141,6 +141,7 @@ const YourEvents = () => {
                 <div className="yourevents__searchbar">
                     <ClickAwayListener onClickAway={closeSearchBox}>
                         <ReactSearchBox
+                            style={{zIndex:9}}
                             placeholder="Search ..."
                             value={textValue}
                             data={data}
