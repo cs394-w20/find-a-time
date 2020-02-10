@@ -27,9 +27,13 @@ import Box from "@material-ui/core/Box"
 import StopIcon from "@material-ui/icons/Stop"
 import jstz from 'jstz';
 import _SendEventInvites from "./_SendEventInvites"
+import {firebaseEmailToNormalEmail} from "../Utility";
 import {Link} from "@material-ui/core";
 
-
+// gets list of email's for a dictionary of users.
+const getEmailListFromUsers = ({users}) =>{
+  return Object.keys(users).map(email=>firebaseEmailToNormalEmail(email))
+};
 
 /**
  * Converts time to the local isotime
@@ -185,7 +189,9 @@ const useStyles = makeStyles(theme => ({
 const EventInvites = ({
   eventClicked,
   eventInviteOnCloseCallback,
-  eventData
+  eventData,
+    meta_data,
+    users
 }) => {
   const [open, setOpen] = useState(false);
   const [hasScheduled, setScheduled] = useState(false);
@@ -230,9 +236,9 @@ const EventInvites = ({
   const startTime = moment(eventData.startSelected).format("LT");
   const endTime = moment(eventData.endSelected).format("LT");
   const eventDay = moment(eventData.startSelected).format("LL");
-  const title = eventData.title;
-  const emailList = eventData.emailList;
-  const description = eventData.description;
+  const title = meta_data.title;
+  const emailList = getEmailListFromUsers({users});
+  const description = meta_data.description;
   const humanReadableTimeDiff = getTimeDifference({start: eventData.startSelected,end:eventData.endSelected});
 
 

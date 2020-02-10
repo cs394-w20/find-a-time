@@ -28,7 +28,6 @@ const EventPage = () => {
     console.log("THE USER CONTEXT: ", userContext);
 }
 
-const dbRef = db.ref()
 // DayPilotCalendar API Reference --> https://api.daypilot.org/daypilot-calendar-viewtype/
 
 /**
@@ -87,6 +86,8 @@ class Calendar extends Component {
         let startDate = moment(new Date()).format(DATE_FORMAT);
         let endDate = "";
         let users = [];
+        let meta_data;
+
 
         if ((snap.val())) {
 
@@ -95,6 +96,8 @@ class Calendar extends Component {
 
             //startDate = snap.val().time_interval.start;
             endDate = snap.val().time_interval.end;
+
+            meta_data = snap.val().meta_data;
 
             users = snap.val().users;
             dates = createDayArr(
@@ -106,6 +109,8 @@ class Calendar extends Component {
             this.setState({users});
             this.setState({startDate});
             this.setState({endDate});
+            this.setState({meta_data});
+
 
             // set the dates
 
@@ -229,7 +234,7 @@ class Calendar extends Component {
         // console.log(eventData.e.data.end.value)
         //console.log(this.state.eventClicked)
 
-
+        console.log(this.state.users)
         const emailList = ["find.a.time1@gmail.com"]; // password: thirtythree333333***
         const title = "CS 394 Meeting";
         const description = "Hey everyone! Please fill out this form whenever you\n" +
@@ -242,9 +247,6 @@ class Calendar extends Component {
             eventData: {
                 startSelected,
                 endSelected,
-                emailList,
-                title,
-                description
             }
         })
 
@@ -315,6 +317,8 @@ class Calendar extends Component {
 
                 {(this.state.eventClicked && this.props.isUserLoaded && this.props.type == "GROUP") && (
                     <EventInvites
+                        meta_data = {this.state.meta_data}
+                        users={this.state.users}
                         eventData={this.state.eventData}
                         eventClicked={this.state.eventClicked}
                         eventInviteOnCloseCallback={this.eventInviteOnCloseCallback}
