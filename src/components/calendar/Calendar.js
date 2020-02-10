@@ -166,10 +166,13 @@ class Calendar extends Component {
                         if (type === "PERSONAL") {
                             if (Object.keys(events[currDay][timeStamp]).includes(currUserEmail)) {
                                 console.log(currUserEmail, " is UNAVAILABLE at the time: ", timeStamp, " on day: ", currDay);
+                                const eventText = (events[currDay][timeStamp][currUserEmail]=== "AUTO") ? "Google" : "Manual";
+                                const boxColor = (events[currDay][timeStamp][currUserEmail]=== "AUTO") ? "Red" : "Yellow";
                                 const currEvent = {
                                     id: currId,
                                     start: mstrTime.concat(":00"),
-                                    text: " ",
+                                    text: eventText,
+                                    backColor: boxColor,
                                     end: maddThirtyMin(currDay, mtime.clone()).concat(":00")
                                 }
                                 freeTimes.push(currEvent)

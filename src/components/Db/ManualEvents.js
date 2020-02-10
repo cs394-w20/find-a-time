@@ -50,7 +50,7 @@ const ManualEvents = ({ roomId, userName, start, end }) => {
                 interval = HOURS_AND_MINUTES[j];
                 if (busyIntervalSet.has(interval)) {
                     var path = 'rooms/' + roomId + "/data/" + date + "/" + interval + "/" + userName;
-                    if (inBusyList({ path })) {//((db.ref('rooms/' + roomId + "/data/" + date + "/" + interval + "/")).hasChild(userName)) {
+                    if (!inBusyList({ path })) {//((db.ref('rooms/' + roomId + "/data/" + date + "/" + interval + "/")).hasChild(userName)) {
                         console.log('hi')
                         addFreeInterval(roomId, date, interval, userName)
                     }
