@@ -239,7 +239,7 @@ const Create = ({ history }) => {
         <TextField
           id="endTime"
           fullWidth
-          style={{ margin: 8 }}
+          style={{ margin: 8 }}c
           type="time"
           variant="outlined"
           defaultValue="18:00"
