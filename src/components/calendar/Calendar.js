@@ -18,7 +18,7 @@ import moment from "moment";
 import { getRoomIdFromPath } from "../Utility"
 import { UserContext } from "../../context/UserContext"
 import normalEmailToFirebaseEmail from "../Utility/normalEmailToFirebaseEmail"
-import ManualEvents from "../Db/ManualEvents"
+import DeleteManualEvents from "../Db/DeleteManualEvents"
 
 var Rainbow = require("rainbowvis.js")
 
@@ -53,15 +53,15 @@ class Calendar extends Component {
             days: "4",
             durationBarVisible: true,
             eventMoveHandling: "Disabled",
-            eventResizeHandling: "Disabled",
 
             onTimeRangeSelected: args => {
                 let selection = this.calendar
                 if (this.props.type == "PERSONAL") {
                     const currUserEmail = normalEmailToFirebaseEmail(this.props.email);
-                    //ManualEvents({ roomId: getRoomIdFromPath(), userName: currUserEmail, start: args.start, end: args.end })
+                    //ManualEvents({ roomId: this.props.roomId, userName: currUserEmail, start: args.start, end: args.end })
                     console.log('argtype', typeof(args.end))
-                    AddManualEvents({ roomId: getRoomIdFromPath(), userName: currUserEmail, start: args.start, end: args.end });
+                    console.log(args.start)
+                    AddManualEvents({ roomId: this.props.roomId, userName: currUserEmail, start: args.start, end: args.end });
                 }
                 selection.clearSelection()
             },
@@ -70,12 +70,13 @@ class Calendar extends Component {
             email: this.props.email
         }
 
+        if (this.props.type === "GROUP"){
+            this.state["eventResizeHandling"] = "Disabled";
+        }
+
+
         // callback function for EventInvite
         this.eventInviteOnCloseCallback = this.eventInviteOnCloseCallback.bind(this)
-
-        // get the roomId
-        this.roomId = getRoomIdFromPath();
-        this.currUser = this.props.user;
     }
 
     /**
@@ -211,31 +212,42 @@ class Calendar extends Component {
      * @param eventData
      */
     onEventDoubleClick = eventData => {
-        const startSelected = eventData.e.data.start.value;
-        const endSelected = eventData.e.data.end.value;
-        // console.log(eventData.e.data.start.value)
-        // console.log(eventData.e.data.end.value)
-        //console.log(this.state.eventClicked)
+        
+        if (this.props.type === "PERSONAL"){
+            const currUserEmail = normalEmailToFirebaseEmail(this.props.email);
+            DeleteManualEvents(
+                {
+                    roomId: this.props.roomId,
+                    userName: currUserEmail,
+                    start:  eventData.e.data.start,
+                    end: eventData.e.data.end
+                })
+        }else{
+            // console.log(eventData.e.data.start.value)
+            // console.log(eventData.e.data.end.value)
+            //console.log(this.state.eventClicked)
 
+            const startSelected = eventData.e.data.start.value;
+            const endSelected = eventData.e.data.end.value;
 
-        const emailList = ["find.a.time1@gmail.com"]; // password: thirtythree333333***
-        const title = "CS 394 Meeting";
-        const description = "Hey everyone! Please fill out this form whenever you\n" +
-            "                          can so that we can find a time to meet weekly! Make\n" +
-            "                          sure to connect your Google calendar so you don’t have\n" +
-            "                          to manually fill in events!";
+            const emailList = ["find.a.time1@gmail.com"]; // password: thirtythree333333***
+            const title = "CS 394 Meeting";
+            const description = "Hey everyone! Please fill out this form whenever you\n" +
+                "                          can so that we can find a time to meet weekly! Make\n" +
+                "                          sure to connect your Google calendar so you don’t have\n" +
+                "                          to manually fill in events!";
 
-        this.setState({
-            eventClicked: true,
-            eventData: {
-                startSelected,
-                endSelected,
-                emailList,
-                title,
-                description
-            }
-        })
-
+            this.setState({
+                eventClicked: true,
+                eventData: {
+                    startSelected,
+                    endSelected,
+                    emailList,
+                    title,
+                    description
+                }
+            })
+        }
     };
 
     /**
@@ -257,14 +269,65 @@ class Calendar extends Component {
         }
     };
 
-    render() {
-        if (this.state.eventClicked && this.props.type == "PERSONAL"){
-            console.log('clicked', this.state.eventData, "hi", this.state.eventClicked);
-            console.log(this.state.eventData.startSelected, this.state.eventData.endSelected)
-            const currUserEmail = normalEmailToFirebaseEmail(this.props.email);
-            ManualEvents({ roomId: getRoomIdFromPath(), userName: currUserEmail, start: this.state.eventData.startSelected, end: this.state.eventData.endSelected })
+    /**
+     * Add or Delete events onResize, which is only available when personal cal is open.
+     */
+    onResize = (eventData)=>{
+
+        const currUserEmail = normalEmailToFirebaseEmail(this.props.email);
+        let oldStart = moment(eventData.e.data.start.value);
+        let oldEnd = moment(eventData.e.data.end.value);
+        let newStart = moment(eventData.newStart.value);
+        let newEnd = moment(eventData.newEnd.value);
+
+        if (newStart.isBefore(oldStart)){
+            // add data between newStart -> oldStart
+            AddManualEvents(
+                {
+                    roomId: this.props.roomId,
+                    userName: currUserEmail,
+                    start: eventData.newStart,
+                    end: eventData.e.data.start
+                });
         }
 
+        if (newStart.isAfter(oldStart)){
+            // delete date between oldStart -> newStart
+            DeleteManualEvents(
+                {
+                    roomId: this.props.roomId,
+                    userName: currUserEmail,
+                    start: eventData.e.data.start,
+                    end: eventData.newStart
+                })
+        }
+
+        if (newEnd.isAfter(oldEnd)){
+            // add data between newEnd -> oldEnd
+            AddManualEvents(
+                {
+                    roomId: this.props.roomId,
+                    userName: currUserEmail,
+                    start: eventData.newEnd,
+                    end: eventData.e.data.end
+                });
+        }
+
+        if (newEnd.isBefore(oldEnd)){
+            // delete date between oldEnd -> newEnd
+            DeleteManualEvents(
+                {
+                    roomId: this.props.roomId,
+                    userName: currUserEmail,
+                    start: eventData.e.data.end,
+                    end: eventData.newEnd
+                })
+        }
+
+
+    };
+
+    render() {
         return (
             <div className={"calendar__container"}>
 
@@ -273,10 +336,10 @@ class Calendar extends Component {
                     ref={component => {
                         this.calendar = component && component.control
                     }}
-
+                    onEventResize={this.onResize}
                     onEventClick={this.onEventDoubleClick}
                 />
-                {(this.state.eventClicked && this.props.isUserLoaded && this.props.type == "GROUP") && (
+                {(this.state.eventClicked && this.props.isUserLoaded && this.props.type === "GROUP") && (
                     <EventInvites
                         eventData={this.state.eventData}
                         eventClicked={this.state.eventClicked}

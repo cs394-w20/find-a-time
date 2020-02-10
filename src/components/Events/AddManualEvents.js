@@ -9,7 +9,7 @@ import findBuckets from "./FindBuckets";
 const AddManualEvents = ({roomId, userName, start, end})=> {
     const intervalData = findBuckets(roomId, userName, moment(start.toDateLocal()), moment(end.toDateLocal()));
     UpdateDb({roomId,userName,intervalData, updateType: "MANUAL"});
-}
+};
 
 
 export default AddManualEvents;

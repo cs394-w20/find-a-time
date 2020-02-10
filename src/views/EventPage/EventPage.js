@@ -23,7 +23,6 @@ const EventPage = ({ match }) => {
    * Calls ListUpcomingEvents() to populate calender w/ Gcal Events
    */
   useEffect(() => {
-    console.log("TWO")
 
     if ((userContext.isUserLoaded) && dbHasRoom) {
 
@@ -45,7 +44,6 @@ const EventPage = ({ match }) => {
   useEffect(() => {
     const roomId = match.params.id;
 
-    console.log("ONE")
     //boolean indicates if Db has the room
     hasRoom({ roomId }).then((dbHasRoom) => {
 

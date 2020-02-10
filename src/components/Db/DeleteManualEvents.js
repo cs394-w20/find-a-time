@@ -34,10 +34,11 @@ const addFreeInterval = ({ roomId, date, interval, userName }) => {
     });
 };
 
-const ManualEvents = ({ roomId, userName, start, end }) => {
+const DeleteManualEvents = ({ roomId, userName, start, end }) => {
     console.log('in manual', moment(start), moment(end));
     //console.log('in manual', moment(start.toDateLocal()), moment(end.toDateLocal()))
-    const intervalData = findBuckets(roomId, userName, moment(start), moment(end));//moment(start.toDateLocal()), moment(end.toDateLocal()));
+    const intervalData = findBuckets(roomId, userName, moment(start.toDateLocal()), moment(end.toDateLocal()));//moment(start.toDateLocal()), moment(end.toDateLocal()));
+
     console.log(intervalData)
     let dateList = Object.keys(intervalData);
     let i, j, busyIntervalSet, date, interval;
@@ -66,4 +67,4 @@ const isEmpty = (obj) => {
 };
 
 
-export default ManualEvents;
+export default DeleteManualEvents;
