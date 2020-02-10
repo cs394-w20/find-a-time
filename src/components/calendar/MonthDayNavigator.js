@@ -3,7 +3,7 @@ import Calendar from 'react-calendar'
 import moment from "moment"
 import {DATE_FORMAT} from "../../constants";
 import { makeStyles } from "@material-ui/core/styles"
-import './MonthDayNavitgator.scss'
+import './MonthDayNavigator.scss'
 
 
 

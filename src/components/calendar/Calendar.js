@@ -355,7 +355,7 @@ class Calendar extends Component {
             <div className={"calendar__container"}>
                 <MonthDayNavigator time_interval={this.state.time_interval} dateClickCallBack={this.dateClickCallBack}/>
 
-                <div style={{width:'75%',flexGrow: 2,flexShrink:1}}>
+                <div className={"calendar__container_inner"}>
                     <DayPilotCalendar
                         {...this.state}
                         ref={component => {

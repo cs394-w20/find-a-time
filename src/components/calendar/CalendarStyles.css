@@ -23,6 +23,10 @@ tr {
   margin: 0 0 0 0;
 }
 
+.calendar__container_inner{
+  width:75%
+}
+
 .calendar_default_corner>* {
   background: #fff !important;
   background-color: #fff !important;
