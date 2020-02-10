@@ -1,0 +1,40 @@
+@import "~sass-globals/variables";
+
+.react-calendar{
+  border-right-width: 0;
+}
+
+// Classes based on --> https://github.com/wojtekmaj/react-calendar/blob/master/src/Calendar.less
+@media only screen and (max-width: $mobile-break){
+  // changes size of the entire calendar
+  .react-calendar{
+    width: 130px;
+  }
+
+  // styling for the actual days inside calendar
+  .react-calendar__tile{
+    font-size: .8em;
+  }
+
+  // the container for the header of the calendar
+  .react-calendar__navigation{
+    width: 100%;
+    height: 30px;
+    //border: solid;
+
+    // shrinks the buttons on top of the calendar
+    button{
+      //border: solid;
+      min-width: 20px;
+      font-size: .6em;
+    }
+  }
+
+  // this shrinks the inner calendar font size
+  .react-calendar__month-view{
+    margin-top: -10px;
+    font-size: .6em;
+  }
+
+}
+

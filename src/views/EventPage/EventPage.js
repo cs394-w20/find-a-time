@@ -10,8 +10,7 @@ import db from "components/Db/firebaseConnect"
 import { normalEmailToFirebaseEmail } from "components/Utility"
 import { UserContext } from "context/UserContext"
 import { ToggleCalendar } from "./components"
-import {hasRoom} from "../../components/Db";
-import Calendar from "components/calendar/Calendar";
+import { hasRoom } from "../../components/Db";
 
 const EventPage = ({ match }) => {
   const userContext = useContext(UserContext)
@@ -48,7 +47,7 @@ const EventPage = ({ match }) => {
 
     console.log("ONE")
     //boolean indicates if Db has the room
-    hasRoom({roomId}).then((dbHasRoom)=>{
+    hasRoom({ roomId }).then((dbHasRoom) => {
 
       if (!roomId) {
         setDbHasRoom(dbHasRoom);
@@ -59,11 +58,11 @@ const EventPage = ({ match }) => {
       }
 
 
-      if (dbHasRoom){
+      if (dbHasRoom) {
         const fetchRooms = () => {
           db.ref("/rooms/" + roomId)
-              .once("value")
-              .then(snapshot => setEventData(snapshot.val()))
+            .once("value")
+            .then(snapshot => setEventData(snapshot.val()))
         };
 
         fetchRooms()
@@ -71,7 +70,7 @@ const EventPage = ({ match }) => {
 
       setDbHasRoom(dbHasRoom);
     }
-  );
+    );
 
     return async () => {
       await db.ref().off()
@@ -88,7 +87,7 @@ const EventPage = ({ match }) => {
     setIsPersonalCal(true)
   }
 
-  return eventData && userContext.user && userContext.user.email && dbHasRoom ? (
+  return (eventData && dbHasRoom && userContext.isUserLoaded) ? (
     <div>
       <div className="event-auth__container">
         <ShareBanner />
@@ -111,21 +110,22 @@ const EventPage = ({ match }) => {
         isUserLoaded={!(userContext.isUserLoaded == null)}
       />
 
-      {userContext.user && isPersonalCal && userContext.user.email? (
+      {userContext.user && isPersonalCal && userContext.user.email ? (
         <PersonalCalendar
           isUserLoaded={userContext.isUserLoaded}
           user={userContext.user}
+          email={userContext.user.email}
           roomId = {match.params.id}
         />
       ) : (
-        <Calendar isUserLoaded={userContext.isUserLoaded}
-                  user={userContext.user}
-                  email={userContext.user.email}
-                  roomId = {match.params.id}
-        />
-      )}
+          <GroupCalendar
+            isUserLoaded={userContext.isUserLoaded}
+            user={userContext}
+            email={userContext.user.email}
+            roomId = {match.params.id} />
+        )}
     </div>
-  ) : (dbHasRoom? <Loading />: <div> Event does not exist</div>)
+  ) : (dbHasRoom ? <Loading /> : <div> Event does not exist</div>)
 };
 
 export default EventPage

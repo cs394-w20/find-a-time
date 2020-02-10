@@ -33,8 +33,12 @@ const POPOVER_MARGIN = 10
 const Popover = props => {
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick)
+    document.addEventListener("touchstart", handleOutsideClick)
 
-    return () => document.removeEventListener("mousedown", handleOutsideClick)
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick)
+      document.removeEventListener("touchstart", handleOutsideClick)
+    }
   })
 
   useEffect(() => {
@@ -89,6 +93,7 @@ const Popover = props => {
       <div
         ref={popOverRef}
         className="popover__container"
+        onClick={()=>setIsOpen(false)}
         style={{
           top: coords.y,
           left: coords.x,

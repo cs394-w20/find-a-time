@@ -19,9 +19,9 @@ import Calendar from "./Calendar"
 var Rainbow = require("rainbowvis.js")
 
 
-const PersonalCalendar = ({isUserLoaded, user, email}) => {
+const PersonalCalendar = ({isUserLoaded, user, email, roomId}) => {
   return (
-    <Calendar isUserLoaded={isUserLoaded} type={'PERSONAL'} user={user} email={email} />
+    <Calendar isUserLoaded={isUserLoaded} roomId = {roomId} type={'PERSONAL'} user={user} email={email} />
   )
 };
 

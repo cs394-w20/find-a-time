@@ -7,6 +7,7 @@ import { QueryBuilder, endpoints, methods } from "api"
 import GroupDialog from "./GroupDialog"
 import "./create.scss"
 import normalEmailToFirebaseEmail from "components/Utility/normalEmailToFirebaseEmail"
+import {addRoomToUser} from "../../components/Db/AddUserToRoom";
 
 const MAX_DESC_CHARS = 140
 const MAX_TITLE_CHARS = 40
@@ -174,6 +175,9 @@ const Create = ({ history }) => {
     await q.runQuery()
     // await db.ref("/rooms/" + newRoom.key).set()
 
+    // add room to a users room
+    await addRoomToUser({email:email, roomId:newRoom.key});
+
     history.push(`/events/${newRoom.key}`)
   }
 
@@ -249,7 +253,7 @@ const Create = ({ history }) => {
         <TextField
           id="endTime"
           fullWidth
-          style={{ margin: 8 }}
+          style={{ margin: 8 }}c
           type="time"
           variant="outlined"
           defaultValue="18:00"
