@@ -23,8 +23,6 @@ import './CondensedEvent.scss';
 import Button from "@material-ui/core/Button";
 import {createMuiTheme, ThemeProvider} from '@material-ui/core/styles';
 import SimpleDialog from "./SimpleDialog";
-import {getFirstName} from "./Utility"
-
 
 // Hacky way to change button color
 const purpleTheme = createMuiTheme({palette: {primary: {main: "#5243AA"}}});
@@ -83,24 +81,16 @@ const CondensedEvent = ({payload, hasDate,scrollState}) => {
         let emailList = Object.keys(payload.users);
         let i = 0;
         let email;
-        let letterLimit = 15;
 
-        let names = '';
-        let name ;
         for (i; i< emailList.length && i<3; i++){
             email = emailList[i];
-            name = getFirstName(payload.users[email].name);
             chips.push(<UserChips key={email}
                                           email={email}
                                           picture={payload.users[email].picture}
                                           name={payload.users[email].name}/>
                                           );
-            names+=name
         }
 
-        if (names.length>letterLimit){
-            chips.pop();
-        }
 
         return chips;
     };
