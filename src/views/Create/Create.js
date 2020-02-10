@@ -147,6 +147,7 @@ const Create = ({ history }) => {
     const params = {
       meta_data: eventFields.meta_data,
       time_interval: eventFields.time_interval,
+      hour_interval: eventFields.times,
       data: allTimes,
       users: {
         [email]: {
