@@ -3,24 +3,11 @@ import Calendar from 'react-calendar'
 import moment from "moment"
 import {DATE_FORMAT} from "../../constants";
 import { makeStyles } from "@material-ui/core/styles"
-
-
-/* The style sheet */
-const useStyles = makeStyles(() => ({
-    main_container: {
-        width:'25%',
-        flexGrow:1,
-        flexShrink:1
-    },
-    dayNavigator:{
-        width:'100%'
-    }
-}));
+import './MonthDayNavitgator.scss'
 
 
 
 const MonthDayNavigator = ({time_interval, dateClickCallBack})=>{
-    const classes = useStyles();
     const [endTime,setEndTime ] = useState(null);
     const [startTime,setStartTime ] = useState(null);
     const [hasTime,setHasTime ] = useState(false);
@@ -50,10 +37,9 @@ const MonthDayNavigator = ({time_interval, dateClickCallBack})=>{
 
 
     return (
-        <div className={classes.main_container}>
+        <div >
             {hasTime?
             <Calendar
-                className={classes.dayNavigator}
                 calendarType="US"
                 maxDetail="month"
                 minDetail="month"
@@ -62,6 +48,7 @@ const MonthDayNavigator = ({time_interval, dateClickCallBack})=>{
                 minDate={startTime}
                 activeStartDate={activeStartDate}
                 onChange={onDateClick}
+                value={startTime}
             />
             :
             <Calendar
