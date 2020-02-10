@@ -5,4 +5,5 @@ export {default as db} from './firebaseConnect';
 export {default as GetStartEndTimeForRoomId} from './GetStartEndTimeForRoomId';
 export {default as AddUserToRoom} from './AddUserToRoom';
 export {default as hasRoom} from './hasRoom';
+export {default as ManualEvents} from './ManualEvents';
 

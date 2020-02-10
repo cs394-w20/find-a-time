@@ -18,6 +18,7 @@ import moment from "moment";
 import { getRoomIdFromPath } from "../Utility"
 import { UserContext } from "../../context/UserContext"
 import normalEmailToFirebaseEmail from "../Utility/normalEmailToFirebaseEmail"
+import ManualEvents from "../Db/ManualEvents"
 import MonthDayNavigator from "./MonthDayNavigator";
 var Rainbow = require("rainbowvis.js")
 
@@ -58,6 +59,8 @@ class Calendar extends Component {
                 let selection = this.calendar
                 if (this.props.type == "PERSONAL") {
                     const currUserEmail = normalEmailToFirebaseEmail(this.props.email);
+                    //ManualEvents({ roomId: getRoomIdFromPath(), userName: currUserEmail, start: args.start, end: args.end })
+                    console.log('argtype', typeof(args.end))
                     AddManualEvents({ roomId: getRoomIdFromPath(), userName: currUserEmail, start: args.start, end: args.end });
                 }
                 selection.clearSelection()
@@ -175,10 +178,13 @@ class Calendar extends Component {
                         if (type === "PERSONAL") {
                             if (Object.keys(events[currDay][timeStamp]).includes(currUserEmail)) {
                                 console.log(currUserEmail, " is UNAVAILABLE at the time: ", timeStamp, " on day: ", currDay);
+                                const eventText = (events[currDay][timeStamp][currUserEmail]=== "AUTO") ? "Google" : "Manual";
+                                const boxColor = (events[currDay][timeStamp][currUserEmail]=== "AUTO") ? "Red" : "Blue";
                                 const currEvent = {
                                     id: currId,
                                     start: mstrTime.concat(":00"),
-                                    text: " ",
+                                    text: eventText,
+                                    backColor: boxColor,
                                     end: maddThirtyMin(currDay, mtime.clone()).concat(":00")
                                 }
                                 freeTimes.push(currEvent)
@@ -283,6 +289,12 @@ class Calendar extends Component {
     };
 
     render() {
+        if (this.state.eventClicked && this.props.type == "PERSONAL"){
+            console.log('clicked', this.state.eventData, "hi", this.state.eventClicked);
+            console.log(this.state.eventData.startSelected, this.state.eventData.endSelected)
+            const currUserEmail = normalEmailToFirebaseEmail(this.props.email);
+            ManualEvents({ roomId: getRoomIdFromPath(), userName: currUserEmail, start: this.state.eventData.startSelected, end: this.state.eventData.endSelected })
+        }
 
         return (
             <div className={"calendar__container"}>
