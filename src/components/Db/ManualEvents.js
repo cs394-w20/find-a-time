@@ -13,26 +13,31 @@ const createTimes = () => {
     }).flat()
 };
 
-const inBusyList = async ({ path }) => {
-    let snapshot = await db.ref(path).once("value");
-    return !(snapshot.val() ===null)
-}
-
 const HOURS_AND_MINUTES = createTimes();
 
 const addFreeInterval = ({ roomId, date, interval, userName }) => {
-    db.ref('rooms/' + roomId + "/data/" + date + "/" + interval + "/" + userName)
-        .remove().then(() => {
-            console.log("Remove succeeded.")
-        })
-        .catch((error) => {
-            console.log("Remove failed: " + error.message)
-        });
+    let dbRef = db.ref('rooms/' + roomId + "/data/" + date + "/" + interval + "/" + userName);
+    dbRef.transaction((autoOrManual) => {
+            if (autoOrManual === "AUTO") {
+                // Do nothing
+                return;
+            } else {
+                // Delete record if it exists
+                dbRef.remove()
+                    .catch((error) => {
+                        console.log("remove failed: " + error.message)
+                    });
+                return;
+            }
+        }).catch((error) => {
+        console.log("addFreeInterval failed: " + error.message)
+    });
 };
 
 const ManualEvents = ({ roomId, userName, start, end }) => {
-    console.log('in manual', moment(start.toDateLocal()), moment(end.toDateLocal()))
-    const intervalData = findBuckets(roomId, userName, moment(start.toDateLocal()), moment(end.toDateLocal()));
+    console.log('in manual', moment(start), moment(end));
+    //console.log('in manual', moment(start.toDateLocal()), moment(end.toDateLocal()))
+    const intervalData = findBuckets(roomId, userName, moment(start), moment(end));//moment(start.toDateLocal()), moment(end.toDateLocal()));
     console.log(intervalData)
     let dateList = Object.keys(intervalData);
     let i, j, busyIntervalSet, date, interval;
@@ -41,27 +46,11 @@ const ManualEvents = ({ roomId, userName, start, end }) => {
 
         if (!(isEmpty(intervalData[date]))) {
             busyIntervalSet = new Set(Object.keys(intervalData[date]));
-            /**
-             * Adds busy and free intervals. Loops through the all the hr:mm pairs and checks if
-             * this pair is in `busyIntervalSet` if so it updates db w/ busy, otherwise it update
-             * db with free.
-             */
             for (j = 0; j < HOURS_AND_MINUTES.length; j++) {
                 interval = HOURS_AND_MINUTES[j];
                 if (busyIntervalSet.has(interval)) {
-                    var path = 'rooms/' + roomId + "/data/" + date + "/" + interval + "/" + userName;
-                    if (!inBusyList({ path })) {//((db.ref('rooms/' + roomId + "/data/" + date + "/" + interval + "/")).hasChild(userName)) {
-                        console.log('hi')
-                        addFreeInterval(roomId, date, interval, userName)
-                    }
-                    else {
-                        console.log('add')
-                        db.ref('rooms/' + roomId + "/data/" + date + "/" + interval)
-                            .child(userName)
-                            .set("MANUAL")
-                            .catch(error => alert(error));
-                    }
-
+                        console.log('hi remove interval', interval, date, roomId, userName)
+                        addFreeInterval({roomId, date, interval, userName})
                 }
             }
         }
@@ -76,9 +65,5 @@ const isEmpty = (obj) => {
     return true;
 };
 
-const AddManualEvents = ({ roomId, userName, intervalData }) => {
-    //const intervalData = findBuckets(roomId, userName, moment(start.toDateLocal()), moment(end.toDateLocal()));
-    UpdateDb({ roomId, userName, intervalData, updateType: "MANUAL" });
-}
 
 export default ManualEvents;
