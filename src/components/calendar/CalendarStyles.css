@@ -17,7 +17,10 @@ tr {
 }
 
 .calendar__container {
-  margin: 0 0;
+  display: flex;
+  justify-content: flex-start;
+  padding: 0 0;
+  margin: 0 0 0 0;
 }
 
 .calendar_default_corner>* {

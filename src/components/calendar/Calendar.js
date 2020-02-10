@@ -18,7 +18,7 @@ import moment from "moment";
 import { getRoomIdFromPath } from "../Utility"
 import { UserContext } from "../../context/UserContext"
 import normalEmailToFirebaseEmail from "../Utility/normalEmailToFirebaseEmail"
-
+import MonthDayNavigator from "./MonthDayNavigator";
 var Rainbow = require("rainbowvis.js")
 
 const EventPage = () => {
@@ -95,6 +95,9 @@ class Calendar extends Component {
 
         if ((snap.val())) {
 
+            // set the start and end time.
+            this.setState({time_interval:snap.val().time_interval});
+
             startDate = snap.val().time_interval.start;
             endDate = snap.val().time_interval.end;
 
@@ -104,11 +107,18 @@ class Calendar extends Component {
                 endDate
             );
 
+            this.setState({dates});
+            this.setState({users});
+            this.setState({startDate});
+            this.setState({endDate});
+
+            // set the dates
 
             if (checkIfDataExists(snap)) {
 
                 // add empty date to the  `events` object for all the days with missing days if there is any.
                 events = snap.val().data;
+
                 let _startDate = moment(startDate, DATE_FORMAT);
                 let _endDate = moment(endDate, DATE_FORMAT);
                 let date;
@@ -119,10 +129,11 @@ class Calendar extends Component {
                     }
                 }
 
+                this.setState({events_:events});
                 this.renderCalender({ events, startDate, dates, users, type: this.props.type, currUser: this.state.user, email: this.state.email })
             } else {
-                events = null;
-                this.renderCalender({ events, startDate, dates, users, type: this.props.type, currUser: this.state.user, email: this.state.email })
+                this.setState({events_:null});
+                this.renderCalender({ events:null, startDate, dates, users, type: this.props.type, currUser: this.state.user, email: this.state.email })
             }
         }
     };
@@ -318,21 +329,44 @@ class Calendar extends Component {
                 this.setState({ eventClicked: false });
             }
         }
+
+        if (prevState.dates !== this.state.dates &&
+            (this.state.users) &&
+            (this.state.startDate) &&
+            (this.state.dates)){
+            this.renderCalender({ events: this.state.events_, startDate: this.state.startDate, dates: this.state.dates, users: this.state.users, type: this.props.type, currUser: this.state.user, email: this.state.email })
+        }
+    };
+
+
+    dateClickCallBack = (startingDate) =>{
+        let updateDates = createDayArr(
+            startingDate,
+            this.state.endDate
+        );
+        this.setState({dates:updateDates});
+        this.setState({startDate:startingDate});
+
     };
 
     render() {
 
         return (
             <div className={"calendar__container"}>
+                <MonthDayNavigator time_interval={this.state.time_interval} dateClickCallBack={this.dateClickCallBack}/>
 
-                <DayPilotCalendar
-                    {...this.state}
-                    ref={component => {
-                        this.calendar = component && component.control
-                    }}
+                <div style={{width:'75%',flexGrow: 2,flexShrink:1}}>
+                    <DayPilotCalendar
+                        {...this.state}
+                        ref={component => {
+                            this.calendar = component && component.control
+                        }}
 
-                    onEventClick={this.onEventDoubleClick}
-                />
+                        onEventClick={this.onEventDoubleClick}
+                    />
+                </div>
+
+
                 {(this.state.eventClicked && this.props.isUserLoaded) && (
                     <EventInvites
                         eventData={this.state.eventData}
