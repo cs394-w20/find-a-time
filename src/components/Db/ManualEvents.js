@@ -14,14 +14,8 @@ const createTimes = () => {
 };
 
 const inBusyList = async ({ path }) => {
-    let snapshot = await db.ref(path).once("value", snapshot => {
-        if (snapshot.exists()) {
-            console.log("exists!");
-            // TODO: Handle that users do exist
-            return true;
-        }
-        return false;
-    });
+    let snapshot = await db.ref(path).once("value");
+    return !(snapshot.val() ===null)
 }
 
 const HOURS_AND_MINUTES = createTimes();
