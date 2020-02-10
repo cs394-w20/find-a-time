@@ -84,12 +84,12 @@ class Calendar extends Component {
     }
 
     /**
-     * Call back function for firebase
+     * Call back function for firebase on mount
      */
     handleDataCallback = snap => {
         let dates = [];
         let events;
-        let startDate = "";
+        let startDate = moment(new Date()).format(DATE_FORMAT);
         let endDate = "";
         let users = [];
 
@@ -98,7 +98,7 @@ class Calendar extends Component {
             // set the start and end time.
             this.setState({time_interval:snap.val().time_interval});
 
-            startDate = snap.val().time_interval.start;
+            //startDate = snap.val().time_interval.start;
             endDate = snap.val().time_interval.end;
 
             users = snap.val().users;
@@ -271,6 +271,7 @@ class Calendar extends Component {
 
     componentDidMount() {
         db.ref("/rooms/" + this.props.roomId).on("value", this.handleDataCallback, error => alert(error))
+
     }
 
     // disconnect the handleDataCallback on unmount
@@ -321,7 +322,8 @@ class Calendar extends Component {
     };
 
     /**
-     * Self explanatory - if user is not logged in it turns off eventClicked
+     * if user is not logged in it turns off eventClicked
+     * if dates is updated and required variables are not null then re-render the calendar.
      */
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevState.eventClicked !== this.state.eventClicked) {

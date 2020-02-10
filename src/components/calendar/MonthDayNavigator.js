@@ -11,18 +11,18 @@ const MonthDayNavigator = ({time_interval, dateClickCallBack})=>{
     const [endTime,setEndTime ] = useState(null);
     const [startTime,setStartTime ] = useState(null);
     const [hasTime,setHasTime ] = useState(false);
-    const [activeStartDate, setActiveStartDate] = useState(null);
+    const [activeDate, setActiveDate] = useState(null);
 
 
     useEffect(()=>{
         if (time_interval!==undefined){
-            let start = moment(time_interval.start, DATE_FORMAT).toDate();
-            let end = moment(time_interval.end, DATE_FORMAT).toDate();
+            const start = moment(time_interval.start, DATE_FORMAT).toDate();
+            const end = moment(time_interval.end, DATE_FORMAT).toDate();
 
             setHasTime(true);
             setStartTime(start);
             setEndTime(end);
-            setActiveStartDate(start)
+            setActiveDate(new Date())
 
         }else{
             setHasTime(false);
@@ -31,7 +31,7 @@ const MonthDayNavigator = ({time_interval, dateClickCallBack})=>{
 
 
     const onDateClick=(value,event) =>{
-        setActiveStartDate(value);
+        setActiveDate(value);
         dateClickCallBack(moment(value).format(DATE_FORMAT));
     };
 
@@ -46,9 +46,9 @@ const MonthDayNavigator = ({time_interval, dateClickCallBack})=>{
                 defaultView = "month"
                 maxDate={endTime}
                 minDate={startTime}
-                activeStartDate={activeStartDate}
                 onChange={onDateClick}
-                value={startTime}
+                activeStartDate={activeDate}
+                value={activeDate}
             />
             :
             <Calendar
