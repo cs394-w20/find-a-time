@@ -463,8 +463,10 @@ const EventInvites = ({
                                     <small> {(eventHtmlLink === null) ? (hasScheduled? 'Send Calendar Invites': 'Time Interval Info/Calendar Invites') : 'Calendar Invites Sent!'}</small>
 
                                 </div>
+
+
                                 <CardHeader
-                                    title={(eventHtmlLink === null) ? (hasScheduled?`${durationState.duration} minute meeting` :title) : 'Thank You'}
+                                    title={(eventHtmlLink === null) ? (hasScheduled?`${durationState.duration} minute meeting` :`${durationState.duration} minute interval`) : 'Thank You'}
                                     style={{textAlign: "center"}}
 
                                 />
@@ -596,6 +598,8 @@ const EventInvites = ({
 
 
 
+                                    {(eventHtmlLink)||hasScheduled?
+
                                     <Box color="text.secondary">
                                         <Grid
                                             container
@@ -618,7 +622,7 @@ const EventInvites = ({
                                                 </Typography>
                                             </Grid>
                                         </Grid>
-                                    </Box>
+                                    </Box>:false}
 
                                 </CardContent>
 
