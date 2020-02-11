@@ -20,6 +20,7 @@ import { UserContext } from "../../context/UserContext"
 import normalEmailToFirebaseEmail from "../Utility/normalEmailToFirebaseEmail"
 import ManualEvents from "../Db/ManualEvents"
 import MonthDayNavigator from "./MonthDayNavigator";
+import firebaseEmailToNormalEmail from "../Utility/firebaseEmailToNormalEmail";
 var Rainbow = require("rainbowvis.js")
 
 
@@ -169,25 +170,29 @@ class Calendar extends Component {
                             const unavailable = events[currDay][timeStamp]
                             const numUnavailable = Object.keys(unavailable).length
                             let availableList = ""
-                            const eventText = (numUnavailable === 0) ? "ALL free" :
+                            const eventText = (numUnavailable === 0) ? `${numUsers}/${numUsers} free` :
                                 (numUsers - numUnavailable).toString() +
                                 "/" + numUsers.toString() + " free"
 
                             let availableUsers = []
 
+                            let allEmails = Object.keys(users)
                             if (numUnavailable > 0) {
                               let unavailableEmails = Object.keys(unavailable)
-                              let allEmails = Object.keys(users)
+
                               // Emails of users who CAN attend this event
                               let availableEmails = allEmails.filter(x => !unavailableEmails.includes(x));
                               // console.log("EMAILS OF THOSE WHO CAN ATTEND: ", availableEmails);
 
                               availableEmails.forEach(function(email, index) {
                                 const currUserInfo = users[email]
-                                availableUsers.push([currUserInfo, email])
+                                availableUsers.push([currUserInfo, firebaseEmailToNormalEmail(email)])
                               })
-
-
+                            }else{
+                                allEmails.forEach(function(email, index) {
+                                    const currUserInfo = users[email];
+                                    availableUsers.push([currUserInfo, firebaseEmailToNormalEmail(email)])
+                                })
                             }
 
                             const currEvent = {
