@@ -163,26 +163,45 @@ class Calendar extends Component {
                 while (currDay == mtime.format('YYYY-MM-DD')) {
                     var mstrTime = currDay.concat("T", mtime.format('HH:mm'));
                     let timeStamp = mtime.format('HH:mm');
+
                     if (Object.keys(events[currDay]).includes(timeStamp)) {
                         if (type === "GROUP") {
                             const unavailable = events[currDay][timeStamp]
                             const numUnavailable = Object.keys(unavailable).length
+                            let availableList = ""
                             const eventText = (numUnavailable === 0) ? "ALL free" :
                                 (numUsers - numUnavailable).toString() +
                                 "/" + numUsers.toString() + " free"
+
+                            let availableUsers = []
+
+                            if (numUnavailable > 0) {
+                              let unavailableEmails = Object.keys(unavailable)
+                              let allEmails = Object.keys(users)
+                              // Emails of users who CAN attend this event
+                              let availableEmails = allEmails.filter(x => !unavailableEmails.includes(x));
+                              // console.log("EMAILS OF THOSE WHO CAN ATTEND: ", availableEmails);
+
+                              availableEmails.forEach(function(email, index) {
+                                const currUserInfo = users[email]
+                                availableUsers.push([currUserInfo, email])
+                              })
+
+
+                            }
 
                             const currEvent = {
                                 id: currId,
                                 text: eventText,
                                 start: mstrTime.concat(":00"),
                                 end: maddThirtyMin(currDay, mtime.clone()).concat(":00"),
-                                backColor: "#" + colorSpectrum.colourAt(numUnavailable)
+                                backColor: "#" + colorSpectrum.colourAt(numUnavailable),
+                                available: availableUsers
                             }
                             freeTimes.push(currEvent)
                         }
                         if (type === "PERSONAL") {
                             if (Object.keys(events[currDay][timeStamp]).includes(currUserEmail)) {
-                                console.log(currUserEmail, " is UNAVAILABLE at the time: ", timeStamp, " on day: ", currDay);
                                 const eventText = (events[currDay][timeStamp][currUserEmail]=== "AUTO") ? "Google" : "Manual";
                                 const boxColor = (events[currDay][timeStamp][currUserEmail]=== "AUTO") ? "Red" : "Blue";
                                 const currEvent = {
@@ -190,7 +209,7 @@ class Calendar extends Component {
                                     start: mstrTime.concat(":00"),
                                     text: eventText,
                                     backColor: boxColor,
-                                    end: maddThirtyMin(currDay, mtime.clone()).concat(":00")
+                                    end: maddThirtyMin(currDay, mtime.clone()).concat(":00"),
                                 }
                                 freeTimes.push(currEvent)
                             }
@@ -230,11 +249,13 @@ class Calendar extends Component {
     onEventDoubleClick = eventData => {
         const startSelected = eventData.e.data.start.value;
         const endSelected = eventData.e.data.end.value;
-        // console.log(eventData.e.data.start.value)
+        const availableUsers = eventData.e.data.available;
+
+        console.log("!!!AVAILABLE USERS: ", availableUsers)
+
         // console.log(eventData.e.data.end.value)
         //console.log(this.state.eventClicked)
 
-        console.log(this.state.users)
         const emailList = ["find.a.time1@gmail.com"]; // password: thirtythree333333***
         const title = "CS 394 Meeting";
         const description = "Hey everyone! Please fill out this form whenever you\n" +
@@ -247,6 +268,7 @@ class Calendar extends Component {
             eventData: {
                 startSelected,
                 endSelected,
+                availableUsers
             }
         })
 

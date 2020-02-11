@@ -30,6 +30,13 @@ import _SendEventInvites from "./_SendEventInvites"
 import {firebaseEmailToNormalEmail} from "../Utility";
 import {Link} from "@material-ui/core";
 
+// Imports for styling the list of available users
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
+import Avatar from "@material-ui/core/Avatar";
+import ListItemText from "@material-ui/core/ListItemText";
+
 // gets list of email's for a dictionary of users.
 const getEmailListFromUsers = ({users}) =>{
   return Object.keys(users).map(email=>firebaseEmailToNormalEmail(email))
@@ -235,6 +242,7 @@ const EventInvites = ({
 
   const startTime = moment(eventData.startSelected).format("LT");
   const endTime = moment(eventData.endSelected).format("LT");
+  const availableUsers = eventData.availableUsers;
   const eventDay = moment(eventData.startSelected).format("LL");
   const title = meta_data.title;
   const emailList = getEmailListFromUsers({users});
@@ -249,8 +257,6 @@ const EventInvites = ({
     startTime: formatToLocalTime(eventData.startSelected),
     endTime: formatToLocalTime(eventData.endSelected)
   };
-
-
 
   return (
     <div>
@@ -315,6 +321,27 @@ const EventInvites = ({
                         </Box>
                       </Grid>
                     </Grid>
+
+                    <Typography
+                      color="primary"
+                      gutterBottom
+                      noWrap={false}
+                    >
+                      People who are available:
+                    </Typography>
+
+                    <List style={{zIndex: 105}}>
+                        {availableUsers.map(user => (
+                            <ListItem key={user[1]}>
+                                <ListItemAvatar>
+                                    <Avatar alt={user[0].name} src={user[0].picture}/>
+                                </ListItemAvatar>
+                                <ListItemText primary={`${user[0].name} <${user[1]}>`}/>
+                            </ListItem>
+                        ))}
+
+                    </List>
+
                   </Box>
 
                   {/*Time Zone*/}
