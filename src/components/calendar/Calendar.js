@@ -172,18 +172,31 @@ class Calendar extends Component {
                             const unavailable = events[currDay][timeStamp]
                             const numUnavailable = Object.keys(unavailable).length
                             let availableList = ""
+
+                            const eventText = (numUnavailable === 0) ? "ALL available" :
+                                (numUsers - numUnavailable).toString() +
+                                " / " + numUsers.toString() + " available"
+
+                            // The text to be shown in the event tool tip
+                            let hoverText = "<center><h3>" + eventText + "</h3></center><ul>"
+
                             if (numUnavailable > 0) {
                               let unavailableEmails = Object.keys(unavailable)
                               let allEmails = Object.keys(users)
                               // Emails of users who CAN attend this event
                               let availableEmails = allEmails.filter(x => !unavailableEmails.includes(x));
-                              console.log("EMAILS OF THOSE WHO CAN ATTEND: ", availableEmails);
+                              // console.log("EMAILS OF THOSE WHO CAN ATTEND: ", availableEmails);
+
+                              availableEmails.forEach(function(email, index) {
+                                // console.log("THE EMAIL: ", email)
+                                hoverText += "<li>" + email + "</li>"
+                              })
+
+                              hoverText += "</ul>"
+
+                              console.log("!!!!HOVERTEXT: ", hoverText)
 
                             }
-
-                            const eventText = (numUnavailable === 0) ? "ALL available" :
-                                (numUsers - numUnavailable).toString() +
-                                " / " + numUsers.toString() + " available"
 
                             const currEvent = {
                                 id: currId,
@@ -191,7 +204,7 @@ class Calendar extends Component {
                                 start: mstrTime.concat(":00"),
                                 end: maddThirtyMin(currDay, mtime.clone()).concat(":00"),
                                 backColor: "#" + colorSpectrum.colourAt(numUnavailable),
-                                bubbleHtml: "<h1>" + eventText + "</h1>"
+                                bubbleHtml: hoverText
                             }
                             freeTimes.push(currEvent)
                         }
