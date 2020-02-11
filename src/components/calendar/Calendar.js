@@ -205,7 +205,6 @@ class Calendar extends Component {
                                     text: eventText,
                                     backColor: boxColor,
                                     end: maddThirtyMin(currDay, mtime.clone()).concat(":00"),
-                                    bubbleHtml: "Testing bubble HTML"
                                 }
                                 freeTimes.push(currEvent)
                             }
