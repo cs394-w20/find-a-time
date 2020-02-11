@@ -125,15 +125,15 @@ const Create = ({ history }) => {
 
   const handleSubmit = async () => {
     let start = moment(eventFields.times.start_time, "HH:mm")
-    let times = [start.clone().format("HH:mm")]
+    let times = [];
     let end = moment(eventFields.times.end_time, "HH:mm")
 
-    while (!start.isSame(end)) {
-      start.add(30, "m")
+    while (start.isBefore(end)) {
       times.push(start.format("HH:mm"))
+      start.add(30, "m")
     }
 
-    times.push(end.format("HH:mm"))
+    console.log('TIMES', times);
 
     let start_date = moment(eventFields.time_interval.start)
     let dates = [start_date.clone().format("YYYY-MM-DD")]
@@ -157,6 +157,7 @@ const Create = ({ history }) => {
     const params = {
       meta_data: eventFields.meta_data,
       time_interval: eventFields.time_interval,
+      hour_interval: eventFields.times,
       data: allTimes,
       users: {
         [email]: {

@@ -2,39 +2,58 @@
 import 'firebase/database';
 import 'firebase/auth';
 import db from "./firebaseConnect";
-import {HOURS, MINUTES} from "../../constants";
+import { HOURS, MINUTES } from "../../constants";
+import moment from 'moment';
 
-const createTimes = () => {
-    return HOURS.map(function (item) {
+const createTimes = async({roomId}) => {
+    const selectedhours = await SELECTEDHOURS({roomId})
+    return selectedhours.map(function (item) {
         return MINUTES.map(function (item2) {
             return `${item}:${item2}`;
         })
     }).flat()
 };
 
-const HOURS_AND_MINUTES = createTimes();
+const SELECTEDHOURS = async ({ roomId }) => {
+    let snapshot = await db.ref('rooms/' + roomId + '/hour_interval').once('value');
+    var hourlst = [];
+    var start = moment()
+    //var strstart = hours.start_time;
+    start.set({hour: Number(snapshot.val().start_time.substring(0, 2)), minute: 0, second: 0, millisecond: 0});
+    var end = moment();
+    end.set({hour: Number(snapshot.val().end_time.substring(0, 2)), minute: 0, second: 0, millisecond: 0});
+    console.log('end hour', start, end)
+    while (start.isBefore(end)) {
+        hourlst.push(start.format("HH"));
+        start.add(1, "h");
+    }
+    return hourlst;
 
-const addFreeInterval = ({roomId, date, interval, userName}) => {
+};
+
+//const HOURS_AND_MINUTES = createTimes();
+
+const addFreeInterval = ({ roomId, date, interval, userName }) => {
     let dbRef = db.ref('rooms/' + roomId + "/data/" + date + "/" + interval + "/" + userName);
     dbRef.transaction((autoOrManual) => {
-            if (autoOrManual === "MANUAL") {
-                // Do nothing
-                return;
-            } else {
-                // Delete record if it exists
-                dbRef.remove()
-                    .catch((error) => {
-                        console.log("remove failed: " + error.message)
-                    });
-                return;
-            }
-        }).catch((error) => {
+        if (autoOrManual === "MANUAL") {
+            // Do nothing
+            return;
+        } else {
+            // Delete record if it exists
+            dbRef.remove()
+                .catch((error) => {
+                    console.log("remove failed: " + error.message)
+                });
+            return;
+        }
+    }).catch((error) => {
         console.log("addFreeInterval failed: " + error.message)
     });
 };
 
 
-const addBusyInterval = ({roomId, date, interval, userName, type}) => {
+const addBusyInterval = ({ roomId, date, interval, userName, type }) => {
     db.ref('rooms/' + roomId + "/data/" + date + "/" + interval)
         .child(userName)
         .set(type)
@@ -60,8 +79,10 @@ const isEmpty = (obj) => {
  * @param data (string): the data
  * @param userName (string): the username
  */
-const UpdateDb = ({userName, roomId, intervalData, updateType}) => {
-
+const UpdateDb = async ({ userName, roomId, intervalData, updateType }) => {
+    //SELECTEDHOURS({ roomId });
+    const HOURS_AND_MINUTES = await createTimes({roomId});
+    console.log('hours and mins', HOURS_AND_MINUTES);
     let dateList = Object.keys(intervalData);
     let i, j, busyIntervalSet, date, interval;
     for (i = 0; i < dateList.length; i++) {
@@ -87,7 +108,7 @@ const UpdateDb = ({userName, roomId, intervalData, updateType}) => {
                         "type": updateType
                     })
                 } else {
-                    addFreeInterval({"roomId": roomId, "userName": userName, "date": date, "interval": interval})
+                    addFreeInterval({ "roomId": roomId, "userName": userName, "date": date, "interval": interval })
                 }
 
             }
@@ -96,7 +117,7 @@ const UpdateDb = ({userName, roomId, intervalData, updateType}) => {
             // updates the db w/ free for all the dates the user is missing interval data.
             for (j = 0; j < HOURS_AND_MINUTES.length; j++) {
                 interval = HOURS_AND_MINUTES[j];
-                addFreeInterval({"roomId": roomId, "userName": userName, "date": date, "interval": interval})
+                addFreeInterval({ "roomId": roomId, "userName": userName, "date": date, "interval": interval })
             }
         }
     }
