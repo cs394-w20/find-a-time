@@ -49,7 +49,7 @@ class Calendar extends Component {
         this.state = {
             eventClicked: false,
             viewType: "Days",
-            days: "4",
+            days: "2",
             durationBarVisible: true,
             eventMoveHandling: "Disabled",
             eventResizeHandling: "Disabled",
@@ -169,10 +169,9 @@ class Calendar extends Component {
                             const unavailable = events[currDay][timeStamp]
                             const numUnavailable = Object.keys(unavailable).length
                             let availableList = ""
-
-                            const eventText = (numUnavailable === 0) ? "ALL available" :
+                            const eventText = (numUnavailable === 0) ? "ALL free" :
                                 (numUsers - numUnavailable).toString() +
-                                " / " + numUsers.toString() + " available"
+                                "/" + numUsers.toString() + " free"
 
                             let availableUsers = []
 
