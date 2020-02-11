@@ -174,8 +174,7 @@ class Calendar extends Component {
                                 (numUsers - numUnavailable).toString() +
                                 " / " + numUsers.toString() + " available"
 
-                            // The text to be shown in the event tool tip
-                            let hoverText = "<center><h2>" + eventText + ":</h2></center><ul>"
+                            let availableUsers = []
 
                             if (numUnavailable > 0) {
                               let unavailableEmails = Object.keys(unavailable)
@@ -186,10 +185,9 @@ class Calendar extends Component {
 
                               availableEmails.forEach(function(email, index) {
                                 const currName = users[email].name
-                                hoverText += "<li>" + currName + "</li>"
+                                availableUsers.push(currName)
                               })
 
-                              hoverText += "</ul>"
 
                             }
 
@@ -199,7 +197,7 @@ class Calendar extends Component {
                                 start: mstrTime.concat(":00"),
                                 end: maddThirtyMin(currDay, mtime.clone()).concat(":00"),
                                 backColor: "#" + colorSpectrum.colourAt(numUnavailable),
-                                bubbleHtml: hoverText
+                                available: availableUsers
                             }
                             freeTimes.push(currEvent)
                         }
@@ -252,11 +250,12 @@ class Calendar extends Component {
     onEventDoubleClick = eventData => {
         const startSelected = eventData.e.data.start.value;
         const endSelected = eventData.e.data.end.value;
-        // console.log(eventData.e.data.start.value)
+        const availableUsers = eventData.e.data.available;
+
+        console.log("AVAILABLE USERS: ", availableUsers)
         // console.log(eventData.e.data.end.value)
         //console.log(this.state.eventClicked)
 
-        console.log(this.state.users)
         const emailList = ["find.a.time1@gmail.com"]; // password: thirtythree333333***
         const title = "CS 394 Meeting";
         const description = "Hey everyone! Please fill out this form whenever you\n" +
@@ -269,6 +268,7 @@ class Calendar extends Component {
             eventData: {
                 startSelected,
                 endSelected,
+                availableUsers
             }
         })
 
