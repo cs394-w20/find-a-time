@@ -258,9 +258,6 @@ const EventInvites = ({
     endTime: formatToLocalTime(eventData.endSelected)
   };
 
-  console.log("!!!AVAILABLE USERS: ", availableUsers)
-
-
   return (
     <div>
       <Modal
@@ -335,11 +332,11 @@ const EventInvites = ({
 
                     <List style={{zIndex: 105}}>
                         {availableUsers.map(user => (
-                            <ListItem key={user.email}>
+                            <ListItem key={user[1]}>
                                 <ListItemAvatar>
-                                    <Avatar alt={user.name} src={user.picture}/>
+                                    <Avatar alt={user[0].name} src={user[0].picture}/>
                                 </ListItemAvatar>
-                                <ListItemText primary={`${user.name}`}/>
+                                <ListItemText primary={`${user[0].name} <${user[1]}>`}/>
                             </ListItem>
                         ))}
 
