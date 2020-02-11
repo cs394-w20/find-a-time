@@ -268,7 +268,7 @@ const EventInvites = ({
     const availableUsers = eventData.availableUsers;
     const eventDay = moment(eventData.startSelected).format("LL");
     const title = meta_data.title;
-    const emailList = ["find.a.time1@gmail.com"] //getEmailListFromUsers({users});
+    const emailList =  getEmailListFromUsers({users}); //["find.a.time1@gmail.com"]
     const description = meta_data.description;
     const humanReadableTimeDiff = getTimeDifference({start: eventData.startSelected, end: eventData.endSelected});
 
