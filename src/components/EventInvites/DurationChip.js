@@ -23,6 +23,7 @@ const DurationChip = ({duration, durationState}) => {
 
     const handleOpen = () => {
         durationState.setDuration(duration);
+
     };
 
     return (

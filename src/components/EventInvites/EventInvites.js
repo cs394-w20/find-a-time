@@ -215,7 +215,7 @@ const EventInvites = ({
     const [openNameList, setOpenNameList] = useState(false);
 
 
-    const durationState = useDuration({startTime:moment(formatToLocalTime(eventData.startSelected))});
+    let durationState = useDuration();
 
 
     const setSchedule = () => {
@@ -229,7 +229,7 @@ const EventInvites = ({
             title: title,
             description: description,
             startTime: formatToLocalTime(eventData.startSelected),
-            endTime: durationState.endTime.format()
+            endTime: moment(formatToLocalTime(eventData.startSelected)).add('m',durationState.duration).format()
         };
 
         setConfirmed(true);
@@ -251,6 +251,7 @@ const EventInvites = ({
 
     const handleNameListClick = () => {
         setOpenNameList(!openNameList)
+
     };
 
 
@@ -263,14 +264,15 @@ const EventInvites = ({
     //style={{color:theme.palette.secondary.light}}
     // color="textSecondary"
 
-    const startTime = moment(eventData.startSelected).format("LT");
-    const endTime =durationState.endTime.format("LT");
+    const startTime = moment(formatToLocalTime(eventData.startSelected)).format("LT");
+    const endTime = moment(formatToLocalTime(eventData.startSelected)).add('m',durationState.duration).format("LT");
+
+
     const availableUsers = eventData.availableUsers;
     const eventDay = moment(eventData.startSelected).format("LL");
     const title = meta_data.title;
     const emailList =  getEmailListFromUsers({users}); //["find.a.time1@gmail.com"]
     const description = meta_data.description;
-    const humanReadableTimeDiff = getTimeDifference({start: eventData.startSelected, end: eventData.endSelected});
 
 
     /*
