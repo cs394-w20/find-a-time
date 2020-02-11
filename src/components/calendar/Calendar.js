@@ -184,8 +184,8 @@ class Calendar extends Component {
                               // console.log("EMAILS OF THOSE WHO CAN ATTEND: ", availableEmails);
 
                               availableEmails.forEach(function(email, index) {
-                                const currName = users[email].name
-                                availableUsers.push(currName)
+                                const currUserInfo = users[email]
+                                availableUsers.push(currUserInfo)
                               })
 
 
@@ -252,7 +252,6 @@ class Calendar extends Component {
         const endSelected = eventData.e.data.end.value;
         const availableUsers = eventData.e.data.available;
 
-        console.log("AVAILABLE USERS: ", availableUsers)
         // console.log(eventData.e.data.end.value)
         //console.log(this.state.eventClicked)
 
