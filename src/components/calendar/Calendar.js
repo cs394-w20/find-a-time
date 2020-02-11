@@ -144,9 +144,6 @@ class Calendar extends Component {
     renderCalender = ({ dates, events, startDate, users, type, currUser, email }) => {
         const freeTimes = []
 
-        console.log("AVAILABLE users: ", users);
-
-
         const numUsers = Object.keys(users).length
         let colorSpectrum = new Rainbow()
         colorSpectrum.setNumberRange(0, numUsers)
@@ -178,7 +175,7 @@ class Calendar extends Component {
                                 " / " + numUsers.toString() + " available"
 
                             // The text to be shown in the event tool tip
-                            let hoverText = "<center><h3>" + eventText + "</h3></center><ul>"
+                            let hoverText = "<center><h2>" + eventText + ":</h2></center><ul>"
 
                             if (numUnavailable > 0) {
                               let unavailableEmails = Object.keys(unavailable)
@@ -188,13 +185,11 @@ class Calendar extends Component {
                               // console.log("EMAILS OF THOSE WHO CAN ATTEND: ", availableEmails);
 
                               availableEmails.forEach(function(email, index) {
-                                // console.log("THE EMAIL: ", email)
-                                hoverText += "<li>" + email + "</li>"
+                                const currName = users[email].name
+                                hoverText += "<li>" + currName + "</li>"
                               })
 
                               hoverText += "</ul>"
-
-                              console.log("!!!!HOVERTEXT: ", hoverText)
 
                             }
 
