@@ -6,7 +6,7 @@ import {Button} from "@material-ui/core";
 const theme1 = createMuiTheme({
     palette: {
         primary: {
-            main: "#236FAA",
+            main: "#19588a",
 
         },
         secondary: {
