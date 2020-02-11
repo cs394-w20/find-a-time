@@ -144,6 +144,9 @@ class Calendar extends Component {
     renderCalender = ({ dates, events, startDate, users, type, currUser, email }) => {
         const freeTimes = []
 
+        console.log("AVAILABLE users: ", users);
+
+
         const numUsers = Object.keys(users).length
         let colorSpectrum = new Rainbow()
         colorSpectrum.setNumberRange(0, numUsers)
@@ -163,10 +166,21 @@ class Calendar extends Component {
                 while (currDay == mtime.format('YYYY-MM-DD')) {
                     var mstrTime = currDay.concat("T", mtime.format('HH:mm'));
                     let timeStamp = mtime.format('HH:mm');
+
                     if (Object.keys(events[currDay]).includes(timeStamp)) {
                         if (type === "GROUP") {
                             const unavailable = events[currDay][timeStamp]
                             const numUnavailable = Object.keys(unavailable).length
+                            let availableList = ""
+                            if (numUnavailable > 0) {
+                              let unavailableEmails = Object.keys(unavailable)
+                              let allEmails = Object.keys(users)
+                              // Emails of users who CAN attend this event
+                              let availableEmails = allEmails.filter(x => !unavailableEmails.includes(x));
+                              console.log("EMAILS OF THOSE WHO CAN ATTEND: ", availableEmails);
+
+                            }
+
                             const eventText = (numUnavailable === 0) ? "ALL available" :
                                 (numUsers - numUnavailable).toString() +
                                 " / " + numUsers.toString() + " available"
@@ -176,13 +190,13 @@ class Calendar extends Component {
                                 text: eventText,
                                 start: mstrTime.concat(":00"),
                                 end: maddThirtyMin(currDay, mtime.clone()).concat(":00"),
-                                backColor: "#" + colorSpectrum.colourAt(numUnavailable)
+                                backColor: "#" + colorSpectrum.colourAt(numUnavailable),
+                                bubbleHtml: "<h1>" + eventText + "</h1>"
                             }
                             freeTimes.push(currEvent)
                         }
                         if (type === "PERSONAL") {
                             if (Object.keys(events[currDay][timeStamp]).includes(currUserEmail)) {
-                                console.log(currUserEmail, " is UNAVAILABLE at the time: ", timeStamp, " on day: ", currDay);
                                 const eventText = (events[currDay][timeStamp][currUserEmail]=== "AUTO") ? "Google" : "Manual";
                                 const boxColor = (events[currDay][timeStamp][currUserEmail]=== "AUTO") ? "Red" : "Blue";
                                 const currEvent = {
@@ -190,7 +204,8 @@ class Calendar extends Component {
                                     start: mstrTime.concat(":00"),
                                     text: eventText,
                                     backColor: boxColor,
-                                    end: maddThirtyMin(currDay, mtime.clone()).concat(":00")
+                                    end: maddThirtyMin(currDay, mtime.clone()).concat(":00"),
+                                    bubbleHtml: "Testing bubble HTML"
                                 }
                                 freeTimes.push(currEvent)
                             }
