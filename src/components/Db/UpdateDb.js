@@ -5,9 +5,8 @@ import db from "./firebaseConnect";
 import { HOURS, MINUTES } from "../../constants";
 import moment from 'moment';
 
-const createTimes = ({roomId}) => {
-    const selectedhours = SELECTEDHOURS({roomId})
-    console.log('selecthours', selectedhours)
+const createTimes = async({roomId}) => {
+    const selectedhours = await SELECTEDHOURS({roomId})
     return selectedhours.map(function (item) {
         return MINUTES.map(function (item2) {
             return `${item}:${item2}`;
@@ -17,20 +16,17 @@ const createTimes = ({roomId}) => {
 
 const SELECTEDHOURS = async ({ roomId }) => {
     let snapshot = await db.ref('rooms/' + roomId + '/hour_interval').once('value');
-    console.log('snapshot.val()', snapshot.val(), snapshot.val().end_time)
-    console.log('selected hours', snapshot.val().start_time, snapshot.val().end_time);
     var hourlst = [];
     var start = moment()
     //var strstart = hours.start_time;
-    start.set("hour", Number(snapshot.val().start_time.substring(0, 2)));
+    start.set({hour: Number(snapshot.val().start_time.substring(0, 2)), minute: 0, second: 0, millisecond: 0});
     var end = moment();
-    end.hour(Number(snapshot.val().end_time.substring(0, 2)));
-    console.log('og', start, end)
-    while (start.isSameOrBefore(end)) {
+    end.set({hour: Number(snapshot.val().end_time.substring(0, 2)), minute: 0, second: 0, millisecond: 0});
+    console.log('end hour', start, end)
+    while (start.isBefore(end)) {
         hourlst.push(start.format("HH"));
         start.add(1, "h");
     }
-    console.log('hourlist', hourlst)
     return hourlst;
 
 };
@@ -83,9 +79,9 @@ const isEmpty = (obj) => {
  * @param data (string): the data
  * @param userName (string): the username
  */
-const UpdateDb = ({ userName, roomId, intervalData, updateType }) => {
+const UpdateDb = async ({ userName, roomId, intervalData, updateType }) => {
     //SELECTEDHOURS({ roomId });
-    const HOURS_AND_MINUTES = createTimes({roomId});
+    const HOURS_AND_MINUTES = await createTimes({roomId});
     console.log('hours and mins', HOURS_AND_MINUTES);
     let dateList = Object.keys(intervalData);
     let i, j, busyIntervalSet, date, interval;
